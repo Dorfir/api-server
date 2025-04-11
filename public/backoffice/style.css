@@ -1,0 +1,43 @@
+html, body {
+    background-color: #aaaaaa;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#main-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap:12px;
+    
+}
+
+
+#form-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    /* align-items: baseline; */
+
+    width: 600px;
+
+    gap: 10px;
+}
+
+.ligne {
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+    justify-content: flex-start;
+    width:300px;
+}
+
+#editor {
+    background-color: #ffffff;
+    
+}
+
+
+
+

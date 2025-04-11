@@ -12,9 +12,13 @@ const fs = require('fs');
 
 // configure our express instance with some body-parser settings 
 // including handling JSON data
-app.use('/public', express.static(path.join(__dirname, 'public')))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use('/static', express.static(path.join(__dirname, 'public')))
+// app.use('/static', express.static('public'))
+// app.use(express.static(__dirname + '/public/'))
+
 
 // this is where we'll handle our various routes from
 const routes = require('./routes/routes.js')(app, fs);

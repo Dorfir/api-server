@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>test object js</title>
+        <link rel="shortcut icon" href="favicon.png" type="image/png">
+    </head>
+
+    <body>
+        
+        <script>
+            //the user object
+            function User(name, email, role) {
+                this.name = name;
+                this.email = email;
+                this.role = role;
+            }
+
+            User.prototype.sayHey = function() {
+                // console.log(`${name} - ${email} - ${role}`)
+                console.log("Hey, I'm an " + this.role)
+            }
+
+            //the editor object inherits from user
+            function Editor(name, email) {
+                User.call(this, name, email, "editor")
+            }
+
+            Editor.prototype = Object.create(User.prototype)
+            // Editor.protoype.constructor = Editor
+
+            var xavier = new User("xavier", "xavier@visio-lab.com", "dev")
+            xavier.sayHey()
+            var david = new Editor("David", "matthew@medium.com")
+            david.sayHey()
+
+
+        </script>
+
+    </body>
+</html>
