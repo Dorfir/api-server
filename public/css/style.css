@@ -1,14 +1,21 @@
 /* #region General */
+@font-face {
+    font-family: "Josefin";
+    src: url('./fonts/JosefinSans-Medium.woff2') format('woff2');
+}
+
+
 html, body {
     padding:0;
     margin:0;
+    font-family: 'Josefin', sans-serif;
 }
 
 #main-container {
     position: absolute;
     left:0; top:0; width:100%; height:100%;
     background-color: #dddddd;
-    font-family: Arial, Helvetica, sans-serif;
+    /* font-family: Arial, Helvetica, sans-serif; */
 
     display:flex;
     flex-direction:column;
@@ -25,6 +32,10 @@ html, body {
               user-select: none; /* Non-prefixed version, currently
                                     supported by Chrome, Edge, Opera and Firefox */
   }
+
+p {
+    
+}
 /* #endregion */
 
 /* #region Menu */
@@ -95,4 +106,144 @@ html, body {
     clear:both;
     max-width:50%;
 }
+/* #endregion */
+
+/* #region Lightbox */
+#lightbox-container {
+    --gutter: 14px;
+    --greencity-blue: #00274c;
+    --greencity-yellow: #ceb888;
+    --soft-color: #fafafa;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2000;
+    position: fixed;
+    background-color: rgba(0, 0, 0, .7);
+    padding-top: 1.5%;
+}
+#lightbox {
+    width: 95vw;
+    height: 90vh;
+    /* max-height: 700px; */
+    max-width: 650px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    margin: 0 auto;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+#lightbox header {
+    min-height: 60px;
+    height: 60px;
+    color: #fff;
+    background-color: #ffffff;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#lightbox header .produit-categorie {
+    padding: 0 15px;
+    margin: 0;
+    text-align: center;
+    height:100%;
+    background-color: var(--greencity-blue);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 1.4em;
+}
+#lightbox header span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+    width: 60px;
+    font-size: 20px;
+    opacity: 0.8;
+    cursor: pointer;
+    color: #454545;
+    padding:0 5px;
+}
+#lightbox header span:hover {
+    opacity: 1;
+}
+
+
+.swiper-slide-subcontainer {
+    position:relative;
+    width:100%;
+    height:100%;
+    background-color: #ADCFBF;
+}
+
+.fiche-produit {
+    max-width: 575px;
+    margin: 0 auto;
+    height: calc(100% - 25px);
+}
+.fiche-produit .modal-main {
+    /* flex: 1; */
+    text-align: left;
+    overflow: auto;
+    padding: var(--gutter);
+}
+.fiche-produit .modal-main .produit-picture {
+    float: right;
+    margin: 0 0 10px 10px;
+    clear: both;
+    max-width:40%;
+    opacity: 1;
+}
+.fiche-produit .modal-main .produit-marque {
+    all: unset;
+    display: block;
+    /* display: inline-block; */
+    background-color: var(--greencity-yellow);
+    padding:12px;
+    font-size:2.2em;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.4em;
+}
+.fiche-produit .modal-main .produit-nom {
+    font-weight: 600; 
+}
+
+.fiche-produit footer {
+    height: auto;
+    border-top: solid 1px #ccc;
+    padding: 5px;
+    background-color: #fff;
+    background-color: var(--soft-color);
+}
+
+
+
+/* #endregion */
+
+
+/* #region Swiper */
+.swiper {
+    width: 650px;
+    height: 100%;
+}
+.swiper-slide {
+    background-color: bisque;
+    
+}
+
+
 /* #endregion */
