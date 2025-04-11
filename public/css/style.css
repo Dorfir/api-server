@@ -186,10 +186,11 @@ p {
     position:relative;
     width:100%;
     height:100%;
-    background-color: #ADCFBF;
+    /* background-color: #ADCFBF; */
 }
 
 .fiche-produit {
+    position:relative;  
     max-width: 575px;
     margin: 0 auto;
     height: calc(100% - 25px);
@@ -199,6 +200,8 @@ p {
     text-align: left;
     overflow: auto;
     padding: var(--gutter);
+    
+    height: calc(100% - 25px);
 }
 .fiche-produit .modal-main .produit-picture {
     float: right;
@@ -241,7 +244,7 @@ p {
     height: 100%;
 }
 .swiper-slide {
-    background-color: bisque;
+    /* background-color: bisque; */
     
 }
 
