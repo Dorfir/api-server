@@ -121,11 +121,11 @@ p {
     z-index: 2000;
     position: fixed;
     background-color: rgba(0, 0, 0, .7);
-    padding-top: 1.5%;
+    padding-top: 2.5vh;
 }
 #lightbox {
     width: 95vw;
-    height: 90vh;
+    height: 95vh;
     /* max-height: 700px; */
     max-width: 650px;
     position: relative;
@@ -202,28 +202,45 @@ p {
     padding: var(--gutter);
     
     height: calc(100% - 25px);
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    
 }
 .fiche-produit .modal-main .produit-picture {
-    float: right;
+    /* float: right; */
     margin: 0 0 10px 10px;
-    clear: both;
+    /* clear: both; */
     max-width:40%;
     opacity: 1;
 }
 .fiche-produit .modal-main .produit-marque {
     all: unset;
-    display: block;
-    /* display: inline-block; */
+    /* display: block; */
+    display: inline-block;
     background-color: var(--greencity-yellow);
     padding:12px;
-    font-size:2.2em;
+    font-size:2.4em;
     font-weight: 600;
     text-align: center;
-    line-height: 1.4em;
+    line-height: 1.2em;
 }
 .fiche-produit .modal-main .produit-nom {
     font-weight: 600; 
+    font-size: 1.1em;
 }
+
+.fiche-produit .modal-main .produit-group {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+}
+
 
 .fiche-produit footer {
     height: auto;
@@ -248,5 +265,21 @@ p {
     
 }
 
+#lightbox .swiper-pagination-bullet-active {
+    background-color: var(--greencity-blue) 
+}
+#lightbox .swiper-button-prev {
+    color: var(--greencity-blue);
+}
+#lightbox .swiper-button-next {
+    color: var(--greencity-blue);
+}
+#lightbox .swiper-button-prev::after {
+    font-size: 1.5em;
+}
+#lightbox .swiper-button-next::after {
+    font-size: 1.5em;
+}
 
 /* #endregion */
+
