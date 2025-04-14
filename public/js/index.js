@@ -53,3 +53,79 @@ function generateFiche(data) {
 
 }
 
+/* #region Produits */
+const swiper = new Swiper('.swiper', {
+    // Optional parameters
+    direction: 'horizontal',
+    loop: false,
+
+    // If we need pagination
+    pagination: {
+        el: '.swiper-pagination',
+    },
+
+    // Navigation arrows
+    navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+    },
+
+    // And if we need scrollbar
+    scrollbar: {
+        el: '.swiper-scrollbar',
+    },
+});
+
+let lightBoxContainer = document.getElementById('lightbox-container')
+let popupProduitListe = document.getElementById('popup-produits-liste')
+let popupProduitsFicheContainer = document.getElementById('popup-produits-fiche-container')
+let listeProduitsElements = document.querySelectorAll('.popup-produits-liste-element')
+let popupProduitsBtnRetour = document.getElementById('popup-produits-btn-back')
+let popupProduitsBtnClose = document.getElementById('popup-produits-btn-close')
+
+for (let element of listeProduitsElements) {
+
+    element.addEventListener('click', (e)=> {
+        let element_index = getElementClassIndex(e.currentTarget, 'popup-produits-liste-element')
+        swiper.slideTo(element_index, 0, null)
+        popupProduitListe.style.zIndex = 0
+        popupProduitListe.style.display = "none"
+        popupProduitsFicheContainer.style.zIndex = 1
+        popupProduitsFicheContainer.style.display = "block"
+        popupProduitsBtnRetour.style.visibility = "visible"
+    })
+
+}
+
+popupProduitsBtnRetour.addEventListener('click', (e) => {
+
+    popupProduitListe.style.zIndex = 1
+    popupProduitListe.style.display = "flex"
+    popupProduitsFicheContainer.style.zIndex = 0
+    popupProduitsFicheContainer.style.display = "none"
+    
+    popupProduitsBtnRetour.style.visibility = "hidden"
+})
+
+popupProduitsBtnClose.addEventListener('click', (e) => {
+    lightBoxContainer.style.display = "none"
+    lightBoxContainer.style.display.zIndex = 0
+})
+
+
+
+/* #endregion */
+
+
+/* #region Divers */
+function getElementClassIndex(elem, className) {
+    let liste = document.getElementsByClassName(className)
+    let count = 0
+    let result = -1
+    for (let listeElem of liste) {
+        if (listeElem.isEqualNode(elem)) result = count
+        count++
+    }
+    return result
+}
+/* #endregion */

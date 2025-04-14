@@ -26,125 +26,132 @@
         </div>
     </div>
 
+    <div id="main-container2">
+        <h2>Liste des produits</h2>
+
+        <h5>Sanitaires</h3>
+        <ul>
+            <li>Pare-bain</li>
+            <li>Receveurs</li>
+            <li>Parois de douche</li>
+            <li>Portes de douche</li>
+            <li>Colonnes de douche</li>
+            <li>WC</li>
+            <li>Lave main</li>
+        </ul>
+            
+
+    </div>
+
     <div id="lightbox-container">
 
         <div id="lightbox">
 
             <header>
-                <span>retour</span>
+                <span id="popup-produits-btn-back" class="popup-produits-header-btn">retour</span>
                 <div class="produit-categorie">Receveurs</div>
-                <span>fermer</span>
+                <span id="popup-produits-btn-close" class="popup-produits-header-btn">fermer</span>
             </header>
 
-            <div class="swiper">
-                <!-- Additional required wrapper -->
-                <div class="swiper-wrapper">
-                    <!-- Slides -->
-                    <div class="swiper-slide">
+            <div id="popup-produits-content-container">
 
-                        <div class="swiper-slide-subcontainer">
-    
-                            <div class="fiche-produit">
-                                
-                                <div class="modal-main">
-                                    
-                                    <div class="produit-marque">Stepin SANINDUSA</div>
-                                    <p class="produit-nom">Receveur de douche céramique antidérapant</p>
-                                    
-                                    <div class="produit-group">
-
-                                        <div class="produit-descriptif">
-                                            Dimensions disponibles:
-                                            <ul>
-                                                <li>70x120/140 cm</li>
-                                                <li>80x80/100/120/140 cm</li>
-                                                <li>90x90/120/140 cm</li>
-                                            </ul>
-                                        </div>
-
-                                        <img class="produit-picture" src="./img/produits/receveurs_stepinSanindusa.jpg" />
-                                    </div>
-                                    
-                                    <div class="produit-group">
-                                        <img class="produit-picture" src="./img/produits/receveurs_stepinSanindusa.jpg" />
-                                        <div class="produit-descriptif">
-                                            Dimensions disponibles:
-                                            <ul>
-                                                <li>70x120/140 cm</li>
-                                                <li>80x80/100/120/140 cm</li>
-                                                <li>90x90/120/140 cm</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    
-
-                                </div>
-                            </div>
-
+                <div id="popup-produits-liste">
+                    <div class="popup-produits-liste-element">
+                        <div class="image-container">
+                            <img src="./img/produits/receveurs_stepinSanindusa_thumb.jpg" alt="">
                         </div>
-
+                        <div class="titre">Stepin SANINDUSA</div>
                     </div>
-                    <div class="swiper-slide">
-                        <div class="fiche-produit">
-                            
-                            <div class="modal-main">
-
-                                <div class="produit-marque">Flight JACOB DELAFON</div>
-                                <p class="produit-nom">Receveur de douche acrylique</p>
-                                
-                                <div class="produit-group">
-
-                                    <div class="produit-descriptif">
-                                        Dimensions disponibles:<br>
-                                        <ul>
-                                            <li>70x170 cm</li>
-                                            <li>76x170 cm</li>
-                                            <li>90x170 cm</li>
-                                        </ul>
-                                    </div>
-
-                                    <img class="produit-picture" src="./img/produits/receveurs_flightJacobDelafon.jpg" />
-                                </div>
-                                
-                            </div>
+                    <div class="popup-produits-liste-element">
+                        <div class="image-container">
+                            <img src="./img/produits/receveurs_flightJacobDelafon_thumb.jpg" alt="">
                         </div>
+                        <div class="titre">Flight JACOB DELAFON</div>
+                        
                     </div>
                 </div>
-                <!-- If we need pagination -->
-                <div class="swiper-pagination"></div>
+    
+                <div class="swiper" id="popup-produits-fiche-container">
+                    <!-- Additional required wrapper -->
+                    <div class="swiper-wrapper">
+                        <!-- Slides -->
+                        <div class="swiper-slide">
+                            <div class="swiper-slide-subcontainer">
+                                <div class="fiche-produit">
+                                    <div class="modal-main">
+                                        
+                                        <div class="produit-marque">Stepin SANINDUSA</div>
+                                        <p class="produit-nom">Receveur de douche céramique antidérapant</p>
+                                        
+                                        <div class="produit-group">
+    
+                                            <div class="produit-descriptif">
+                                                Dimensions disponibles:
+                                                <ul>
+                                                    <li>70x120/140 cm</li>
+                                                    <li>80x80/100/120/140 cm</li>
+                                                    <li>90x90/120/140 cm</li>
+                                                </ul>
+                                            </div>
+    
+                                            <img class="produit-picture" src="./img/produits/receveurs_stepinSanindusa.jpg" />
+                                        </div>
+                                        
+                                        <div class="produit-group">
+                                            <img class="produit-picture" src="./img/produits/receveurs_stepinSanindusa.jpg" />
+                                            <div class="produit-descriptif">
+                                                Dimensions disponibles:
+                                                <ul>
+                                                    <li>70x120/140 cm</li>
+                                                    <li>80x80/100/120/140 cm</li>
+                                                    <li>90x90/120/140 cm</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        
+    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="swiper-slide-subcontainer">
+                                <div class="fiche-produit">
+                                    <div class="modal-main">
+                                        <div class="produit-marque">Flight JACOB DELAFON</div>
+                                        <p class="produit-nom">Receveur de douche acrylique</p>
+                                        
+                                        <div class="produit-group">
+        
+                                            <div class="produit-descriptif">
+                                                Dimensions disponibles:<br>
+                                                <ul>
+                                                    <li>70x170 cm</li>
+                                                    <li>76x170 cm</li>
+                                                    <li>90x170 cm</li>
+                                                </ul>
+                                            </div>
 
-                <!-- If we need navigation buttons -->
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-button-next"></div>
+                                            <img class="produit-picture" src="./img/produits/receveurs_flightJacobDelafon.jpg" />
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- If we need pagination -->
+                    <div class="swiper-pagination"></div>
+    
+                    <!-- If we need navigation buttons -->
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+    
+                    <!-- If we need scrollbar -->
+                    <div class="swiper-scrollbar"></div>
+                </div>
 
-                <!-- If we need scrollbar -->
-                <div class="swiper-scrollbar"></div>
             </div>
-
-            <!-- <div class="fiche-produit">
-                <header>
-                    <span>retour</span>
-                    <div class="produit-categorie">Receveurs</div>
-                    <span>fermer</span>
-                </header>
-                <div class="modal-main">
-                    <img class="produit-picture" src="./img/produits/receveurs_stepinSanindusa.jpg" />
-    
-                    <p class="produit-marque">Stepin SANINDUSA</p>
-                    <p class="produit-nom">Receveur de douche céramique antidérapant</p>
-                    <p class="produit-descriptif">
-                        Dimensions disponibles:<br>
-                        <ul>
-                            <li>70x120/140 cm</li>
-                            <li>80x80/100/120/140 cm</li>
-                            <li>90x90/120/140 cm</li>
-                        </ul>
-                    </p>
-                </div>
-                <footer></footer>
-            </div> -->
-
-
 
         </div>
 
@@ -155,34 +162,8 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="js/mock-fiches.js"></script>
     <script src="js/mock-produits.js"></script>
-
-
-
     <script src="js/index.js"></script>
 
-    <script>
-        const swiper = new Swiper('.swiper', {
-            // Optional parameters
-            direction: 'horizontal',
-            loop: false,
-
-            // If we need pagination
-            pagination: {
-                el: '.swiper-pagination',
-            },
-
-            // Navigation arrows
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-
-            // And if we need scrollbar
-            scrollbar: {
-                el: '.swiper-scrollbar',
-            },
-        });
-    </script>
 
 </body>
 

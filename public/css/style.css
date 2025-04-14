@@ -9,6 +9,9 @@ html, body {
     padding:0;
     margin:0;
     font-family: 'Josefin', sans-serif;
+    
+    --greencity-blue: #00274c;
+    --greencity-yellow: #ceb888;
 }
 
 #main-container {
@@ -21,6 +24,14 @@ html, body {
     flex-direction:column;
     justify-content: start;
     align-items: center;
+
+    display: none;
+}
+
+#main-container2 {
+    position: absolute;
+    left:0; top:0; width:100%; height:100%;
+    background-color: var(--greencity-blue);
 }
 
 .noselect {
@@ -108,19 +119,18 @@ p {
 }
 /* #endregion */
 
-/* #region Lightbox */
+/* --------------------------------- */
+/* #region Lightbox - Popup produits */
 #lightbox-container {
     --gutter: 14px;
-    --greencity-blue: #00274c;
-    --greencity-yellow: #ceb888;
     --soft-color: #fafafa;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 2000;
+    z-index: 20;
     position: fixed;
-    background-color: rgba(0, 0, 0, .7);
+    background-color: rgba(256, 256, 256, .2);
     padding-top: 2.5vh;
 }
 #lightbox {
@@ -137,8 +147,7 @@ p {
     flex-direction: column;
 }
 
-
-
+/* Popup produits - Header */
 #lightbox header {
     min-height: 60px;
     height: 60px;
@@ -165,7 +174,7 @@ p {
     height: 100%;
     font-size: 1.4em;
 }
-#lightbox header span {
+#lightbox header span.popup-produits-header-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -177,16 +186,95 @@ p {
     color: #454545;
     padding:0 5px;
 }
-#lightbox header span:hover {
+#lightbox header span.popup-produits-header-btn:hover {
     opacity: 1;
+}
+#lightbox header #popup-produits-btn-back {
+    visibility: hidden;
+}
+
+/* Popup produits - Content container */
+#popup-produits-content-container {
+    width: 100%;
+    flex-grow: 1;
+    /* background-color: greenyellow; */
+}
+ 
+/* Popup produits - Liste */
+#popup-produits-liste {
+    
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+
+}
+.popup-produits-liste-element {
+    
+    width: 200px;
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+.popup-produits-liste-element .image-container {
+    width: 100%;
+    background-color: #ffffff;
+}
+.popup-produits-liste-element .image-container img {
+    width: 100%;
+}
+.popup-produits-liste-element .titre {
+    width:100%;
+    text-align: center;
+    padding: 20px 0;
+    background-color: #00274c;
+    color: #ffffff;
 }
 
 
-.swiper-slide-subcontainer {
+/* Popup produits - Fiche */
+#popup-produits-fiche-container {
+    display: none;
+    z-index:0;
+}
+.swiper-slide-container {
     position:relative;
     width:100%;
     height:100%;
-    /* background-color: #ADCFBF; */
+    z-index:0;
+}
+.swiper-slide-subcontainer {   
+    position:absolute;
+    left: 0;
+    top: 0;
+    width:100%;
+    height:100%;
+}
+.swiper {
+    width: 650px;
+    height: 100%;
+}
+#lightbox .swiper-pagination-bullet-active {
+    background-color: var(--greencity-blue) 
+}
+#lightbox .swiper-button-prev {
+    color: var(--greencity-blue);
+}
+#lightbox .swiper-button-next {
+    color: var(--greencity-blue);
+}
+#lightbox .swiper-button-prev::after {
+    font-size: 1.5em;
+}
+#lightbox .swiper-button-next::after {
+    font-size: 1.5em;
 }
 
 .fiche-produit {
@@ -232,7 +320,6 @@ p {
     font-weight: 600; 
     font-size: 1.1em;
 }
-
 .fiche-produit .modal-main .produit-group {
     display: flex;
     flex-direction: row;
@@ -241,7 +328,6 @@ p {
     align-items: center;
 }
 
-
 .fiche-produit footer {
     height: auto;
     border-top: solid 1px #ccc;
@@ -249,37 +335,5 @@ p {
     background-color: #fff;
     background-color: var(--soft-color);
 }
-
-
-
 /* #endregion */
-
-
-/* #region Swiper */
-.swiper {
-    width: 650px;
-    height: 100%;
-}
-.swiper-slide {
-    /* background-color: bisque; */
-    
-}
-
-#lightbox .swiper-pagination-bullet-active {
-    background-color: var(--greencity-blue) 
-}
-#lightbox .swiper-button-prev {
-    color: var(--greencity-blue);
-}
-#lightbox .swiper-button-next {
-    color: var(--greencity-blue);
-}
-#lightbox .swiper-button-prev::after {
-    font-size: 1.5em;
-}
-#lightbox .swiper-button-next::after {
-    font-size: 1.5em;
-}
-
-/* #endregion */
-
+/* --------------------------------- */
