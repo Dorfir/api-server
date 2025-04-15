@@ -4,6 +4,8 @@
 <head>
     <title>GreenCity - Configurateur</title>
 
+    <meta charset="UTF-8"/>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="css/style.css">
 
@@ -15,46 +17,56 @@
     <div id="main-container">
 
         <div id="menu-container">
-            <div id="btn1" class="menu-item noselect active">Menu 1</div>
-            <div id="btn2" class="menu-item noselect">Menu 2</div>
-            <div id="btn3" class="menu-item noselect">Menu 3</div>
-            <div id="btn4" class="menu-item noselect">Menu 4</div>
+            <div id="btn1" class="menu-item active">Menu 1</div>
+            <div id="btn2" class="menu-item">Menu 2</div>
+            <div id="btn3" class="menu-item">Menu 3</div>
+            <div id="btn4" class="menu-items">Menu 4</div>
         </div>
 
         <div id="fiche-container">
             <div id="fiche-subcontainer"></div>
         </div>
+
     </div>
 
     <div id="main-container2">
 
-        <div id="page-produits">
-
-            <h2 style="text-align: center;">Liste des produits</h2>
-
-            <h3>Sanitaires</h3>
-            <ul class="listeLiensSanitaires">
-                <li id="pareBain">Pare-bain</li>
-                <li id="receveurs">Receveurs</li>
-                <li id="paroisDouche">Parois de douche</li>
-                <li id="portesDouche">Portes de douche</li>
-                <!-- <li>Colonnes de douche</li>
-                <li>WC</li>
-                <li>Lave main</li> -->
-            </ul>
-
+        <div id="options-header">
+            <img src="./img/green_city_logo.svg" alt="Green City" id="green_city_logo">
+            <h2 style="text-align: center;">OPTIONS</h2>
+            <div id="navigation"></div>
         </div>
 
-        
-            
+        <div id="options-content">
 
+            <div id="options-subcontent">
+
+                <div class="options-element">
+                    <div class="options-element-titre">SANITAIRES</div>
+                    <div class="options-element-liste">
+                        <ul class="options-element-liste">
+                            <li id="pareBain">Pare-bain</li>
+                            <li id="receveurs">Receveurs</li>
+                            <li id="paroisDouche">Parois de douche</li>
+                            <li id="portesDouche">Portes de douche</li>
+                            <!-- <li>Colonnes de douche</li>
+                            <li>WC</li>
+                            <li>Lave main</li> -->
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            
+        </div>
+            
     </div>
 
     <div id="lightbox-container">
 
         <div id="lightbox">
 
-            <header>
+            <header class="noselect">
                 <span id="popup-produits-btn-back" class="popup-produits-header-btn">retour</span>
                 <div id="produit-categorie">Receveurs</div>
                 <span id="popup-produits-btn-close" class="popup-produits-header-btn">fermer</span>

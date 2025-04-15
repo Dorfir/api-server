@@ -1,16 +1,21 @@
 /* #region General */
 @font-face {
-    font-family: "Josefin";
+    font-family: "JosefinMedium";
     src: url('./fonts/JosefinSans-Medium.woff2') format('woff2');
+}
+@font-face {
+    font-family: "JosefinBold";
+    src: url('./fonts/JosefinSans-Bold.woff2') format('woff2');
 }
 
 
 html, body {
     padding:0;
     margin:0;
-    font-family: 'Josefin', sans-serif;
+    font-family: 'JosefinMedium', sans-serif;
     
     --greencity-blue: #00274c;
+    --greencity-lightblue: #758587;
     --greencity-yellow: #ceb888;
 }
 
@@ -33,30 +38,93 @@ html, body {
     left:0; top:0; width:100%; height:100%;
     background-color: var(--greencity-blue);
     color: #ffffff;
-    /* padding: 10px; */
+    user-select: none;
+
+    display:flex;
+    flex-direction:column;
+    justify-content: start;
+    align-items: center;
 }
 
-.noselect {
-    -webkit-touch-callout: none; /* iOS Safari */
-      -webkit-user-select: none; /* Safari */
-       -khtml-user-select: none; /* Konqueror HTML */
-         -moz-user-select: none; /* Old versions of Firefox */
-          -ms-user-select: none; /* Internet Explorer/Edge */
-              user-select: none; /* Non-prefixed version, currently
-                                    supported by Chrome, Edge, Opera and Firefox */
-  }
 
-p {
-    
-}
+
+
 /* #endregion */
 
 /* #region Page produits */
-#page-produits {
-    padding: 10px;
-    max-width: 800px;
-    margin: 0 auto;
-} 
+#options-header {
+    display:flex;
+    flex-direction:row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-around;
+    gap:10px;
+
+
+    padding:10px 15px;
+    width:calc(100% - 30px);
+}
+#options-header #green_city_logo {
+    width: 140px;
+}
+#options-header h2 {
+    font-family: 'JosefinBold'
+}
+#options-header #navigation {
+    width: 140px;
+}
+
+#options-content {
+    width:100%;
+    flex-grow: 1;   
+    overflow:auto;
+
+    /* background-color:#ceb888; */
+    
+}
+#options-subcontent {
+    padding: 15px;
+    margin:0 auto; 
+    max-width:900px;
+    height:calc(100% - 30px);
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+}
+.options-element {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+}
+.options-element .options-element-titre {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'JosefinBold';
+    color: var(--greencity-blue);
+    font-size: 1.1em;
+    background-color: #ffffff;
+    text-align: center;
+    padding:9px 0 5px 0;
+}
+.options-element .options-element-liste {
+    color: #ffffff;
+    background-color: var(--greencity-lightblue);
+    /* padding:5px; */
+}
+.options-element .options-element-liste ul {
+    line-height: 130%;
+}
+.options-element .options-element-liste li:hover {
+    color: var(--greencity-blue);
+    font-weight: 800;
+}
 
 #pareBain,  #receveurs, #paroisDouche, #portesDouche {
     cursor: pointer;
@@ -78,8 +146,8 @@ p {
     /* display: block; */
     display: none;
     position: fixed;
-    background-color: rgba(256, 256, 256, .2);
-    background-color: rgba(0, 0, 0, .4);
+    /* background-color: rgba(256, 256, 256, .2); */
+    background-color: rgba(80, 80, 80, .6);
     padding-top: 2.5vh;
 }
 #lightbox {
@@ -102,6 +170,7 @@ p {
     height: 60px;
     color: #fff;
     background-color: #ffffff;
+    user-select: none;
 
     display: flex;
     flex-direction: row;
@@ -155,13 +224,14 @@ p {
     width: 100%;
     height: 100%;
     z-index: 1;
+    user-select: none;
 
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-around;
     align-items: center;
-
+    gap: 10px;
 }
 .popup-produits-liste-element {
     
@@ -177,6 +247,7 @@ p {
     background-color: #ffffff;
 }
 .popup-produits-liste-element .image-container img {
+    display: block;
     width: 100%;
 }
 .popup-produits-liste-element .titre {
@@ -207,7 +278,9 @@ p {
     height:100%;
 }
 .swiper {
-    width: 650px;
+    width: 100%;
+    max-width:650px;
+    min-width: 300px;
     height: 100%;
 }
 #lightbox .swiper-pagination-bullet-active {
@@ -245,22 +318,13 @@ p {
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: flex-start;
-    
-}
-.fiche-produit .modal-main .produit-picture {
-    /* float: right; */
-    margin: 0 0 10px 10px;
-    /* clear: both; */
-    max-width:40%;
-    opacity: 1;
+    gap: 15px;
 }
 .fiche-produit .modal-main .produit-marque {
-    all: unset;
-    /* display: block; */
     display: inline-block;
     background-color: var(--greencity-yellow);
-    padding:12px;
-    font-size:2.4em;
+    padding: 15px 12px 12px 12px;
+    font-size:2.2em;
     font-weight: 600;
     text-align: center;
     line-height: 1.2em;
@@ -276,7 +340,19 @@ p {
     flex-wrap: nowrap;
     justify-content: space-around;
     align-items: center;
+    gap: 10px;
 }
+
+.fiche-produit .modal-main .produit-picture {
+    /* float: right; */
+    /* margin: 0 0 10px 10px; */
+    /* clear: both; */
+    
+    max-width:40%;
+    opacity: 1;
+}
+
+
 
 .fiche-produit footer {
     height: auto;
@@ -284,6 +360,21 @@ p {
     padding: 5px;
     background-color: #fff;
     background-color: var(--soft-color);
+}
+
+@media screen and (max-width: 600px) {
+    
+    .fiche-produit .modal-main .produit-marque {
+        font-size: 1.6em;
+        padding: 12px 9px 9px 9px;
+    }
+    .fiche-produit .modal-main .produit-nom { 
+        font-size: 1.0em;
+        padding: 8px 0;
+    }
+    .fiche-produit .modal-main .produit-descriptif {
+        font-size:0.8em;
+    }
 }
 /* #endregion */
 /* --------------------------------- */
@@ -302,6 +393,7 @@ p {
     background-color: #ffffff;
     padding:5px;
     width:calc(100% - 10px);
+    user-select: none;
 }
 .menu-item {
     border:1px solid #eee;
