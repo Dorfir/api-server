@@ -1,0 +1,56 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 20px auto;
+    font-family: 'Dosis';
+    font-weight: 300;
+    text-align: center;
+    font-size: 1rem;
+}
+
+canvas {
+    margin: 20px auto;
+}
+
+input {
+    border: none;
+    border-bottom: 1px solid black;
+    font-family: 'Dosis';
+    margin: 1rem;
+    text-align: center;
+    outline: none;
+    width: 200px;
+}
+
+button {
+    background: yellowgreen;
+    border: 2px solid black;
+    color: black;
+    border-radius: 5px;
+    padding: 1rem 2rem;
+    cursor: pointer;
+    font-family: 'Dosis';
+}
+
+h2 {
+    margin: 1rem 0;
+}
+
+div.wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+}
+
+label {
+    margin: 0 1rem;
+    color: gray;
+}
