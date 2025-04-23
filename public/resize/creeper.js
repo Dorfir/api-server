@@ -98,11 +98,14 @@ canvas.addEventListener('pointermove', (e) => {
         pCoord1.y = pCoord2.y
     }
 })
+window.addEventListener('pointerup', (e) => {
+    dragActive = false
+})
 canvas.addEventListener('pointerup', (e) => {
     dragActive = false
 })
 canvas.addEventListener('pointerout', (e) => {
-    dragActive = false
+    // dragActive = false
 })
 canvas.addEventListener('pointercancel', (e) => {
     dragActive = false
@@ -181,11 +184,14 @@ function zoomImage(zoomRatio) {
 
     let centerx = Math.round(imageCoord.w / 2) + imageCoord.x 
     let centery = Math.round(imageCoord.h / 2) + imageCoord.y
+    let old_w = imageCoord.w
+    let old_h = imageCoord.h
 
     imageCoord.w = imageCoord.w + Math.round(imageCoord.w * zoomValue)
     imageCoord.h = Math.round(imageCoord.w / aspectRatio)
 
-    
+    imageCoord.x = imageCoord.x + Math.round( (old_w - imageCoord.w) / 2)
+    imageCoord.y = imageCoord.y + Math.round( (old_h - imageCoord.h) / 2)
     
     // console.log( `${centerx}, ${centery}` )
     // console.log( `${zoomValue} - (${imageCoord.w},${imageCoord.h})` )
