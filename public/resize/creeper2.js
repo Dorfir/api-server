@@ -1,5 +1,3 @@
-// resizeImage(imagePath, 535, 725)
-// resizeImage(imagePath, 350)
 const cropFormat = { w: 200, h: 147 }
 
 const canvas = document.getElementById('canvas')
@@ -8,9 +6,6 @@ const canvasSize = { w:600, h:600 }
 canvas.width = canvasSize.w
 canvas.height = canvasSize.h
 
-
-
-const cursors = ['default','w-resize','n-resize'];
 
 const imagePath = './img/dragon2.jpg'
 const image = new Image()
@@ -26,6 +21,52 @@ var cropBounds = {
     y2: cropFormat.h + Math.round((canvasSize.h - cropFormat.h)/2),
 }
 
+
+let consoleGlobalCoord = document.getElementById('consoleGlobalCoord')
+let consoleLocalCoord = document.getElementById('consoleLocalCoord')
+let consoleCanvasCoord = document.getElementById('consoleCanvasCoord')
+
+
+
+/* ----------------------------------------------------- */
+/* Drag and drop - image */
+let dragDropArea = document.getElementById('drag-drop-area')
+dragDropArea.addEventListener('drop', dropHandler, false)
+dragDropArea.addEventListener('dragover', dragOverHandler, false)
+dragDropArea.addEventListener('dragenter', dragEnter, false)
+function dropHandler(e) {
+    console.log('File(s) dropped')
+    // Preventdefault behaviour (opening file)
+    e.preventDefault()
+    let file = null
+
+    if (e.dataTransfer.items) {
+        [...e.dataTransfer.items].forEach((item, i) => {
+            if (item.kind === "file") {
+                item = item.getAsFile()
+                console.log(`… file[${i}].name = ${item.name}`)
+                file = item
+            }
+        })
+    } else {
+        [...e.dataTransfer.files].forEach((item, i) => {
+            console.log(`_ file[${i}].name = ${item.name}`)
+            file = item
+        })
+    }
+
+    console.log(file.type)
+}
+function dragOverHandler(e) {
+    console.log('File(s) in drop zone')
+    e.stopPropagation()
+    e.preventDefault()
+}
+function dragEnter(e) {
+    console.log('File(s) enter in drop zone')
+    e.stopPropagation()
+    e.preventDefault()
+}
 /* Image def - load */
 let imageCoord = { x:0, y:0, w:0, h:0 }
 const appReadyEvent = new Event('app-ready')
@@ -52,7 +93,11 @@ image.addEventListener('load', () => {
 body.addEventListener('app-ready', (e) => {
 
     console.log("-- content loaded")
-
+    
+    canvasComputed = canvas.getBoundingClientRect()
+    canvasComputed.x += window.scrollX
+    canvasComputed.y += window.scrollY
+    consoleCanvasCoord.innerHTML = `(${Math.floor(canvasComputed.x)}, ${Math.floor(canvasComputed.y)})`
     draw()
 
 })
@@ -61,7 +106,7 @@ var imgDragActive = false
 var lineDragActive = false
 var pCoord1 = { x: 0, y: 0 }
 var pCoord2 = { x: 0, y: 0 }
-var canvasComputed = canvas.getBoundingClientRect()
+var canvasComputed = null
 
 var cropLinesDragged = []
 var cropLines = [
@@ -75,24 +120,32 @@ var cropLines = [
         x1: 0, y1: cropBounds.y2, x2: canvasSize.w, y2: cropBounds.y2 },
 ]
 
+/* Recalculate canvas bounds */
+document.addEventListener('scroll', (e) => {
+    canvasComputed = canvas.getBoundingClientRect()
+    canvasComputed.x += window.scrollX
+    canvasComputed.y += window.scrollY
+    consoleCanvasCoord.innerHTML = `(${Math.floor(canvasComputed.x)}, ${Math.floor(canvasComputed.y)})`
+})
 
 /* Pointer listeners on canvas */
 canvas.addEventListener('pointerdown', (e) => {
-    // console.log(`down ${e.pointerId} - ${e.pointerType} - (${e.pageX}, ${e.pageY}) `)
     pCoord1.x = e.pageX - canvasComputed.x
     pCoord1.y = e.pageY - canvasComputed.y
-    // console.log(`x: ${pCoord1.x}, y: ${pCoord1.y}`)
     cropLinesDragged = []
     cropLines.forEach((line, index) => {
         if (pointerOverLine(pCoord1, line)) cropLinesDragged.push(index) 
     })
     lineDragActive = (cropLinesDragged.length > 0) 
     imgDragActive = !lineDragActive
-    console.log(cropLinesDragged)
+})
+window.addEventListener('pointermove', (e) => {
+    consoleGlobalCoord.innerHTML = `(${Math.floor(e.pageX)}, ${Math.floor(e.pageY)})`
 })
 canvas.addEventListener('pointermove', (e) => {
     
-    console.log(`(${e.pageX}, ${e.pageY})`)
+    consoleLocalCoord.innerHTML = `(${Math.floor(e.pageX)}, ${Math.floor(e.pageY)})`
+    // console.log(`(${e.pageX}, ${e.pageY})`)
     pCoord2.x = e.pageX - canvasComputed.x
     pCoord2.y = e.pageY - canvasComputed.y
     
@@ -107,15 +160,7 @@ canvas.addEventListener('pointermove', (e) => {
     } if (lineDragActive) {
 
         let gap = 30
-        // Todo constraints
         cropLinesDragged.forEach(lineIndex => {
-            // if (cropLines[lineIndex].type === "vertical") {
-            //     cropLines[lineIndex].x1 += pCoord2.x - pCoord1.x
-            //     cropLines[lineIndex].x2 += pCoord2.x - pCoord1.x
-            // } else if (cropLines[lineIndex].type === "horizontal") {
-            //     cropLines[lineIndex].y1 += pCoord2.y - pCoord1.y
-            //     cropLines[lineIndex].y2 += pCoord2.y - pCoord1.y
-            // }
             if (cropLines[lineIndex].id === "vleft") {
                 let destination = cropLines[0].x1 + pCoord2.x - pCoord1.x
                 if ( (0 < destination) && (destination < (cropLines[1].x1 - gap)) ) {
@@ -141,7 +186,6 @@ canvas.addEventListener('pointermove', (e) => {
                     cropLines[3].y2 = destination
                 }                
             }
-            
         })
 
         draw()
@@ -173,6 +217,7 @@ canvas.addEventListener('pointermove', (e) => {
             }
         }
     }
+
 })
 
 
@@ -246,6 +291,7 @@ function zoomImage(zoomRatio) {
 }
 
 /* Pointer events off */ 
+// TODO resize drag when out of canvas
 window.addEventListener('pointerup', (e) => {
     imgDragActive = false
     lineDragActive = false
@@ -321,63 +367,6 @@ downloadBtn.addEventListener('click', function() {
     
 })
 
-/* ------------------------------------------------------------------------------------------------------- */
-
-function resizeImage(imagePath) {
-    
-    const originalImage = new Image();
-    originalImage.src = imagePath;
- 
-    var newWidth = cropFormat.w
-    var newHeight = cropFormat.h
-    
-    originalImage.addEventListener('load', function() {
-        
-        const originalWidth = originalImage.naturalWidth;
-        const originalHeight = originalImage.naturalHeight;
-        const aspectRatio = originalWidth/originalHeight;
-
-        canvas.width = newWidth;
-        canvas.height = newHeight;
-        
-        if (aspectRatio >= 1) {
-            let drawX = 0
-            let drawY = Math.floor( (cropFormat.h - cropFormat.w * aspectRatio) / 2) 
-            let drawW = cropFormat.w
-            let drawH = Math.floor(cropFormat.w * aspectRatio)
-            ctx.drawImage(originalImage, drawX, drawY, drawW, drawH)    
-        } else {
-            let drawX = Math.floor( (cropFormat.w - cropFormat.h / aspectRatio) / 2)
-            let drawY = 0 
-            let drawW = Math.floor(cropFormat.h / aspectRatio)
-            let drawH = cropFormat.h
-            ctx.drawImage(originalImage, drawX, drawY, drawW, drawH)
-        }
-        
-    })
-}
-//a click event handler for the download button
-//download the resized image to the client computer
-
-
-// downloadBtn.addEventListener('click', function() {
-//     //create a temporary link for the download item
-//     let tempLink = document.createElement('a');
-
-//     //generate a new filename
-//     let fileName = `image-resized.jpg`;
-  
-//     //configure the link to download the resized image
-//     tempLink.download = fileName;
-//     tempLink.href = document.getElementById('canvas').toDataURL("image/jpeg", 0.7);
-
-//     //trigger a click on the link to start the download
-//     tempLink.click();
-
-    
-  
-    
-// })
 
 
 

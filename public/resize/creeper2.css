@@ -12,6 +12,13 @@
     text-align: center;
     font-size: 1rem;
   }
+
+  #drag-drop-area {
+    display: inline-block;
+    padding: 30px;
+    background-color:blue;
+    color: white;
+  }
   
   canvas {
     margin: 10px auto;
@@ -54,4 +61,17 @@
   label {
     margin: 0 1rem;
     color: gray;
+  }
+
+
+
+  #console {
+    position:fixed;
+    left: 10px;
+    top: 10px;
+    display:inline-block;
+    padding : 15px;
+    background-color: white;
+    border:1px solid #aaa;
+    border-radius: 5px;
   }
