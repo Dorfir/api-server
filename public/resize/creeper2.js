@@ -1,4 +1,4 @@
-const cropFormat = { w: 200, h: 147 }
+const cropFormat = { w: 400, h: 550 }
 
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
@@ -56,6 +56,11 @@ function dropHandler(e) {
     }
 
     console.log(file.type)
+
+    if (file.type.includes('image')) {
+        image.src = URL.createObjectURL(file)
+    }
+
 }
 function dragOverHandler(e) {
     console.log('File(s) in drop zone')
