@@ -14,27 +14,37 @@
         
             <div id="form-container">
 
-                <div class="ligne">
-                    <label for="add_titre">Titre</label>
-                    <input type="text" name="add_titre" id="add_titre">
+                <div class="ligne" id="create_famille">
+                    <div class="form_label">Famille de produit</div>
                 </div>
     
-                <div class="ligne">
-                    <label for="add_soustitre">Sous-titre</label>
-                    <input type="text" name="add_soustitre" id="add_soustitre">
+                <div class="ligne" id="create_categorie">
+                    <div class="form_label">Catégorie</div>
                 </div>
         
+                <div class="form_label">Descriptions</div>
                 <div id="editor-container">
-                    <!-- Create the editor container -->
-                    <div id="editor">
-                        
-                    </div>
+                    <div id="editor"></div>
                 </div>
+
+                <p></p>
+
+                <div class="form_label">Thumbs</div>
+
         
             </div>
 
             <div id="render"></div>
 
+        </div>
+
+        <div id="popup-container">
+            <div id="popup-add-famille">
+                <button id="popup-add-famille-close">X</button>
+                <h3>Ajouter une famille de produit</h3>
+                <input id="add-famille-input" type="text" placeholder="Nom de la famille de produit"/>
+                <button id="add-famille-button">Créer une famille de produit</button>
+            </div>
         </div>
 
         

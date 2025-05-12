@@ -19,10 +19,12 @@ html, body {
     flex-wrap: nowrap;
     justify-content: flex-start;
     /* align-items: baseline; */
-
     width: 600px;
-
     gap: 10px;
+    margin: 10px;
+    border: 1px solid #444444;
+    border-radius: 5px;
+    padding: 10px;
 }
 
 .ligne {
@@ -37,6 +39,70 @@ html, body {
     background-color: #ffffff;
     
 }
+
+.form_label {
+    margin:5px 0;
+}
+
+.select_container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 5px;
+}
+.form_button {
+    padding:5px 10px;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    cursor: pointer;
+}
+.form_button:hover {
+    background-color:#eee;
+}
+
+select {
+    padding:5px;
+}
+
+
+/* #region popup-container */
+#popup-container {
+    display: none;
+    position:fixed;
+    background-color: rgba(255,255,255,0.4);
+    left:0; top:0; width: 100vw; height: 100vh;
+    z-index: -1;
+}
+#popup-add-famille {
+    position:absolute;
+    left: 50%;
+    top: 50%;
+    max-height: 95%;
+    max-width: 95%;
+    transform: translate(-50%, -50%);
+    display:flex;
+    flex-direction: column;
+    gap:10px;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    padding:35px 15px 15px 15px;
+    border-radius: 10px;
+}
+#popup-add-famille input, #popup-add-famille button {
+    padding: 5px;
+}
+#add-famille-button {
+    cursor: pointer;
+}
+
+#popup-add-famille-close {
+    position:absolute;
+    right:8px;
+    top:8px;
+    padding:5px 8px;
+    cursor:pointer;
+}
+/* #endregion */
 
 
 
