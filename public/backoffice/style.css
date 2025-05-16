@@ -35,6 +35,10 @@ html, body {
     width:300px;
 }
 
+.quill-container {
+    border: 2px solid red;
+}
+
 #editor {
     background-color: #ffffff;
     
@@ -94,8 +98,36 @@ select {
 #add-famille-button {
     cursor: pointer;
 }
-
 #popup-add-famille-close {
+    position:absolute;
+    right:8px;
+    top:8px;
+    padding:5px 8px;
+    cursor:pointer;
+}
+
+#popup-add-categorie {
+    position:absolute;
+    left: 50%;
+    top: 50%;
+    max-height: 95%;
+    max-width: 95%;
+    transform: translate(-50%, -50%);
+    display:flex;
+    flex-direction: column;
+    gap:10px;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    padding:35px 15px 15px 15px;
+    border-radius: 10px;
+}
+#popup-add-categorie input, #popup-add-categorie button {
+    padding: 5px;
+}
+#add-categorie-button {
+    cursor: pointer;
+}
+#popup-add-categorie-close {
     position:absolute;
     right:8px;
     top:8px;
