@@ -1,32 +1,32 @@
 displayLoader()
+/* https://quilljs.com/docs/api#content */
+// var app = app || {}
+// app.edit = app.edit || {}
+// app.edit = {
 
-var app = app || {}
-app.edit = app.edit || {}
-app.edit = {
+//   quill: new Quill('#editor', {
+//     modules: {
+//       toolbar: true,
+//     },
+//     theme: 'snow',
+//     placeholder: "Votre description ..."
+//   }),
 
-    /* https://quilljs.com/docs/api#content */
-    quill : new Quill('#editor', {
-        modules: {
-            toolbar: true,
-        },  
-        theme: 'snow',
-        placeholder: "Votre description ..."
-    }),
+//   initQuillEvent: () => {
+//     app.edit.quill.on('text-change', (delta, oldDelta, source) => {
+//       app.edit.renderPreview(app.edit.quill.getSemanticHTML())
+//     })
+//   },
 
-    initQuillEvent : () => {
-        app.edit.quill.on('text-change', (delta, oldDelta, source) => {
-            app.edit.renderPreview(app.edit.quill.getSemanticHTML())
-        })
-    },
+//   renderPreview: ((html) => {
+//     console.log("render")
+//     let renderDiv = document.getElementById('render')
+//     renderDiv.innerHTML = html
+//   })
 
-    renderPreview : ((html) => {
-        console.log("render")
-        let renderDiv = document.getElementById('render')
-        renderDiv.innerHTML = html
-    })
-}
+// }
 // console.log(app.edit.quill)
-app.edit.initQuillEvent()
+// app.edit.initQuillEvent()
 
 
 let famillesReceived = false
@@ -55,7 +55,7 @@ async function getAllProduits() {
     if (json['status'] == 200) {
       liste_familles = json['produits']
       window.dispatchEvent(eventListeFamilleReceived)
-    }  
+    }
   } catch (error) {
     console.error(error.message);
   }
@@ -77,16 +77,16 @@ async function getListeFamilles() {
       liste_familles = json['familles']
       console.log(liste_familles)
       window.dispatchEvent(eventListeFamilleReceived)
-    }  
+    }
   } catch (error) {
     console.error(error.message);
   }
 }
-window.addEventListener('event-liste-famille-received', (e)=> {
+window.addEventListener('event-liste-famille-received', (e) => {
   initCreateProduct()
-  window.setTimeout(()=>{
+  window.setTimeout(() => {
     hideLoader()
-  },400)
+  }, 400)
 }, false)
 function getFamilleIndex(id_famille) {
   let famille_index = null
@@ -96,15 +96,22 @@ function getFamilleIndex(id_famille) {
   return famille_index
 }
 
-
 function initCreateProduct() {
   setSelectFamille()
   setSelectCategorie(id_famille_selected)
+  initDesciptions()
 }
 
 function setSelectFamille() {
 
   let create_famille = document.getElementById('create_famille')
+  create_famille.innerHTML = ""
+
+  let famille_label = document.createElement('div')
+  famille_label.classList.add('form_label')
+  famille_label.innerText = "Famille"
+  create_famille.appendChild(famille_label)
+
   let create_famille_container = document.createElement('div')
   create_famille_container.classList.add('select_container')
 
@@ -117,7 +124,7 @@ function setSelectFamille() {
     if (index_famille == 0) {
       option_famille.setAttribute('selected', 'selected')
       id_famille_selected = parseInt(famille['id_famille'])
-    }      
+    }
     option_famille.innerText = famille['nom_famille']
     select_famille.appendChild(option_famille)
   });
@@ -137,7 +144,7 @@ function selectFamilleOnChange() {
   let select_famille = document.getElementById('select_famille')
   id_famille_selected = parseInt(select_famille.value)
   setSelectCategorie(parseInt(select_famille.value))
-} 
+}
 
 function setSelectCategorie(id_famille) {
 
@@ -152,7 +159,7 @@ function setSelectCategorie(id_famille) {
 
   let create_cat_container = document.createElement('div')
   create_cat_container.classList.add('select_container')
-  
+
   let select_cat = document.createElement('select')
   select_cat.setAttribute('name', 'select_categorie')
   select_cat.setAttribute('id', 'select_categorie')
@@ -175,13 +182,78 @@ function setSelectCategorie(id_famille) {
 
   select_cat.addEventListener('change', selectCategorieOnChange)
   add_cat_btn.addEventListener('click', openEditCategoriePopup)
-  
+
 }
 function selectCategorieOnChange() {
   let select_categorie = document.getElementById('select_categorie')
   console.log(parseInt(select_categorie.value))
-} 
+}
 
+
+/* Desciptions */
+var createProductDescriptionQuills = Array()
+function initDesciptions() {
+
+  let quill_1 = new Quill('#description-0', {
+    modules: {
+      toolbar: true,
+    },
+    theme: 'snow',
+    placeholder: "Votre description ..."
+  })
+  createProductDescriptionQuills.push(quill_1)
+  initQuillEvent(createProductDescriptionQuills[0])
+
+
+
+  let add_description_item_btn = document.getElementById('add_desciption_item')
+  add_description_item_btn.addEventListener('click', (e) => {
+    createQuillDescription()
+  })
+
+
+
+  function createQuillDescription() {
+
+    let descriptionIndex = createProductDescriptionQuills.length
+
+    let quill_container = document.createElement('div')
+    quill_container.classList.add('quill-container')
+    let editor_container = document.createElement('div')
+    editor_container.classList.add('editor-container')
+    let description_editor = document.createElement('div')
+    description_editor.classList.add('description-editor')
+    description_editor.setAttribute('id', 'description-'+(descriptionIndex))
+    editor_container.appendChild(description_editor)
+    quill_container.appendChild(editor_container)
+
+    let description_big_container = document.getElementById('description-big-container')
+    let add_description_item_btn = document.getElementById('add_desciption_item')
+    description_big_container.insertBefore(quill_container, add_description_item_btn)
+
+    let new_quill = new Quill('#description-'+(descriptionIndex), {
+      modules: {
+        toolbar: true,
+      },
+      theme: 'snow',
+      placeholder: "Votre description ..."
+    })
+    createProductDescriptionQuills.push(new_quill)
+    initQuillEvent(createProductDescriptionQuills[descriptionIndex])
+
+  }
+
+  function initQuillEvent(quill) {
+    quill.on('text-change', (delta, oldDelta, source) => {
+      renderPreview(quill.getSemanticHTML())
+    })
+  }
+  function renderPreview(html) {
+    console.log("render")
+    let renderDiv = document.getElementById('render')
+    renderDiv.innerHTML = html
+  }
+}
 
 /* Popup d'édition Familles - Catégories */
 function openEditFamillePopup() {
@@ -202,8 +274,8 @@ function openEditFamillePopup() {
   add_famille_input.addEventListener('keyup', (e) => {
     console.log(add_famille_input.value)
     if (e.key === "Enter") { createNewFamille() }
-    if (add_famille_input.value.length > 2) { 
-      add_famille_input.style.border = "1px solid rgb(118,118,118)" 
+    if (add_famille_input.value.length > 2) {
+      add_famille_input.style.border = "1px solid rgb(118,118,118)"
       add_famille_input.style.outlineColor = "rgb(118,118,118)"
     } else {
       add_famille_input.style.border = "1px solid rgb(255,0,0)"
@@ -230,7 +302,7 @@ function openEditCategoriePopup() {
   let popup_add_categorie = document.getElementById('popup-add-categorie')
   popup_add_famille.style.display = "none"
   popup_add_categorie.style.display = "flex"
-  
+
   let popup_add_categorie_close = document.getElementById('popup-add-categorie-close')
   popup_add_categorie_close.addEventListener('click', closeEditCategoriePopup)
 
@@ -238,8 +310,8 @@ function openEditCategoriePopup() {
   add_categorie_input.addEventListener('keyup', (e) => {
     console.log(add_categorie_input.value)
     if (e.key === "Enter") { createNewCategorie() }
-    if (add_categorie_input.value.length > 2) { 
-      add_categorie_input.style.border = "1px solid rgb(118,118,118)" 
+    if (add_categorie_input.value.length > 2) {
+      add_categorie_input.style.border = "1px solid rgb(118,118,118)"
       add_categorie_input.style.outlineColor = "rgb(118,118,118)"
     } else {
       add_categorie_input.style.border = "1px solid rgb(255,0,0)"
@@ -273,13 +345,19 @@ function createNewCategorie() {
   }
 }
 
+/* Render */
+function render() {
+
+}
+
+
 /* Définition des event de fin d'envoi */
 const eventNewFamilleInserted = new Event("event-new-famille-inserted")
 const eventNewCategorieInserted = new Event("event-new-categorie-inserted")
 
 /* Send new famille création */
 async function sendNewFamille(nom_famille) {
-  
+
   let json = null
   const url = "http://localhost/green_catalogue_rest/createFamille.php"
   let formData = new FormData()
@@ -298,7 +376,7 @@ async function sendNewFamille(nom_famille) {
       let inserted_id_famille = json['id_famille']
       console.log(inserted_id_famille)
       window.dispatchEvent(eventNewFamilleInserted)
-    }  
+    }
   } catch (error) {
     console.error(error.message);
   }
@@ -311,7 +389,7 @@ function newFamilleInserted() {
 }
 /* Send new categorie création */
 async function sendNewCategorie(nom_categorie, id_famille) {
-  
+
   let json = null
   const url = "http://localhost/green_catalogue_rest/createCategorie.php"
   let formData = new FormData()
@@ -331,7 +409,7 @@ async function sendNewCategorie(nom_categorie, id_famille) {
       let inserted_id_categorie = json['id_categorie']
       console.log(inserted_id_categorie)
       window.dispatchEvent(eventNewCategorieInserted)
-    }  
+    }
   } catch (error) {
     console.error(error.message);
   }
@@ -344,15 +422,15 @@ function newCategorieInserted() {
 }
 
 /* Upload file */
-function srcToFile(src, fileName, mimeType){
+function srcToFile(src, fileName, mimeType) {
   return (fetch(src)
-      .then(function(res){return res.arrayBuffer();})
-      .then(function(buf){return new File([buf], fileName, {type:mimeType});})
+    .then(function (res) { return res.arrayBuffer(); })
+    .then(function (buf) { return new File([buf], fileName, { type: mimeType }); })
   );
 }
 
 function uploadImage() {
-  
+
   const imagePath = './img/dragon2.jpg'
   const image = new Image()
   image.src = imagePath
@@ -360,16 +438,16 @@ function uploadImage() {
   myImage.setAttribute('src', imagePath)
 
   srcToFile('./img/dragon2.jpg', 'new.jpg', 'image/jpg')
-  .then(function(file){
-    var fd = new FormData();
-    fd.append('image', file);
-    return fetch('http://localhost/green_catalogue_rest/createImage.php', {method:'POST', body:fd});
-  })
-  .then(function(res){
-    return res.json();
-  })
-  .then(console.log)
-  .catch(console.error)
+    .then(function (file) {
+      var fd = new FormData();
+      fd.append('image', file);
+      return fetch('http://localhost/green_catalogue_rest/createImage.php', { method: 'POST', body: fd });
+    })
+    .then(function (res) {
+      return res.json();
+    })
+    .then(console.log)
+    .catch(console.error)
 }
 
 
