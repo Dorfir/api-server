@@ -2,95 +2,116 @@
 <html>
 
 <head>
-   <title>Backoffice</title>
-   <link rel="stylesheet" href="style.css">
-   <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+  <title>Backoffice</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 
-   <link rel="shortcut icon" href="../favicon.png" type="image/png">
+  <link rel="shortcut icon" href="../favicon.png" type="image/png">
 </head>
 
 <body>
 
-   <div id="main-container">
+  <div id="main-container">
 
-      <div id="form-container">
+    <div id="form-container">
 
-         <div class="ligne" id="create_famille">
-            <!-- <div class="form_label">Famille de produit</div> -->
-         </div>
-
-         <div class="ligne" id="create_categorie">
-            <!-- <div class="form_label">Catégorie</div> -->
-         </div>
-
-         <div class="ligne" id="create_marque">
-            <div class="form_label">Marque</div>
-            <input type="text" id="input_marque" placeholder="Marque du produit">
-         </div>
-
-         <div class="ligne" id="create_nom">
-            <div class="form_label">Nom</div>
-            <input type="text" id="input_nom" placeholder="Nom du produit">
-         </div>
-
-         <div id="description-big-container">
-            <div class="form_label">Descriptions</div>
-            <div class="quill-container">
-               <div class="editor-container">
-                  <div class="description-editor" id="description-0"></div>
-               </div>
-            </div>
-            <input type="button" value="+ Ajouter un paragraphe de description" id="add_desciption_item">
-         </div>
-
-         <div class="ligne">
-            <div class="form_label">Vignette</div>
-            <input type="button" value="Ajouter une image vignette" id="add_thumb">
-         </div>
-
-         <!-- <img id="image" src="" alt="dragon"> -->
-
+      <div class="ligne" id="create_famille">
       </div>
 
-      <div id="render"></div>
-
-   </div>
-
-   <div id="popup-container">
-      <div id="popup-add-famille">
-         <button id="popup-add-famille-close">X</button>
-         <h3>Ajouter une famille de produit</h3>
-         <input id="add-famille-input" type="text" placeholder="Nom de la famille de produit" />
-         <button id="add-famille-button">Créer une famille de produit</button>
-      </div>
-      <div id="popup-add-categorie">
-         <button id="popup-add-categorie-close">X</button>
-         <h3>Ajouter une catégorie de produit</h3>
-         <input id="add-categorie-input" type="text" placeholder="Nom de la catégorie de produit" />
-         <button id="add-categorie-button">Créer une catégorie de produit</button>
+      <div class="ligne" id="create_categorie">
       </div>
 
-      <div id="popup-add-image">
-         
+      <div class="ligne" id="create_marque">
+        <div class="form_label">Marque</div>
+        <input type="text" id="input_marque" placeholder="Marque du produit">
       </div>
-   </div>
 
-   <div id="loader-container">
-      <div class="lds-ring">
-         <div></div>
-         <div></div>
-         <div></div>
-         <div></div>
+      <div class="ligne" id="create_nom">
+        <div class="form_label">Nom</div>
+        <input type="text" id="input_nom" placeholder="Nom du produit">
       </div>
-   </div>
+
+      <div id="description-big-container">
+        <div class="form_label">Descriptions</div>
+        <div class="quill-container">
+          <div class="editor-container">
+            <div class="description-editor" id="description-0"></div>
+          </div>
+        </div>
+        <input type="button" value="+ Ajouter un paragraphe de description" id="add_desciption_item">
+      </div>
+
+      <div class="ligne">
+        <div class="form_label">Vignette</div>
+        <input type="button" value="Ajouter une image vignette" id="add_thumb">
+      </div>
+
+      <!-- <img id="image" src="" alt="dragon"> -->
+
+    </div>
+
+    <div id="render">
+
+      <div id="produit-header">
+        <div id="produit-header-titre">
+          <div id="produit-header-titre-text">PAROIS DE DOUCHE</div>
+          <svg viewBox="0 0 150 5" id="produit-header-titre-separator">
+            <line x1="0" y1="3" x2="150" y2="3" class="line-svg" />
+          </svg>
+        </div>
+        <svg id="produit-header-close-btn" viewBox="0 0 50 50">
+          <rect x="0" y="0" width="50" height="50" fill="#ffffff" opacity="0.001"></rect>
+          <path fill="#1a2a48" d="M0,0v50h50V0h0ZM47.58,47.58H2.41V2.41h45.17v45.17Z" />
+          <polygon fill="#1a2a48"
+            points="14.92 16.75 16.49 15.18 25.1 23.56 33.25 15.18 34.92 16.74 26.83 25.03 35.11 33.2 33.53 34.78 24.92 26.4 16.76 34.78 15.09 33.22 23.19 24.92 14.92 16.75" />
+        </svg>
+      </div>
 
 
 
-   <!-- Include the Quill library -->
-   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 
-   <!-- Initialize Quill editor -->
-   <script src="script.js"></script>
+    </div>
+
+  </div>
+
+  <div id="popup-container">
+    <div id="popup-add-famille">
+      <button id="popup-add-famille-close">X</button>
+      <h3>Ajouter une famille de produit</h3>
+      <input id="add-famille-input" type="text" placeholder="Nom de la famille de produit"
+        autocomplete="new-password" />
+      <button id="add-famille-button">Créer une famille de produit</button>
+    </div>
+    <div id="popup-add-categorie">
+      <button id="popup-add-categorie-close">X</button>
+      <h3>Ajouter une catégorie de produit</h3>
+      <input id="add-categorie-input" type="text" placeholder="Nom de la catégorie de produit"
+        autocomplete="new-password" />
+      <button id="add-categorie-button">Créer une catégorie de produit</button>
+    </div>
+
+    <div id="popup-add-image">
+
+    </div>
+  </div>
+
+  <div id="loader-container">
+    <div class="lds-ring">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+
+
+
+  <!-- Include the Quill library -->
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+
+  <!-- Initialize Quill editor -->
+  <script src="script.js"></script>
 
 
 </body>

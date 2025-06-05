@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Creeper Thumb</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="creeper_thumb.css">
+    </head>
+    <body style="background-color:#eee;">
+        
+        
+
+        <div>
+
+            <div id="canvas_big_container">
+                <div id="canvas-zoom-container">
+                    Zoom de l'image : <input type="range" name="zoom" id="zoom" min="-1" max="1" step="0.1" value="0">
+                </div>
+                <canvas id="canvas"></canvas>
+                <div id="drag-drop-area">
+                    <div class="drop-container">
+                        <span class="drop-title">Déposer votre fichier image</span>
+                        ou
+                        <input type="file" id="filesearch_button" accept="image/*" required>
+                    </div>
+                </div>
+
+            </div>
+            
+        </div>
+
+        <div id="download_btn_container"><button class="download">Télécharger l'image</button></div>
+
+
+        <!-- <canvas id="canvas2" style="position:absolute; left:-120%; top: 0; display:none;"></canvas> -->
+        <canvas id="canvas2" ></canvas>
+
+
+        <div id="console">
+            <div>Global : <span id='consoleGlobalCoord'></span></div>
+            <div>Canvas : <span id='consoleLocalCoord'></span></div>
+            <div>Bounds : <span id='consoleCanvasCoord'></span></div>
+        </div>
+
+        <script>
+            
+        </script>
+
+
+
+        <script src="creeper_thumb.js"></script>
+
+        
+
+
+    </body>
+</html>
+

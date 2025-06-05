@@ -1,0 +1,151 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  }
+  
+  body {
+    margin: 20px auto;
+    font-family: 'Dosis';
+    font-weight: 300;
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  
+  /* #region Canvas */
+  #canvas_big_container {
+    position:relative;
+    display:inline-block;
+    /* margin: 10px auto; */
+  }
+
+  #drag-drop-area {
+    position:absolute;
+    left:0; top:0;
+    width: 100%; height: 100%;
+    background-color: #204067;
+  }
+
+  .drop-container {
+    width:calc(100% - 20px);
+    height:calc(100% - 20px);
+    margin:10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    border: 2px dashed #fff;
+    color: #fff;
+    cursor: pointer;
+    transition: background .2s ease-in-out, border .2s ease-in-out;
+  }
+
+  .drop-container:hover {
+    background-color: #294a73;
+  }
+
+  .drop-title {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  input[type=file] {
+    width: 350px;
+    max-width: 100%;
+    color: #222245;
+    padding: 8px;
+    background-color: #fff;
+    border: 1px solid #222245;
+  }
+
+  input[type=file]:focus {
+    outline: 2px dashed #222245;
+    outline-offset: 2px;
+  }
+
+  input[type=file]::file-selector-button {
+    margin-right: 8px;
+    border: none;
+    background-color: #222245;
+    padding: 8px 12px;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  input[type=file]::file-selector-button:hover {
+    background-color: #4747b8;
+  }
+
+
+  #canvas-zoom-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+  }
+  /* #endregion */
+  
+
+  /* #region Button download */
+  #download_btn_container {
+    margin-top:20px;margin-bottom:20px;
+  }
+  input {
+    border: none;
+    border-bottom: 1px  solid black;
+    font-family: 'Dosis';
+    margin: 0.7rem;
+    text-align: center;
+    outline: none;
+    width: 200px;
+  }
+  
+  button {
+    background: #204067;
+    border: 2px solid black;
+    color: #fff;
+    border-radius: 5px;
+    padding: 1rem 2rem;
+    cursor: pointer;
+  }
+  
+  h2 {
+    margin: 1rem 0;
+  }
+  
+  div.wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  form {
+    display: flex;
+    justify-content: center;
+  }
+  
+  label {
+    margin: 0 1rem;
+    color: gray;
+  }
+  /* #endregion */
+
+
+
+  #console {
+    position:fixed;
+    left: 10px;
+    top: 10px;
+    display:inline-block;
+    padding : 15px;
+    background-color: white;
+    border:1px solid #aaa;
+    border-radius: 5px;
+  }

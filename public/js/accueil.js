@@ -1,3 +1,33 @@
+console.log('-- DOM loaded')
+
+var json_data = null
+
+getData()
+async function getData() {
+  const url = "http://localhost/green_catalogue_rest/getProduits.php";
+  // const url = "http://localhost:80/green_catalogue_rest/test.json";
+  // const url = "https://www.visiolab.fr/test.json";
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    json_data = await response.json();
+    console.log(json_data);
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+/* -------------------------------------------------------------------- */
+/* Routing Site */
+/* -------------------------------------------------------------------- */
 let accueil_options = document.getElementById('accueil_produit')
 accueil_options.addEventListener('click', (e) => {
   let accueil_main_container = document.getElementById('accueil-main-container')
@@ -18,15 +48,12 @@ options_retour_btn.addEventListener('click', (e) => {
   optionslist_main_container.style.display = "none"
 })
 
-let liste_li = document.getElementsByTagName('li')
+// let liste_li = document.getElementsByTagName('li')
+let liste_li = document.querySelectorAll('.options-element-liste li')
 for (var li of liste_li) {
   li.addEventListener('click', (e) => {
-    let accueil_main_container = document.getElementById('accueil-main-container')
-    let options_main_container = document.getElementById('options-main-container')
-    let optionslist_main_container = document.getElementById('optionslist-main-container')
-    accueil_main_container.style.display = "none"
-    options_main_container.style.display = "none"
-    optionslist_main_container.style.display = "block"
+    let id_categorie = parseInt(e.target.getAttribute('id').split('famille_')[1])
+    if (isCatExistInProductList(id_categorie)) initOptionsListPage(id_categorie)
   })
 }
 
@@ -40,19 +67,6 @@ optionslist_close_btn.addEventListener('click', (e) => {
   optionslist_main_container.style.display = "none"
 })
 
-let optionslist_elements = document.getElementsByClassName('optionslist-element')
-for(element of optionslist_elements) {
-  element.addEventListener('click', (e) => {
-    let accueil_main_container = document.getElementById('accueil-main-container')
-    let options_main_container = document.getElementById('options-main-container')
-    let optionslist_main_container = document.getElementById('optionslist-main-container')
-    let produit_main_container = document.getElementById('produit-main-container')
-    accueil_main_container.style.display = "none"
-    options_main_container.style.display = "none"
-    optionslist_main_container.style.display = "none"
-    produit_main_container.style.display = "block"
-  })
-}
 
 let produit_header_close_btn = document.getElementById('produit-header-close-btn')
 produit_header_close_btn.addEventListener('click', (e) => {
@@ -83,8 +97,238 @@ const swiper = new Swiper('.swiper', {
 });
 
 
+function initOptionsListPage(id_cat) {
+
+  // create options list page
+  let liste_produits = getProduitsFromCategorie(id_cat)
+  
+  let nom_cat = liste_produits[0].nom_categorie
+  let title_cat = document.getElementById('optionslist-title')
+  title_cat.innerHTML = nom_cat.toUpperCase()
+
+  let optionslist_body = document.getElementById('optionslist-body')
+  optionslist_body.innerHTML = ""
+
+  liste_produits.forEach(prod => {
+
+    let list_element = document.createElement('div')
+    list_element.classList.add('optionslist-element')
+    list_element.setAttribute('id', 'list_element_'+prod.id_produit)
+
+    let list_element_image_div = document.createElement('div')
+    list_element_image_div.classList.add('optionslist-element-image')
+    let list_element_image = document.createElement('img')
+    list_element_image.setAttribute('src', prod.thumb)
+    list_element_image_div.appendChild(list_element_image)
+    list_element.appendChild(list_element_image_div)
+
+    let list_element_titre = document.createElement('div')
+    list_element_titre.classList.add('optionslist-element-titre')
+    let titre = splitColorNameProduit(prod.marque, "&nbsp;")
+    let titre_blanc = document.createElement('span')
+    titre_blanc.classList.add('white')
+    titre_blanc.innerHTML = titre[0]
+    let titre_gold = document.createElement('span')
+    titre_gold.classList.add('gold')
+    titre_gold.innerHTML = titre[1]
+    list_element_titre.appendChild(titre_blanc)
+    list_element_titre.appendChild(titre_gold)
+    list_element.appendChild(list_element_titre)
+
+    optionslist_body.appendChild(list_element)
+
+  })
+
+  // initFichesProduits
+  initProduitPage(id_cat)
+
+  // display options list
+  let accueil_main_container = document.getElementById('accueil-main-container')
+  let options_main_container = document.getElementById('options-main-container')
+  let optionslist_main_container = document.getElementById('optionslist-main-container')
+  accueil_main_container.style.display = "none"
+  options_main_container.style.display = "none"
+  optionslist_main_container.style.display = "block"
+
+  // eventListener
+  let optionslist_elements = document.getElementsByClassName('optionslist-element')
+  for(element of optionslist_elements) {
+    element.addEventListener('click', (e) => {
+
+      // navigate to swiper index
+      console.log(e.currentTarget)
+      let element_id = parseInt(e.currentTarget.getAttribute('id').split('list_element_')[1])
+      let element_index = getProduitIndexFromListeProduits(element_id, liste_produits)
+      swiper.slideTo(element_index, 0, null)
+
+      // display fiche produit
+      let accueil_main_container = document.getElementById('accueil-main-container')
+      let options_main_container = document.getElementById('options-main-container')
+      let optionslist_main_container = document.getElementById('optionslist-main-container')
+      let produit_main_container = document.getElementById('produit-main-container')
+      accueil_main_container.style.display = "none"
+      options_main_container.style.display = "none"
+      optionslist_main_container.style.display = "none"
+      produit_main_container.style.display = "block"
+
+    })
+  }
+
+}
+
+
+function initProduitPage(id_cat) {
+
+  let liste_produits = getProduitsFromCategorie(id_cat)
+
+  let produit_header_titre_text = document.getElementById('produit-header-titre-text')
+  produit_header_titre_text.innerText = liste_produits[0].nom_categorie.toUpperCase()
+
+  changeFicheProduitSwiper(liste_produits)
+
+}
+
+function changeFicheProduitSwiper(produits) {
+  let swiperWrapper = document.getElementById('swiper-wrapper')
+  swiperWrapper.innerHTML = ""
+  produits.forEach(produit => {
+    swiperWrapper.appendChild(createFicheProduit(produit))
+  })
+  swiper.update()
+}
+
+function createFicheProduit(prod) {
+
+  let swiperSlide = document.createElement('div')
+  swiperSlide.classList.add('swiper-slide')
+  let swiperSlideSubcontainer = document.createElement('div')
+  swiperSlideSubcontainer.classList.add('swiper-slide-subcontainer')
+  let ficheProduit = document.createElement('div')
+  ficheProduit.classList.add('fiche-produit')
+  let modalMain = document.createElement('div')
+  modalMain.classList.add('modal-main')
+
+  let modalMainSeparator = document.createElement('div')
+  modalMainSeparator.setAttribute('id', 'modal-main-separator')
+  modalMainSeparator.innerHTML = "&nbsp;"
+  // <div id="modal-main-separator">&nbsp;</div>
+
+  let produitMarque = document.createElement('div')
+  produitMarque.classList.add('produit-marque')
+  let titre = splitColorNameProduit(prod.marque, " ")
+  let produitMarqueBlanc = document.createElement('div')
+  produitMarqueBlanc.classList.add('produit-marque-1')
+  produitMarqueBlanc.innerText = titre[0]
+  let produitMarqueGold = document.createElement('div')
+  produitMarqueGold.classList.add('produit-marque-2')
+  produitMarqueGold.innerText = titre[1]
+  let svg = `<svg viewBox="0 0 100 5" class="produit-separator">
+            <line x1="0" y1="3" x2="100" y2="3" class="line-svg-thin" />
+            </svg>`
+  produitMarque.appendChild(produitMarqueBlanc)
+  produitMarque.appendChild(produitMarqueGold)
+  produitMarque.innerHTML += svg
+  // <div class="produit-marque">
+  //     <div class="produit-marque-1">STEPIN</div>
+  //     <div class="produit-marque-2">SANINDUSA</div>
+  //     <svg viewBox="0 0 100 5" class="produit-separator">
+  //       <line x1="0" y1="3" x2="100" y2="3" class="line-svg-thin" />
+  //     </svg>
+  //   </div>
+
+  let produitNom = document.createElement('div')
+  produitNom.classList.add('produit-nom')
+  produitNom.innerText = prod.nom
+
+  modalMain.appendChild(modalMainSeparator)
+  modalMain.appendChild(produitMarque)
+  modalMain.appendChild(produitNom)
+
+  let group_count = Math.max(prod.descriptifs.length, prod.images.length)
+  for (let i = 0; i < group_count; i++) {
+
+    let produitGroup = document.createElement('div')
+    produitGroup.classList.add('produit-group')
+
+    let produitDescriptif = null
+    if (prod.descriptifs.length > i) {
+      produitDescriptif = document.createElement('div')
+      produitDescriptif.classList.add('produit-descriptif')
+      produitDescriptif.innerHTML = prod.descriptifs[i]
+    }
+
+    let produitPicture = null
+    if (prod.images.length > i) {
+      produitPicture = document.createElement('img')
+      produitPicture.classList.add('produit-picture')
+      produitPicture.setAttribute('src', prod.images[i])
+    }
+
+    if (i % 2 == 0) {
+      if (produitDescriptif !== null) produitGroup.appendChild(produitDescriptif)
+      if (produitPicture !== null) produitGroup.appendChild(produitPicture)
+    } else {
+      if (produitPicture !== null) produitGroup.appendChild(produitPicture)
+      if (produitDescriptif !== null) produitGroup.appendChild(produitDescriptif)
+    }
+
+    // <div class="produit-group">
+
+    //       <div class="produit-descriptif">
+    //           Dimensions disponibles:
+    //           <ul>
+    //               <li>70x120/140 cm</li>
+    //               <li>80x80/100/120/140 cm</li>
+    //               <li>90x90/120/140 cm</li>
+    //           </ul>
+    //       </div>
+
+    //       <img class="produit-picture" src="./img/produits/receveurs_stepinSanindusa.jpg" />
+    //   </div>
+
+    modalMain.appendChild(produitGroup)
+  }
+
+
+  ficheProduit.appendChild(modalMain)
+  swiperSlideSubcontainer.appendChild(ficheProduit)
+  swiperSlide.appendChild(swiperSlideSubcontainer)
+
+  return swiperSlide
+}
 
 
 
-
-
+/* Divers */
+function isCatExistInProductList(id_cat) {
+  let retour = false
+  json_data.produits.forEach(prod => {
+    if (prod.id_categorie == id_cat) retour = true
+  })
+  return retour
+}
+function getProduitsFromCategorie(id_cat) {
+  liste_produits = [...json_data.produits.reduce((map, value) => (value.id_categorie == id_cat) ? map.set(value.id_produit, value) : map, new Map()).values()]
+  liste_produits = liste_produits.sort((a, b) => { return a.marque.localeCompare(b.marque) })
+  return liste_produits
+}
+function getProduitIndexFromListeProduits(id, listeProduits) {
+  let retour_index = -1
+  listeProduits.forEach((prod, index) => {
+    if (prod.id_produit == id) retour_index = index
+  })
+  return retour_index
+}
+function splitColorNameProduit(nom_prod, separator) {
+  nom_prod = nom_prod.split(' ')
+  let blanc = ""
+  let gold = ""
+  nom_prod.forEach(mot => {
+    if (mot.toUpperCase() === mot) {
+      gold += mot + separator
+    } else {
+      blanc += mot + separator
+    }
+  })
+  return [blanc, gold]
+}

@@ -108,7 +108,7 @@ body {
     position: absolute;
     left: 0; top: 0; width: 100%; height: 100%;
     background-color: #1a2a48;
-    display: none;
+    display: block;
 }
 #options-big-container {
     max-width: 1920px;
@@ -263,6 +263,7 @@ body {
     position: absolute;
     left: 0; top: 0; width: 100%; height: 100%;
     background-color: var(--greencity-blue);
+    display: none;
 }
 #produit-main-subcontainer {
     position: absolute;
@@ -300,7 +301,7 @@ body {
 /* #endregion */
 
 
-/* Popup produits - Fiche */
+/* #region Popup produits - Fiche */
 #popup-produits-fiche-container {
     position:absolute;
     left:0; top:140px; width:100%; height:calc(100% - 140px);

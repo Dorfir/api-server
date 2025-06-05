@@ -14,11 +14,11 @@ async function getData() {
       },
     });
     if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
+      throw new Error(`Response status: ${response.status}`)
     }
 
     const json = await response.json();
-    console.log(json);
+    console.log(json)
   } catch (error) {
     console.error(error.message);
   }

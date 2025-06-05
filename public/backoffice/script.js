@@ -187,11 +187,14 @@ function setSelectCategorie(id_famille) {
 function selectCategorieOnChange() {
   let select_categorie = document.getElementById('select_categorie')
   console.log(parseInt(select_categorie.value))
+  let header_titre = document.getElementById('produit-header-titre-text')
+  header_titre.innerText = select_categorie.value
 }
 
 
 /* Desciptions */
 var createProductDescriptionQuills = Array()
+var createProductDescriptionQuillsIndex = 0
 function initDesciptions() {
 
   let quill_1 = new Quill('#description-0', {
@@ -201,7 +204,7 @@ function initDesciptions() {
     theme: 'snow',
     placeholder: "Votre description ..."
   })
-  createProductDescriptionQuills.push(quill_1)
+  createProductDescriptionQuills[0] = quill_1
   initQuillEvent(createProductDescriptionQuills[0])
 
 
@@ -215,10 +218,13 @@ function initDesciptions() {
 
   function createQuillDescription() {
 
-    let descriptionIndex = createProductDescriptionQuills.length
+    createProductDescriptionQuillsIndex++
+    // let descriptionIndex = createProductDescriptionQuills.length
+    let descriptionIndex = createProductDescriptionQuillsIndex
 
     let quill_container = document.createElement('div')
     quill_container.classList.add('quill-container')
+    quill_container.setAttribute('id', 'quill_container-'+(descriptionIndex))
     let editor_container = document.createElement('div')
     editor_container.classList.add('editor-container')
     let description_editor = document.createElement('div')
@@ -226,6 +232,14 @@ function initDesciptions() {
     description_editor.setAttribute('id', 'description-'+(descriptionIndex))
     editor_container.appendChild(description_editor)
     quill_container.appendChild(editor_container)
+    let quill_btn_container = document.createElement('div')
+    quill_btn_container.classList.add('quill_btn_container')
+    let btn_remove_quill = document.createElement('input')
+    btn_remove_quill.setAttribute('type', 'button')
+    btn_remove_quill.setAttribute('value', "Supp.")
+    btn_remove_quill.setAttribute('id', 'remove_description-'+(descriptionIndex))
+    quill_btn_container.appendChild(btn_remove_quill)
+    quill_container.appendChild(quill_btn_container)
 
     let description_big_container = document.getElementById('description-big-container')
     let add_description_item_btn = document.getElementById('add_desciption_item')
@@ -238,9 +252,17 @@ function initDesciptions() {
       theme: 'snow',
       placeholder: "Votre description ..."
     })
-    createProductDescriptionQuills.push(new_quill)
+    createProductDescriptionQuills[descriptionIndex] = new_quill
     initQuillEvent(createProductDescriptionQuills[descriptionIndex])
 
+    btn_remove_quill.addEventListener('click', (e) => {
+      let quill_index = parseInt(e.target.getAttribute('id').split('-')[1])
+      selected_quill = createProductDescriptionQuills[quill_index]
+      selected_quill.enable(false)
+      selected_quill = null
+      delete createProductDescriptionQuills[quill_index]
+      description_big_container.removeChild(document.getElementById('quill_container-'+(quill_index)))
+    })
   }
 
   function initQuillEvent(quill) {
