@@ -13,8 +13,8 @@ canvas.height = canvasSize.h
 
 const line_color = "#0000bb"
 
-const imagePath = './img/dragon2.jpg'
-// const imagePath = ''
+// const imagePath = './img/dragon2.jpg'
+const imagePath = ''
 const image = new Image()
 image.src = imagePath
 var imgWidth = 0
@@ -35,6 +35,9 @@ let consoleCanvasCoord = document.getElementById('consoleCanvasCoord')
 let imageCoord = { x:0, y:0, w:0, h:0 }
 const appReadyEvent = new Event('app-ready')
 const body = document.getElementsByTagName('body')[0]
+
+const downloadBtn = document.querySelector("button.download");
+const reloadBtn = document.getElementById('reload-button')
 
 var imgDragActive = false
 var lineDragActive = false
@@ -137,7 +140,7 @@ body.addEventListener('app-ready', (e) => {
     canvasComputed.y += window.scrollY
     if (canvasDebug) consoleCanvasCoord.innerHTML = `(${Math.floor(canvasComputed.x)}, ${Math.floor(canvasComputed.y)})`
     draw()
-
+    // document.getElementById('download_btn_container').style.display = "flex"
 })
 
 
@@ -344,7 +347,11 @@ function pointerOverLine(pointerCoords, line) {
 
 
 /* -------------------------------------------------------------------------------------- */
-const downloadBtn = document.querySelector("button.download");
+reloadBtn.addEventListener('click', function() {
+    dragDropArea.style.display = "block"
+})
+
+
 downloadBtn.addEventListener('click', function() {
     
     const canvas2 = document.getElementById('canvas2')
@@ -374,15 +381,24 @@ downloadBtn.addEventListener('click', function() {
     //     document.body.appendChild(image2)
     // })
 
+    let display_result_img = document.getElementById('display-result-img')
+    display_result_img.src = canvas2.toDataURL("image/jpeg", 0.7)
+    display_result_img.addEventListener('load', () => {
+        console.log('image2 loaded')
+        let display_result  = document.getElementById('display-result')
+        display_result.style.display = "block"
+    })
+
     //create a temporary link for the download item
-    let tempLink = document.createElement('a');
+    // let tempLink = document.createElement('a');
 
     //generate a new filename
-    let fileName = `image-cropped.jpg`;
+    // let fileName = `image-cropped.jpg`;
   
     //configure the link to download the resized image
-    tempLink.download = fileName;
-    tempLink.href = canvas2.toDataURL("image/jpeg", 0.7);
+    // tempLink.download = fileName;
+    // tempLink.href = canvas2.toDataURL("image/jpeg", 0.7);
+    // console.log(tempLink.href)
 
 
     //trigger a click on the link to start the download

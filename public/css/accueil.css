@@ -231,7 +231,7 @@ body {
     position: absolute;
     left: 0; top: 0; width: 100%; height: 100%;
     background-color: var(--greencity-blue);
-    display: block;
+    display: none;
 }
 #optionslist-main-subcontainer {
     position: absolute;
@@ -358,7 +358,6 @@ body {
 
 /* #endregion */
 
-
 /* #region Popup produits - Fiche */
 #popup-produits-fiche-container {
     position:absolute;
@@ -366,24 +365,25 @@ body {
     display: block;
     z-index:1;
 }
-.swiper-slide-container {
+.swiperOption-slide-container {
     position:relative;
     width:100%;
     height:100%;
     z-index:0;
 }
-.swiper-slide-subcontainer {   
+.swiperOption-slide-subcontainer {   
     position:absolute;
     left: 0;
     top: 0;
     width:100%;
     height:100%;
 }
-.swiper {
+.swiperOption {
     width: 100%;
     max-width:100%;
     min-width: 300px;
     height: 100%;
+    overflow:hidden;
 }
 .swiper-pagination-bullet-active {
     background-color: var(--greencity-blue) 
@@ -493,3 +493,349 @@ body {
 }
 /* #endregion */
 /* --------------------------------- */
+
+/* #region Page Menu Prestations */
+#presta-main-container {
+    position: absolute;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background-color: #1a2a48;
+    display: none;
+}
+#presta-big-container {
+    max-width: 1920px;
+    height: 100%;
+    margin: 0 auto;
+}
+
+#presta-header {
+    position:absolute;
+    left:0; top:0; width: 100%; height:150px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    align-items: center;
+}
+#presta-header-green-logo { height: 90px; }
+#presta-header-titre { height: 50px; }
+#presta-retour-btn { cursor: pointer; }
+#presta-retour-btn:hover polygon, #presta-retour-btn:hover path { 
+    fill: #dddddd; 
+}
+
+#presta-body-container {
+    position:absolute;
+    left:0; top:150px; width:100%;  height:calc(100% - 150px);
+    overflow-y: auto;
+}
+#presta-body { 
+    position:relative;
+    width: 80%;
+    min-height: calc(100% - 80px);
+    margin:60px auto 20px auto;
+    padding: 0;
+}
+
+.presta-element {
+    margin:30px 1.3%;
+    float:left;
+    max-width: 29%;
+    width: 500px;
+    min-width: 330px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    cursor:pointer;
+}
+.presta-element .presta-element-titre {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'JosefinSans-Bold';
+    color: var(--greencity-yellow);
+    font-size: 1.5em;
+    background-color: var(--greencity-blue);
+    text-align: center;
+    padding:16px 10px 11px 10px;
+}
+.presta-element .presta-element-image img {
+    width:100%;
+    display: block;
+}
+.presta-element:hover .presta-element-titre {
+    color: #ffffff;
+}
+
+@media (min-width: 1000px) and (max-width: 1600px) {
+    #presta-header { height:110px; }
+    #presta-body-container { top:110px; height:calc(100% - 110px); }
+    #presta-header-green-logo { height: 66px; }
+    #presta-header-titre { height: 36px; }
+}
+@media (min-width: 600px) and (max-width: 999px) {
+    #presta-header { height:80px; }
+    #presta-body-container { top:80px; height:calc(100% - 80px); }
+    #presta-header-green-logo { height: 48px; }
+    #presta-header-titre { height: 26px; }
+}
+@media (max-width: 599px) {
+    #presta-header { height:70px; }
+    #presta-body-container { top:70px; height:calc(100% - 70px); }
+    #presta-header-green-logo { height: 25px; }
+    #presta-header-titre { height: 15px; }
+}
+
+/* #presta-body-container {
+    position:absolute;
+    left:0; top:150px; width:100%;  height:calc(100% - 150px);
+    overflow-y: auto;
+}
+#presta-body { 
+    width: 70%;
+    margin:20px auto 20px auto;
+    padding: 0;
+}
+.presta-element {
+    margin:30px 1.3%;
+    float:left;
+    max-width: 30%;
+    width: 500px;
+    min-width: 340px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    cursor : pointer;
+
+}
+.clear {
+    clear: both;
+}
+.presta-element .presta-element-titre {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'JosefinSans-Bold';
+    color: var(--greencity-blue);
+    font-size: 1.5em;
+    background-color: #ffffff;
+    text-align: center;
+    padding:12px 0 7px 0;
+}
+.presta-element .presta-element-liste {
+    color: #ffffff;
+    background-color: var(--greencity-lightblue);
+}
+.presta-element .presta-element-liste ul {
+    line-height: 130%;
+    font-size: 1.1em;
+    padding-inline-start: 60px;
+}
+.presta-element .presta-element-liste li {
+    cursor: pointer;
+    padding: 2px 0;
+}
+.presta-element .presta-element-liste li:hover {
+    color: var(--greencity-blue);
+    font-size: 1.2em;
+}
+
+@media (min-width: 1000px) and (max-width: 1600px) {
+    #presta-header { height:120px; }
+    #presta-body-container { top:120px; height:calc(100% - 120px); }
+    #presta-header-green-logo { height: 72px; }
+    #presta-header-titre { height: 40px; }
+}
+@media (min-width: 600px) and (max-width: 999px) {
+    #presta-header { height:90px; }
+    #presta-body-container { top:90px; height:calc(100% - 90px); }
+    #presta-header-green-logo { height: 54px; }
+    #presta-header-titre { height: 30px; }
+}
+@media (max-width: 599px) {
+    #presta-header { height:70px; }
+    #presta-body-container { top:70px; height:calc(100% - 70px); }
+    #presta-header-green-logo { height: 25px; }
+    #presta-header-titre { height: 15px; }
+} */
+
+/* #endregion */
+
+
+/* #region Prestation */
+#presta-fiche-main-container {
+    position: absolute;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background-color: var(--greencity-blue);
+    display: block;
+}
+#presta-fiche-main-subcontainer {
+    position: absolute;
+    left: 15%; top: 0; width: 70%; height: 100%;
+    background-color: #ffffff;
+}
+
+#presta-fiche-header {
+    position: absolute;
+    left:0; top:0; width: 100%; height: 120px;
+}
+#presta-fiche-header-titre {
+    position: absolute;
+    left:0; top:20px; width: 100%; height: 120px;
+    text-align: center;
+    font-family: "JosefinSans-Bold";
+    font-size: 2.4em;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+    align-items: center;
+}
+#presta-fiche-header-titre-separator {
+    width: 150px;
+}
+#presta-fiche-header-close-btn {
+    display: block;
+    position:absolute;
+    right:50px;
+    top: 40px;
+    height:50px;
+    cursor:pointer;
+}
+
+/* #endregion */
+
+
+/* #region Page Fiches Prestation */
+#popup-presta-fiche-container {
+    position:absolute;
+    left:0; top:140px; width:100%; height:calc(100% - 140px);
+    display: block;
+    z-index:1;
+}
+.swiperPresta-slide-container {
+    position:relative;
+    width:100%;
+    height:100%;
+    z-index:0;
+}
+.swiperPresta-slide-subcontainer {   
+    position:absolute;
+    left: 0;
+    top: 0;
+    width:100%;
+    height:100%;
+}
+.swiperPresta {
+    width: 100%;
+    max-width:100%;
+    min-width: 300px;
+    height: 100%;
+    overflow:hidden;
+}
+.swiper-pagination-bullet-active {
+    background-color: var(--greencity-blue) 
+}
+.swiper-button-prev {
+    color: var(--greencity-blue);
+}
+.swiper-button-next {
+    color: var(--greencity-blue);
+}
+.swiper-button-prev::after {
+    font-size: 1.5em;
+}
+.swiper-button-next::after {
+    font-size: 1.5em;
+}
+
+.fiche-presta {
+    position:relative;  
+    max-width: calc(100% - 100px);
+    margin: 0 auto;
+    height: calc(100% - 25px);
+}
+.fiche-presta .modal-main {
+    /* flex: 1; */
+    text-align: left;
+    overflow: auto;
+    padding: 0 10px;
+    
+    height: calc(100%);
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 15px;
+}
+.fiche-presta .modal-main-separator {
+    height:20px;
+}
+.fiche-presta .modal-main .presta-marque-1 {
+    font-family: "JosefinSans-Regular";
+    padding: 15px 0²px 2px 0px;
+    font-size:2.2em;
+    line-height: 1.2em;
+}
+.fiche-presta .modal-main .presta-marque-2 {
+    font-family: "JosefinSans-Bold";
+    padding: 10px 0px 2px 0px;
+    font-size:2.2em;
+    font-weight: 600;
+    line-height: 1.2em;
+    color:var(--greencity-yellow);
+}
+.fiche-presta .modal-main .presta-separator {
+    width:100px;
+}
+.fiche-presta .modal-main .presta-nom {
+    font-family: "JosefinSans-Bold";
+    font-weight: 600; 
+    font-size: 1.6em;
+    padding: 10px 0;
+}
+.fiche-presta .modal-main .presta-group {
+    width: 100%;
+    font-family: "JosefinSans-Regular";
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    gap: 10px;
+}
+
+.fiche-presta .modal-main .presta-picture {
+    max-width:40%;
+    opacity: 1;
+}
+.fiche-presta .modal-main .presta-descriptif {
+    font-size:1.6em;
+
+}
+
+
+.fiche-presta footer {
+    height: auto;
+    border-top: solid 1px #ccc;
+    padding: 5px;
+    background-color: #fff;
+    background-color: var(--soft-color);
+}
+
+@media screen and (max-width: 600px) {
+    
+    .fiche-produit .modal-main .produit-marque {
+        font-size: 1.6em;
+        padding: 12px 9px 9px 9px;
+    }
+    .fiche-produit .modal-main .produit-nom { 
+        font-size: 1.0em;
+        padding: 8px 0;
+    }
+    .fiche-produit .modal-main .produit-descriptif {
+        font-size:0.8em;
+    }
+}
+/* #endregion */

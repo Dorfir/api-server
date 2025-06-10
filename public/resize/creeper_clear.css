@@ -13,6 +13,24 @@
     font-size: 1rem;
   }
 
+  #popup-canvas-container {
+    position: absolute;
+    left:0; top:0; width:100%; height:100%;
+  }
+
+  /* #region Popup */
+  #popup-canvas {
+    position: absolute;
+    left:50%;
+    top:50%;
+    max-width:90vw;
+    max-height:95vh;
+    transform: translate(-50%, -50%);
+    padding: 15px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  }
+
+  /* #endregion */
   
   /* #region Canvas */
   #canvas_big_container {
@@ -97,15 +115,21 @@
   /* #region Button download */
   #download_btn_container {
     margin-top:20px;margin-bottom:20px;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-around;
   }
   input {
     border: none;
     border-bottom: 1px  solid black;
-    font-family: 'Dosis';
     margin: 0.7rem;
     text-align: center;
     outline: none;
     width: 200px;
+
   }
   
   button {
@@ -135,9 +159,50 @@
     margin: 0 1rem;
     color: gray;
   }
+
+  #reload-button {
+    background: #204067;
+    border: 2px solid black;
+    color: #fff;
+    border-radius: 5px;
+    padding: calc(0.98rem - 2px) 2rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-around;
+    gap: 10px;
+  }
+  #reload-button img {
+    height:0.98rem;
+  }
   /* #endregion */
 
+  /* #region Canvas export image (Canvas2) */
+  #canvas2 {
+    position: absolute;
+    left : 110%;
+    top: 0;
+    display:none;
+  }
 
+  #display-result {
+    display:none;
+    position: absolute;
+    left:0; top:0; width:100%; height:100%;
+    z-index:30;
+    background-color: #222245;
+  }
+  #display-result-img {
+    position:absolute;
+    display: block;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* #endregion */
 
   #console {
     position:fixed;

@@ -25,6 +25,80 @@ async function getData() {
   }
 }
 
+var prestas = [
+  {
+    id_presta: 1,
+    id_rubrique: 1,
+    nom_rubrique: "Cuisines",
+    images: ['./img/presta/cuisine/cuisine_01.jpg', './img/presta/cuisine/cuisine_02.jpg'],
+    images_legende: ['Cuisine type T3', 'Cuisine type T2'],
+    descriptif: `
+      LES PRESTATIONS INCLUSES *<br><br>
+      Meubles bas avec étagères<br>
+      Plan de travail hydrofuge de couleur bois<br>
+      Plaque de cuisson vitrocéramique encastrée : 2 feux pour les T1-T2, 3 feux pour les T3<br>
+      Hotte aspirante intégrée<br>
+      Évier avec égouttoir (inox) encastré<br>
+      Robinet mitigeur avec double butée économique<br>
+      Meubles hauts avec étagères<br>
+      Emplacement pour four et micro-ondes<br>
+      Emplacement pour réfrigérateur<br>
+      Réfrigérateur fourni : Tabel Top pour les T1-T2, Réfrigérateur-Congélateur pour les T3<br>
+      Arrivées et évacuations pour lave-vaisselle<br><br>
+      <span class="contractuel">* Photos non contractuelles - Équipements de série ou équivalent</span>
+    `,
+  },
+  {
+    id_presta: 2,
+    id_rubrique: 2,
+    nom_rubrique: "Salles de bain",
+    images: ['./img/presta/sdb/sdb_01.jpg', './img/presta/sdb/sdb_02.jpg'],
+    images_legende: ['Salle de bains type T4', 'Salle de bains type T2'],
+    descriptif: `
+      LES PRESTATIONS INCLUSES *<br><br>
+      Meubles avec tiroirs recouvert d'une vasque en résine intégrée<br>
+      Robinetterie mitigeuse équipée de double butée<br>
+      Grand miroir rétroclairé par LED<br>
+      Emplacement machine à laver le linge (jusqu'au T3 inclus)<br>
+      Lave-linge fourni (jusqu'au T3 inclus)<br>
+      Baignoire en acier émaillé avec douchette, flexible, barre de douche et robinet mitigeur<br>
+      Radiateur sèche serviette<br>
+      WC avec cuvette céramique et abattant double avec frein de chute, réservoir avec chasse 3/6 l'économiseur d'eau (inclus dans les SDB pour les T2)<br>
+      WC séparé à partir des T3<br><br>
+      <span class="contractuel">* Photos non contractuelles - Équipements de série ou équivalent</span>
+    `,
+  },
+  {
+    id_presta: 3,
+    id_rubrique: 3,
+    nom_rubrique: "Prestations intérieures",
+    images: ['./img/presta/presta_interieures_01/presta1_interieures_01.jpg', './img/presta/presta_interieures_01/presta1_interieures_02.jpg'],
+    images_legende: ['Placards de rangement aménagés', 'Portes rainurées et laquées'],
+    descriptif: `
+      Tous nos logements sont équipés de la solution GreenCity Connect et profitent d'une box connectées intégrée au tableau éléectrique<br>
+      Depuis votre smartphone, votre tablette ou votre ordinateur, grâce à une application simple et intuitive, vous commandez à distance et
+      programmez les équipements connectés inclus de votre logement : le chauffage, l'alarme anti-intrusion et les volets roulants
+      électriques dans les T4 et T5.<br>
+      <br>
+      (sous réserve d'abonnement internet à la charge du client)
+      <br><br>
+      <span class="contractuel">* Photos non contractuelles - Équipements de série ou équivalent</span>
+    `,
+  },
+  {
+    id_presta: 4,
+    id_rubrique: 3,
+    nom_rubrique: "Prestations intérieures",
+    images: ['./img/presta/presta_interieures_02/presta2_interieures_01.jpg'],
+    images_legende: [],
+    descriptif: `
+      Porte palière à âme pleine avec affaiblissement acoustique, serrure 3 points, poignée de sécurité à protecteur de cylindre<br>
+      Clés avec badge de proximité intégré "Tout en un"<br>      
+    `,
+  }
+]
+
+
 /* -------------------------------------------------------------------- */
 /* Routing Site */
 /* -------------------------------------------------------------------- */
@@ -36,6 +110,37 @@ accueil_options.addEventListener('click', (e) => {
   accueil_main_container.style.display = "none"
   options_main_container.style.display = "block"
   optionslist_main_container.style.display = "none"
+})
+
+let accueil_presta = document.getElementById('accueil_presta')
+accueil_presta.addEventListener('click', (e) => {
+  let options_main_container = document.getElementById('options-main-container')
+  let presta_main_container = document.getElementById('presta-main-container')
+  options_main_container.style.display = "none"
+  presta_main_container.style.display = "block"
+})
+
+let presta_retour_btn = document.getElementById('presta-retour-btn')
+presta_retour_btn.addEventListener('click', (e) => {
+  let presta_main_container = document.getElementById('presta-main-container')
+  // let optionslist_main_container = document.getElementById('optionslist-main-container')
+  presta_main_container.style.display = "none"
+  // optionslist_main_container.style.display = "none"
+})
+
+let liste_presta = document.querySelectorAll('.presta-element')
+for(var presta_elem of liste_presta) {
+  presta_elem.addEventListener('click', (e) => {
+    console.log('click presta element')
+  let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
+  presta_fiche_main_container.style.display = "block"
+  })
+}
+
+let presta_fiche_header_close_btn = document.getElementById('presta-fiche-header-close-btn')
+presta_fiche_header_close_btn.addEventListener('click', (e) => {
+  let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
+  presta_fiche_main_container.style.display = "none"
 })
 
 let options_retour_btn = document.getElementById('options-retour-btn')
@@ -67,7 +172,6 @@ optionslist_close_btn.addEventListener('click', (e) => {
   optionslist_main_container.style.display = "none"
 })
 
-
 let produit_header_close_btn = document.getElementById('produit-header-close-btn')
 produit_header_close_btn.addEventListener('click', (e) => {
   let accueil_main_container = document.getElementById('accueil-main-container')
@@ -81,7 +185,11 @@ produit_header_close_btn.addEventListener('click', (e) => {
 })
 
 
-const swiper = new Swiper('.swiper', {
+
+
+
+/* Produits */
+const swiperOption = new Swiper('.swiperOption', {
   direction: 'horizontal',
   loop: false,
   pagination: {
@@ -95,7 +203,6 @@ const swiper = new Swiper('.swiper', {
     el: '.swiper-scrollbar',
   },
 });
-
 
 function initOptionsListPage(id_cat) {
 
@@ -159,7 +266,7 @@ function initOptionsListPage(id_cat) {
       console.log(e.currentTarget)
       let element_id = parseInt(e.currentTarget.getAttribute('id').split('list_element_')[1])
       let element_index = getProduitIndexFromListeProduits(element_id, liste_produits)
-      swiper.slideTo(element_index, 0, null)
+      swiperOption.slideTo(element_index, 0, null)
 
       // display fiche produit
       let accueil_main_container = document.getElementById('accueil-main-container')
@@ -176,7 +283,6 @@ function initOptionsListPage(id_cat) {
 
 }
 
-
 function initProduitPage(id_cat) {
 
   let liste_produits = getProduitsFromCategorie(id_cat)
@@ -189,12 +295,12 @@ function initProduitPage(id_cat) {
 }
 
 function changeFicheProduitSwiper(produits) {
-  let swiperWrapper = document.getElementById('swiper-wrapper')
+  let swiperWrapper = document.getElementById('swiperOption-wrapper')
   swiperWrapper.innerHTML = ""
   produits.forEach(produit => {
     swiperWrapper.appendChild(createFicheProduit(produit))
   })
-  swiper.update()
+  swiperOption.update()
 }
 
 function createFicheProduit(prod) {
@@ -202,7 +308,7 @@ function createFicheProduit(prod) {
   let swiperSlide = document.createElement('div')
   swiperSlide.classList.add('swiper-slide')
   let swiperSlideSubcontainer = document.createElement('div')
-  swiperSlideSubcontainer.classList.add('swiper-slide-subcontainer')
+  swiperSlideSubcontainer.classList.add('swiperOption-slide-subcontainer')
   let ficheProduit = document.createElement('div')
   ficheProduit.classList.add('fiche-produit')
   let modalMain = document.createElement('div')
@@ -296,6 +402,29 @@ function createFicheProduit(prod) {
 
   return swiperSlide
 }
+
+
+/* Prestations */
+const swiperPresta = new Swiper('.swiperPresta', {
+  direction: 'horizontal',
+  loop: false,
+  pagination: {
+    el: '.swiper-pagination',
+  },
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+  scrollbar: {
+    el: '.swiper-scrollbar',
+  },
+});
+
+
+
+
+
+
 
 
 

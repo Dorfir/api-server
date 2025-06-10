@@ -35,28 +35,25 @@
               <polygon fill="none" points="1051.04 0 880.96 600 1920 600 1920 0 1051.04 0" />
             </clipPath>
           </defs>
-          <g id="accueil_serie" class="accueil-menu-item">
+          <g id="accueil_presta" class="accueil-menu-item">
             <g clip-path="url(#clippath-img1)">
-              <image width="1200" height="697" transform="translate(0 -1.75) scale(.87)"
-                xlink:href="img/accueil_menu-1.png" />
+              <image width="1200" height="697" transform="translate(0 -1.75) scale(.87)" xlink:href="img/accueil_menu-1.png" />
             </g>
-            <text class="text-svg" transform="translate(347.33 290.12)">PRESTATIONS<tspan x="47.88" y="48">DE SÉRIE
-              </tspan></text>
+            <text class="text-svg" transform="translate(347.33 290.12)">PRESTATIONS<tspan x="47.88" y="48">DE SÉRIE</tspan></text>
           </g>
           <g id="accueil_produit" class="accueil-menu-item">
             <g clip-path="url(#clippath-img2)">
-              <image width="597" height="347" transform="translate(880.96 -1.96) scale(1.74)"
-                xlink:href="img/accueil_menu-2.png" />
+              <image width="597" height="347" transform="translate(880.96 -1.96) scale(1.74)" xlink:href="img/accueil_menu-2.png" />
             </g>
             <text class="text-svg" transform="translate(1322.49 314.12)">OPTIONS</text>
           </g>
         </svg>
       </div>
 
-
     </div>
   </div>
 
+  <!-- Produit -->
   <div id="options-main-container">
     <div id="options-big-container">
 
@@ -155,18 +152,6 @@
 
       <div id="optionslist-header">
         <img src="./img/green_city_logo_blue.svg" alt="Green City" id="optionslist-header-green-logo">
-        <!-- <svg id="optionslist-header-titre" viewBox="0 0 876.05 50">
-          <g id="optionslist-close-btn">
-            <rect x="826" y="0" width="50" height="50" fill="#ffffff" opacity="0.001"></rect>
-            <path fill="#1a2a48" d="M826.06,0v49.99h49.99V0h-49.99ZM873.64,47.58h-45.17V2.41h45.17v45.17Z" />
-            <polygon fill="#1a2a48"
-              points="840.98 16.75 842.55 15.18 851.16 23.56 859.31 15.18 860.98 16.74 852.89 25.03 861.17 33.2 859.59 34.78 850.98 26.4 842.83 34.78 841.15 33.22 849.25 24.92 840.98 16.75" />
-          </g>
-          <line class="line-svg" x1="775.47" y1="0" x2="775.47" y2="50" />
-          <text class="text-blue-svg" text-anchor="end" transform="translate(737 40.23)">
-            <tspan x="0" y="0" id="optionslist-title">FACADES PLACARD MIROIR</tspan>
-          </text>
-        </svg> -->
         <svg id="optionslist-header-titre" viewBox="0 0 700 50">
           <g id="optionslist-close-btn" transform="translate(650 0)">
             <rect x="0" y="0" width="50" height="50" fill="#ffffff" opacity="0.001"></rect>
@@ -259,13 +244,12 @@
         </svg>
       </div>
 
-      <div class="swiper" id="popup-produits-fiche-container">
+      <div class="swiperOption" id="popup-produits-fiche-container">
         <!-- Additional required wrapper -->
-        <div class="swiper-wrapper" id="swiper-wrapper">
+        <div class="swiper-wrapper" id="swiperOption-wrapper">
           <!-- Slides -->
           <div class="swiper-slide">
-            <div class="swiper-slide-subcontainer">
-
+            <div class="swiperOption-slide-subcontainer">
                 <div class="fiche-produit">
                     <div class="modal-main">
                       <div id="modal-main-separator">&nbsp;</div>
@@ -311,7 +295,7 @@
             </div>
         </div>
         <div class="swiper-slide">
-            <div class="swiper-slide-subcontainer">
+            <div class="swiperOption-slide-subcontainer">
                 <div class="fiche-produit">
                     <div class="modal-main">
                       <div id="modal-main-separator">&nbsp;</div>
@@ -353,6 +337,179 @@
 
         <!-- If we need scrollbar -->
         <!-- <div class="swiper-scrollbar"></div> -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Presta -->
+  <div id="presta-main-container">
+    <div id="presta-big-container">
+
+      <div id="presta-header">
+        <img src="./img/green_city_logo.svg" alt="Green City" id="presta-header-green-logo">
+        <svg id="presta-header-titre" viewBox="0 0 429.05 50">
+          <text class="text-svg" transform="translate(0 38.25)">PRESTATIONS</text>
+          <line class="line-svg" x1="328.47" y1="0" x2="328.47" y2="50" />
+          <g id="presta-retour-btn">
+            <rect x="379.06" y="0" width="50" height="50" fill="#ffffff" opacity="0.001"></rect>
+            <polygon fill="#ffffff" points="406.48 15.2 408.15 16.76 400.06 25.06 408.33 33.22 406.75 34.8 396.83 25.13 406.48 15.2"/>
+            <path fill="#ffffff" d="M379.06,0v49.99h49.99V0h-49.99ZM426.64,47.58h-45.17V2.41h45.17v45.17Z"/>
+          </g>
+        </svg>
+      </div>
+
+      <div id="presta-body-container">
+
+        <div id="presta-body">
+
+          <div class="presta-element">
+            <div class="presta-element-image">
+              <img src="./img/presta/cuisine/cuisine_thumb.jpg" alt="">
+            </div>
+            <div class="presta-element-titre">CUISINES</div>
+          </div>
+
+          <div class="presta-element">
+            <div class="presta-element-image">
+              <img src="./img/presta/sdb/sdb_thumb.jpg" alt="">
+            </div>
+            <div class="presta-element-titre">SALLES DE BAIN</div>
+          </div>
+
+          <div class="presta-element">
+            <div class="presta-element-image">
+              <img src="./img/presta/presta_interieures_01/presta1_interieures_thumb.jpg" alt="">
+            </div>
+            <div class="presta-element-titre">PRESTATIONS INTERIEURES</div>
+          </div>
+
+          <div class="clear"></div>
+
+          <div class="presta-element">
+            <div class="presta-element-image">
+              <img src="./img/presta/presta_interieures_02/presta2_interieures_thumb.jpg" alt="">
+            </div>
+            <div class="presta-element-titre">PRESTATIONS INTERIEURES</div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <div id="presta-fiche-main-container">
+    <div id="presta-fiche-main-subcontainer">
+
+      <div id="presta-fiche-header">
+        <div id="presta-fiche-header-titre">
+          <div id="presta-fiche-header-titre-text">PAROIS DE DOUCHE</div>
+          <svg viewBox="0 0 150 5" id="presta-fiche-header-titre-separator">
+            <line x1="0" y1="3" x2="150" y2="3" class="line-svg" />
+          </svg>
+        </div>
+        <svg id="presta-fiche-header-close-btn" viewBox="0 0 50 50">
+          <rect x="0" y="0" width="50" height="50" fill="#ffffff" opacity="0.001"></rect>
+          <path fill="#1a2a48" d="M0,0v50h50V0h0ZM47.58,47.58H2.41V2.41h45.17v45.17Z" />
+          <polygon fill="#1a2a48"
+            points="14.92 16.75 16.49 15.18 25.1 23.56 33.25 15.18 34.92 16.74 26.83 25.03 35.11 33.2 33.53 34.78 24.92 26.4 16.76 34.78 15.09 33.22 23.19 24.92 14.92 16.75" />
+        </svg>
+      </div>
+
+      <div class="swiperPresta" id="popup-presta-fiche-container">
+        <!-- Additional required wrapper -->
+        <div class="swiper-wrapper" id="swiperPresta-wrapper">
+          <!-- Slides -->
+          <div class="swiper-slide">
+            <div class="swiperPresta-slide-subcontainer">
+              <div class="fiche-presta">
+                <div class="modal-main">
+                  
+                  <div id="modal-main-separator">&nbsp;</div>
+                  <div class="presta-marque">
+                    <div class="presta-marque-1">STEPIN</div>
+                    <div class="presta-marque-2">SANINDUSA</div>
+                    <svg viewBox="0 0 100 5" class="presta-separator">
+                      <line x1="0" y1="3" x2="100" y2="3" class="line-svg-thin" />
+                    </svg>
+                  </div>
+                  
+                  <div class="presta-nom">Receveur de douche céramique antidérapant</div>
+                  
+                  <div class="presta-group">
+
+                      <div class="presta-descriptif">
+                          Dimensions disponibles:
+                          <ul>
+                              <li>70x120/140 cm</li>
+                              <li>80x80/100/120/140 cm</li>
+                              <li>90x90/120/140 cm</li>
+                          </ul>
+                      </div>
+
+                      <img class="presta-picture" src="./img/produits/receveurs_stepinSanindusa.jpg" />
+                  </div>
+                  
+                  <div class="presta-group">
+                      <img class="presta-picture" src="./img/produits/receveurs_stepinSanindusa.jpg" />
+                      <div class="presta-descriptif">
+                          Dimensions disponibles:
+                          <ul>
+                              <li>70x120/140 cm</li>
+                              <li>80x80/100/120/140 cm</li>
+                              <li>90x90/120/140 cm</li>
+                          </ul>
+                      </div>
+                  </div>
+                    
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+              <div class="swiperPresta-slide-subcontainer">
+                  <div class="fiche-presta">
+                      <div class="modal-main">
+
+                        <div id="modal-main-separator">&nbsp;</div>
+                        <div class="presta-marque">
+                          <div class="presta-marque-1">FLIGHT</div>
+                          <div class="presta-marque-2">JACOB DELAFON</div>
+                          <svg viewBox="0 0 100 5" class="presta-separator">
+                            <line x1="0" y1="3" x2="100" y2="3" class="line-svg-thin" />
+                          </svg>
+                        </div>
+                        <div class="presta-nom">Receveur de douche acrylique</div>
+                        
+                        <div class="presta-group">
+                          <div class="presta-descriptif">
+                              Dimensions disponibles:<br>
+                              <ul>
+                                  <li>70x170 cm</li>
+                                  <li>76x170 cm</li>
+                                  <li>90x170 cm</li>
+                              </ul>
+                          </div>
+                          <img class="presta-picture" src="./img/produits/receveurs_flightJacobDelafon.jpg" />
+                        </div>
+                          
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          </div>
+          <!-- If we need pagination -->
+          <div class="swiper-pagination"></div>
+
+          <!-- If we need navigation buttons -->
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+
+          <!-- If we need scrollbar -->
+          <!-- <div class="swiper-scrollbar"></div> -->
       </div>
 
     </div>
