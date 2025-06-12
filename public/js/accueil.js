@@ -5,6 +5,7 @@ var json_data = null
 getData()
 async function getData() {
   const url = "http://localhost/green_catalogue_rest/getProduits.php";
+  // const url = "../green_catalogue_rest/getProduits.php";
   // const url = "http://localhost:80/green_catalogue_rest/test.json";
   // const url = "https://www.visiolab.fr/test.json";
   try {
@@ -112,7 +113,6 @@ accueil_options.addEventListener('click', (e) => {
   options_main_container.style.display = "block"
   optionslist_main_container.style.display = "none"
 })
-
 let accueil_presta = document.getElementById('accueil_presta')
 accueil_presta.addEventListener('click', (e) => {
   let options_main_container = document.getElementById('options-main-container')
@@ -121,6 +121,7 @@ accueil_presta.addEventListener('click', (e) => {
   presta_main_container.style.display = "block"
 })
 
+/* Routes Prestas */
 let presta_retour_btn = document.getElementById('presta-retour-btn')
 presta_retour_btn.addEventListener('click', (e) => {
   let presta_main_container = document.getElementById('presta-main-container')
@@ -128,22 +129,26 @@ presta_retour_btn.addEventListener('click', (e) => {
   presta_main_container.style.display = "none"
   // optionslist_main_container.style.display = "none"
 })
-
 let liste_presta = document.querySelectorAll('.presta-element')
 for(var presta_elem of liste_presta) {
   presta_elem.addEventListener('click', (e) => {
     console.log('click presta element')
-  let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
-  presta_fiche_main_container.style.display = "block"
+    let presta_rubrique_id = parseInt(e.currentTarget.getAttribute('id').split('presta_rubrique_id_')[1])
+    let prestas = getPrestasFromIdRubrique(presta_rubrique_id)
+    updateFichePresta(prestas)
+    let header_title = document.getElementById('presta-fiche-header-titre-text')
+    header_title.innerText = prestas[0].nom_rubrique.toUpperCase()
+    let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
+    presta_fiche_main_container.style.display = "block"
   })
 }
-
 let presta_fiche_header_close_btn = document.getElementById('presta-fiche-header-close-btn')
 presta_fiche_header_close_btn.addEventListener('click', (e) => {
   let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
   presta_fiche_main_container.style.display = "none"
 })
 
+/* Routes Options */
 let options_retour_btn = document.getElementById('options-retour-btn')
 options_retour_btn.addEventListener('click', (e) => {
   let accueil_main_container = document.getElementById('accueil-main-container')
@@ -153,8 +158,6 @@ options_retour_btn.addEventListener('click', (e) => {
   options_main_container.style.display = "none"
   optionslist_main_container.style.display = "none"
 })
-
-// let liste_li = document.getElementsByTagName('li')
 let liste_li = document.querySelectorAll('.options-element-liste li')
 for (var li of liste_li) {
   li.addEventListener('click', (e) => {
@@ -162,7 +165,6 @@ for (var li of liste_li) {
     if (isCatExistInProductList(id_categorie)) initOptionsListPage(id_categorie)
   })
 }
-
 let optionslist_close_btn = document.getElementById('optionslist-close-btn')
 optionslist_close_btn.addEventListener('click', (e) => {
   let accueil_main_container = document.getElementById('accueil-main-container')
@@ -172,7 +174,6 @@ optionslist_close_btn.addEventListener('click', (e) => {
   options_main_container.style.display = "block"
   optionslist_main_container.style.display = "none"
 })
-
 let produit_header_close_btn = document.getElementById('produit-header-close-btn')
 produit_header_close_btn.addEventListener('click', (e) => {
   let accueil_main_container = document.getElementById('accueil-main-container')
@@ -421,8 +422,16 @@ const swiperPresta = new Swiper('.swiperPresta', {
   },
 });
 
+function updateFichePresta(prestas) {
+  let swiperPresta_wrapper = document.getElementById('swiperPresta-wrapper')
+  swiperPresta_wrapper.innerHTML = ''
+  prestas.forEach(presta => {
+    swiperPresta_wrapper.appendChild(createFichePrestaSwiperSlide(presta))
+  })
+  swiperPresta.update()
+}
 
-function createFichePresta(presta) {
+function createFichePrestaSwiperSlide(presta) {
 
   let swiperSlide = document.createElement('div')
   swiperSlide.classList.add('swiper-slide')
@@ -436,77 +445,57 @@ function createFichePresta(presta) {
   let modalMainSeparator1 = document.createElement('div')
   modalMainSeparator1.setAttribute('id', 'modal-main-separator')
   modalMainSeparator1.innerHTML = "&nbsp;"
-  // <div id="modal-main-separator">&nbsp;</div>
+  modalMain.appendChild(modalMainSeparator1)
 
-  let group_image_count = Math.max(liste_prestas.images.length, liste_prestas.images_legende.length)
+  let group_image_count = Math.max(presta.images.length, presta.images_legende.length)
   for (let i=0; i<group_image_count; i++) {
     let presta_image_group = document.createElement('div')
     presta_image_group.classList.add('presta-image-group')
     let presta_image = document.createElement('img')
-    presta_image.setAttribute('src', liste_prestas.images[i])
+    presta_image.setAttribute('src', presta.images[i])
     let presta_image_legende = document.createElement('div')
     presta_image_legende.classList.add('presta-image-legende')
-    presta_image_legende.innerHTML = liste_prestas.images_legende[i]
+    if (presta.images_legende.length >= i+1) {
+      presta_image_legende.innerHTML = presta.images_legende[i]
+    } else {
+      presta_image_legende.innerHTML = ""
+    }
     
-  }
+    
+    if (i%2 == 0) {
+      presta_image_group.appendChild(presta_image)
+      presta_image_group.appendChild(presta_image_legende)
+    } else {
+      presta_image_group.appendChild(presta_image_legende)
+      presta_image_group.appendChild(presta_image)
+    }
 
+    modalMain.appendChild(presta_image_group)
+  }
   // <div class="presta-image-group">
   //   <img class="presta-image" src="./img/presta/cuisine/cuisine_01.jpg" />
   //   <div class="presta-image-legende">Cuisine type T3</div>
   // </div>
 
-  let produitNom = document.createElement('div')
-  produitNom.classList.add('produit-nom')
-  produitNom.innerText = presta.nom
+  let modalMainSeparator2 = document.createElement('div')
+  modalMainSeparator2.setAttribute('id', 'modal-main-separator')
+  modalMainSeparator2.innerHTML = "&nbsp;"
+  modalMain.appendChild(modalMainSeparator2)
 
-  modalMain.appendChild(modalMainSeparator)
-  modalMain.appendChild(produitMarque)
-  modalMain.appendChild(produitNom)
+  let prestaDescriptif = document.createElement('div')
+  prestaDescriptif.classList.add('presta-descriptif')
+  prestaDescriptif.innerHTML = presta.descriptif
+  modalMain.appendChild(prestaDescriptif)
 
-  for (let i = 0; i < group_count; i++) {
+  let modalMainSeparator3 = document.createElement('div')
+  modalMainSeparator3.setAttribute('id', 'modal-main-separator')
+  modalMainSeparator3.innerHTML = "&nbsp;"
+  modalMain.appendChild(modalMainSeparator3)
 
-    let produitGroup = document.createElement('div')
-    produitGroup.classList.add('produit-group')
-
-    let produitDescriptif = null
-    if (presta.descriptifs.length > i) {
-      produitDescriptif = document.createElement('div')
-      produitDescriptif.classList.add('produit-descriptif')
-      produitDescriptif.innerHTML = presta.descriptifs[i]
-    }
-
-    let produitPicture = null
-    if (presta.images.length > i) {
-      produitPicture = document.createElement('img')
-      produitPicture.classList.add('produit-picture')
-      produitPicture.setAttribute('src', presta.images[i])
-    }
-
-    if (i % 2 == 0) {
-      if (produitDescriptif !== null) produitGroup.appendChild(produitDescriptif)
-      if (produitPicture !== null) produitGroup.appendChild(produitPicture)
-    } else {
-      if (produitPicture !== null) produitGroup.appendChild(produitPicture)
-      if (produitDescriptif !== null) produitGroup.appendChild(produitDescriptif)
-    }
-
-    // <div class="produit-group">
-
-    //       <div class="produit-descriptif">
-    //           Dimensions disponibles:
-    //           <ul>
-    //               <li>70x120/140 cm</li>
-    //               <li>80x80/100/120/140 cm</li>
-    //               <li>90x90/120/140 cm</li>
-    //           </ul>
-    //       </div>
-
-    //       <img class="produit-picture" src="./img/produits/receveurs_stepinSanindusa.jpg" />
-    //   </div>
-
-    modalMain.appendChild(produitGroup)
-  }
-
+  let prestaContractuel = document.createElement('div')
+  prestaContractuel.classList.add('presta-contractuel')
+  prestaContractuel.innerText = presta.contractuel  
+  modalMain.appendChild(prestaContractuel)
 
   fichePresta.appendChild(modalMain)
   swiperSlideSubcontainer.appendChild(fichePresta)
@@ -514,9 +503,6 @@ function createFichePresta(presta) {
 
   return swiperSlide
 }
-
-
-
 
 
 
@@ -553,3 +539,11 @@ function splitColorNameProduit(nom_prod, separator) {
   })
   return [blanc, gold]
 }
+
+function getPrestasFromIdRubrique(id_presta_rubrique) {
+  return_value = []
+  liste_prestas.forEach((presta) => {
+    if (presta.id_rubrique == id_presta_rubrique) return_value.push(presta)
+  })
+  return return_value
+} 
