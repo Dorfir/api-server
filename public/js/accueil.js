@@ -25,7 +25,7 @@ async function getData() {
   }
 }
 
-var prestas = [
+var liste_prestas = [
   {
     id_presta: 1,
     id_rubrique: 1,
@@ -45,8 +45,8 @@ var prestas = [
       Emplacement pour réfrigérateur<br>
       Réfrigérateur fourni : Tabel Top pour les T1-T2, Réfrigérateur-Congélateur pour les T3<br>
       Arrivées et évacuations pour lave-vaisselle<br><br>
-      <span class="contractuel">* Photos non contractuelles - Équipements de série ou équivalent</span>
     `,
+    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
   },
   {
     id_presta: 2,
@@ -64,9 +64,9 @@ var prestas = [
       Baignoire en acier émaillé avec douchette, flexible, barre de douche et robinet mitigeur<br>
       Radiateur sèche serviette<br>
       WC avec cuvette céramique et abattant double avec frein de chute, réservoir avec chasse 3/6 l'économiseur d'eau (inclus dans les SDB pour les T2)<br>
-      WC séparé à partir des T3<br><br>
-      <span class="contractuel">* Photos non contractuelles - Équipements de série ou équivalent</span>
+      WC séparé à partir des T3<br>
     `,
+    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
   },
   {
     id_presta: 3,
@@ -81,9 +81,9 @@ var prestas = [
       électriques dans les T4 et T5.<br>
       <br>
       (sous réserve d'abonnement internet à la charge du client)
-      <br><br>
-      <span class="contractuel">* Photos non contractuelles - Équipements de série ou équivalent</span>
+      <br>
     `,
+    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
   },
   {
     id_presta: 4,
@@ -95,6 +95,7 @@ var prestas = [
       Porte palière à âme pleine avec affaiblissement acoustique, serrure 3 points, poignée de sécurité à protecteur de cylindre<br>
       Clés avec badge de proximité intégré "Tout en un"<br>      
     `,
+    contractuel: ``
   }
 ]
 
@@ -421,7 +422,98 @@ const swiperPresta = new Swiper('.swiperPresta', {
 });
 
 
+function createFichePresta(presta) {
 
+  let swiperSlide = document.createElement('div')
+  swiperSlide.classList.add('swiper-slide')
+  let swiperSlideSubcontainer = document.createElement('div')
+  swiperSlideSubcontainer.classList.add('swiperPresta-slide-subcontainer')
+  let fichePresta = document.createElement('div')
+  fichePresta.classList.add('fiche-presta')
+  let modalMain = document.createElement('div')
+  modalMain.classList.add('modal-main')
+
+  let modalMainSeparator1 = document.createElement('div')
+  modalMainSeparator1.setAttribute('id', 'modal-main-separator')
+  modalMainSeparator1.innerHTML = "&nbsp;"
+  // <div id="modal-main-separator">&nbsp;</div>
+
+  let group_image_count = Math.max(liste_prestas.images.length, liste_prestas.images_legende.length)
+  for (let i=0; i<group_image_count; i++) {
+    let presta_image_group = document.createElement('div')
+    presta_image_group.classList.add('presta-image-group')
+    let presta_image = document.createElement('img')
+    presta_image.setAttribute('src', liste_prestas.images[i])
+    let presta_image_legende = document.createElement('div')
+    presta_image_legende.classList.add('presta-image-legende')
+    presta_image_legende.innerHTML = liste_prestas.images_legende[i]
+    
+  }
+
+  // <div class="presta-image-group">
+  //   <img class="presta-image" src="./img/presta/cuisine/cuisine_01.jpg" />
+  //   <div class="presta-image-legende">Cuisine type T3</div>
+  // </div>
+
+  let produitNom = document.createElement('div')
+  produitNom.classList.add('produit-nom')
+  produitNom.innerText = presta.nom
+
+  modalMain.appendChild(modalMainSeparator)
+  modalMain.appendChild(produitMarque)
+  modalMain.appendChild(produitNom)
+
+  for (let i = 0; i < group_count; i++) {
+
+    let produitGroup = document.createElement('div')
+    produitGroup.classList.add('produit-group')
+
+    let produitDescriptif = null
+    if (presta.descriptifs.length > i) {
+      produitDescriptif = document.createElement('div')
+      produitDescriptif.classList.add('produit-descriptif')
+      produitDescriptif.innerHTML = presta.descriptifs[i]
+    }
+
+    let produitPicture = null
+    if (presta.images.length > i) {
+      produitPicture = document.createElement('img')
+      produitPicture.classList.add('produit-picture')
+      produitPicture.setAttribute('src', presta.images[i])
+    }
+
+    if (i % 2 == 0) {
+      if (produitDescriptif !== null) produitGroup.appendChild(produitDescriptif)
+      if (produitPicture !== null) produitGroup.appendChild(produitPicture)
+    } else {
+      if (produitPicture !== null) produitGroup.appendChild(produitPicture)
+      if (produitDescriptif !== null) produitGroup.appendChild(produitDescriptif)
+    }
+
+    // <div class="produit-group">
+
+    //       <div class="produit-descriptif">
+    //           Dimensions disponibles:
+    //           <ul>
+    //               <li>70x120/140 cm</li>
+    //               <li>80x80/100/120/140 cm</li>
+    //               <li>90x90/120/140 cm</li>
+    //           </ul>
+    //       </div>
+
+    //       <img class="produit-picture" src="./img/produits/receveurs_stepinSanindusa.jpg" />
+    //   </div>
+
+    modalMain.appendChild(produitGroup)
+  }
+
+
+  fichePresta.appendChild(modalMain)
+  swiperSlideSubcontainer.appendChild(fichePresta)
+  swiperSlide.appendChild(swiperSlideSubcontainer)
+
+  return swiperSlide
+}
 
 
 

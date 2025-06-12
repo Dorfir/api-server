@@ -667,7 +667,7 @@ body {
     position: absolute;
     left: 0; top: 0; width: 100%; height: 100%;
     background-color: var(--greencity-blue);
-    display: block;
+    display: none;
 }
 #presta-fiche-main-subcontainer {
     position: absolute;
@@ -772,30 +772,12 @@ body {
 .fiche-presta .modal-main-separator {
     height:20px;
 }
-.fiche-presta .modal-main .presta-marque-1 {
-    font-family: "JosefinSans-Regular";
-    padding: 15px 0²px 2px 0px;
-    font-size:2.2em;
-    line-height: 1.2em;
-}
-.fiche-presta .modal-main .presta-marque-2 {
-    font-family: "JosefinSans-Bold";
-    padding: 10px 0px 2px 0px;
-    font-size:2.2em;
-    font-weight: 600;
-    line-height: 1.2em;
-    color:var(--greencity-yellow);
-}
+
 .fiche-presta .modal-main .presta-separator {
     width:100px;
 }
-.fiche-presta .modal-main .presta-nom {
-    font-family: "JosefinSans-Bold";
-    font-weight: 600; 
-    font-size: 1.6em;
-    padding: 10px 0;
-}
-.fiche-presta .modal-main .presta-group {
+
+.fiche-presta .modal-main .presta-image-group {
     width: 100%;
     font-family: "JosefinSans-Regular";
     display: flex;
@@ -805,14 +787,29 @@ body {
     align-items: center;
     gap: 10px;
 }
-
-.fiche-presta .modal-main .presta-picture {
-    max-width:40%;
+.fiche-presta .modal-main .presta-image-group .presta-image {
+    max-width:70%;
     opacity: 1;
 }
-.fiche-presta .modal-main .presta-descriptif {
-    font-size:1.6em;
+.fiche-presta .modal-main .presta-image-group .presta-image-legende {
+    font-size:2.1em;
+}
 
+.fiche-presta .modal-main .presta-group {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    gap: 10px;
+}
+.fiche-presta .modal-main .presta-descriptif {
+    font-family: "JosefinSans-Regular";
+    font-size:1.6em;
+}
+.fiche-presta .modal-main .presta-contractuel {
+    font-family: "JosefinSans-Regular";
 }
 
 
