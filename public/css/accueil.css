@@ -821,18 +821,23 @@ body {
     background-color: var(--soft-color);
 }
 
+@media screen and (min-width: 601px) and (max-width: 1600px) {
+    .fiche-presta .modal-main .presta-image-group .presta-image-legende {
+        font-size:1.8em;
+    }
+    .fiche-presta .modal-main .presta-image-group .presta-image {
+        max-width:60%;
+        opacity: 1;
+    }
+}
+
 @media screen and (max-width: 600px) {
     
-    .fiche-produit .modal-main .produit-marque {
-        font-size: 1.6em;
-        padding: 12px 9px 9px 9px;
+    .fiche-presta .modal-main .presta-image-group .presta-image-legende {
+        font-size:1.6em;
     }
-    .fiche-produit .modal-main .produit-nom { 
-        font-size: 1.0em;
-        padding: 8px 0;
-    }
-    .fiche-produit .modal-main .produit-descriptif {
-        font-size:0.8em;
+    .fiche-presta .modal-main .presta-image-group .presta-image {
+        max-width:55%;
     }
 }
 /* #endregion */

@@ -452,6 +452,7 @@ function createFichePrestaSwiperSlide(presta) {
     let presta_image_group = document.createElement('div')
     presta_image_group.classList.add('presta-image-group')
     let presta_image = document.createElement('img')
+    presta_image.classList.add('presta-image')
     presta_image.setAttribute('src', presta.images[i])
     let presta_image_legende = document.createElement('div')
     presta_image_legende.classList.add('presta-image-legende')
