@@ -527,44 +527,59 @@ body {
     left:0; top:150px; width:100%;  height:calc(100% - 150px);
     overflow-y: auto;
 }
+
 #presta-body { 
-    position:relative;
-    width: 80%;
-    min-height: calc(100% - 80px);
-    margin:60px auto 20px auto;
+    width: 70%;
+    margin:20px auto 20px auto;
     padding: 0;
 }
 
 .presta-element {
     margin:30px 1.3%;
     float:left;
-    max-width: 29%;
+    max-width: 30%;
     width: 500px;
-    min-width: 330px;
+    min-width: 340px;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
     justify-content: center;
-    cursor:pointer;
 }
+.clear {
+    clear: both;
+}
+
 .presta-element .presta-element-titre {
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: 'JosefinSans-Bold';
-    color: var(--greencity-yellow);
+    color: var(--greencity-blue);
     font-size: 1.5em;
-    background-color: var(--greencity-blue);
+    background-color: #ffffff;
     text-align: center;
-    padding:16px 10px 11px 10px;
+    padding:12px 0 7px 0;
 }
-.presta-element .presta-element-image img {
-    width:100%;
-    display: block;
-}
-.presta-element:hover .presta-element-titre {
+.presta-element .presta-element-liste {
     color: #ffffff;
+    background-color: var(--greencity-lightblue);
 }
+.presta-element .presta-element-liste ul {
+    line-height: 130%;
+    font-size: 1.1em;
+    padding-inline-start: 60px;
+}
+.presta-element .presta-element-liste li {
+    cursor: pointer;
+    padding: 2px 0;
+}
+.presta-element .presta-element-liste li:hover {
+    color: var(--greencity-blue);
+    font-size: 1.2em;
+}
+
+
+
 
 @media (min-width: 1000px) and (max-width: 1600px) {
     #presta-header { height:110px; }
@@ -662,7 +677,7 @@ body {
 /* #endregion */
 
 
-/* #region Prestation */
+/* #region Fiche Prestation */
 #presta-fiche-main-container {
     position: absolute;
     left: 0; top: 0; width: 100%; height: 100%;

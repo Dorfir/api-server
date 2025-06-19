@@ -32,8 +32,10 @@ displayLoader()
 let famillesReceived = false
 let categoriesReceived = false
 
+let liste_produits = null
 let liste_familles = null
 let id_famille_selected = null
+let id_categorie_selected = null
 
 const eventListeFamilleReceived = new Event("event-liste-famille-received")
 
@@ -53,7 +55,7 @@ async function getAllProduits() {
     }
     json = await response.json()
     if (json['status'] == 200) {
-      liste_familles = json['produits']
+      liste_produits = json['produits']
       window.dispatchEvent(eventListeFamilleReceived)
     }
   } catch (error) {
@@ -99,7 +101,10 @@ function getFamilleIndex(id_famille) {
 function initCreateProduct() {
   setSelectFamille()
   setSelectCategorie(id_famille_selected)
+  initMarque()
+  initNom()
   initDesciptions()
+  render()
 }
 
 function setSelectFamille() {
@@ -186,15 +191,38 @@ function setSelectCategorie(id_famille) {
 }
 function selectCategorieOnChange() {
   let select_categorie = document.getElementById('select_categorie')
-  console.log(parseInt(select_categorie.value))
-  let header_titre = document.getElementById('produit-header-titre-text')
-  header_titre.innerText = select_categorie.value
+  id_categorie_selected = parseInt(select_categorie.value)
+  render()
 }
 
+function initMarque() {
+  let input_marque = document.getElementById('input_marque')
+  input_marque.addEventListener('keyup', (e) => {
+    // console.log(e.target.value)
+    let produit_marque_1 = document.getElementById('produit-marque-1')
+    let produit_marque_2 = document.getElementById('produit-marque-2')
+    let splitted_marque = splitColorNameProduit(e.target.value, ' ')
+    produit_marque_1.innerText = splitted_marque[0]
+    if (splitted_marque.length > 1) {
+      produit_marque_2.innerText = splitted_marque[1]
+    }
+  })
+}
+
+function initNom() {
+  let input_nom = document.getElementById('input_nom')
+  input_nom.addEventListener('keyup', (e) => {
+    let produit_nom = document.getElementById('produit-nom')
+    produit_nom.innerText = e.target.value
+  })
+
+  
+}
 
 /* Desciptions */
 var createProductDescriptionQuills = Array()
 var createProductDescriptionQuillsIndex = 0
+var description_content = []
 function initDesciptions() {
 
   let quill_1 = new Quill('#description-0', {
@@ -205,16 +233,12 @@ function initDesciptions() {
     placeholder: "Votre description ..."
   })
   createProductDescriptionQuills[0] = quill_1
-  initQuillEvent(createProductDescriptionQuills[0])
-
-
+  initQuillEvent(createProductDescriptionQuills[0], 0)
 
   let add_description_item_btn = document.getElementById('add_desciption_item')
   add_description_item_btn.addEventListener('click', (e) => {
     createQuillDescription()
   })
-
-
 
   function createQuillDescription() {
 
@@ -253,7 +277,7 @@ function initDesciptions() {
       placeholder: "Votre description ..."
     })
     createProductDescriptionQuills[descriptionIndex] = new_quill
-    initQuillEvent(createProductDescriptionQuills[descriptionIndex])
+    initQuillEvent(createProductDescriptionQuills[descriptionIndex], descriptionIndex)
 
     btn_remove_quill.addEventListener('click', (e) => {
       let quill_index = parseInt(e.target.getAttribute('id').split('-')[1])
@@ -265,9 +289,11 @@ function initDesciptions() {
     })
   }
 
-  function initQuillEvent(quill) {
+  function initQuillEvent(quill, quill_index) {
     quill.on('text-change', (delta, oldDelta, source) => {
-      renderPreview(quill.getSemanticHTML())
+      // renderPreview(quill.getSemanticHTML())
+      description_content[quill_index] = quill.getSemanticHTML()
+      console.log(description_content)
     })
   }
   function renderPreview(html) {
@@ -369,7 +395,14 @@ function createNewCategorie() {
 
 /* Render */
 function render() {
+  let select_categorie = document.getElementById('select_categorie')
+  id_categorie_selected = parseInt(select_categorie.value)
 
+  console.log(id_famille_selected)
+  console.log(id_categorie_selected)
+  
+  let header_titre = document.getElementById('produit-header-titre-text')
+  header_titre.innerText = getCategorieName(id_categorie_selected).toUpperCase()
 }
 
 
@@ -481,4 +514,31 @@ function displayLoader() {
 function hideLoader() {
   let loaderContainer = document.getElementById('loader-container')
   loaderContainer.style.display = "none"
+}
+
+
+/* Data manipulation */
+function getCategorieName(id_cat) {
+  let nom_cat = null
+  liste_familles.forEach(famille => {
+    famille.liste_categories.forEach(categorie => {
+      if (categorie.id_categorie == id_cat) nom_cat = categorie.nom_categorie
+    })
+  })
+  return nom_cat
+}
+
+/* Divers */
+function splitColorNameProduit(nom_prod, separator) {
+  nom_prod = nom_prod.split(' ')
+  let blanc = ""
+  let gold = ""
+  nom_prod.forEach(mot => {
+    if (mot.toUpperCase() === mot) {
+      gold += mot + separator
+    } else {
+      blanc += mot + separator
+    }
+  })
+  return [blanc, gold]
 }

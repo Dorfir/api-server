@@ -129,17 +129,32 @@ presta_retour_btn.addEventListener('click', (e) => {
   presta_main_container.style.display = "none"
   // optionslist_main_container.style.display = "none"
 })
-let liste_presta = document.querySelectorAll('.presta-element')
-for(var presta_elem of liste_presta) {
-  presta_elem.addEventListener('click', (e) => {
-    console.log('click presta element')
-    let presta_rubrique_id = parseInt(e.currentTarget.getAttribute('id').split('presta_rubrique_id_')[1])
-    let prestas = getPrestasFromIdRubrique(presta_rubrique_id)
-    updateFichePresta(prestas)
-    let header_title = document.getElementById('presta-fiche-header-titre-text')
-    header_title.innerText = prestas[0].nom_rubrique.toUpperCase()
-    let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
-    presta_fiche_main_container.style.display = "block"
+let liste_presta = document.querySelectorAll('.presta-element-liste li')
+for(var presta_li of liste_presta) {
+  presta_li.addEventListener('click', (e) => {
+    console.log('click presta li element')
+    if (e.currentTarget.classList.contains('presta_cuisine')) {
+      let prestas = getPrestasFromIdRubrique(1)
+      updateFichePresta(prestas)
+      let header_title = document.getElementById('presta-fiche-header-titre-text')
+      header_title.innerText = prestas[0].nom_rubrique.toUpperCase()
+      let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
+      presta_fiche_main_container.style.display = 'block'
+    } else if (e.currentTarget.classList.contains('presta_sdb')) {
+      let prestas = getPrestasFromIdRubrique(2)
+      updateFichePresta(prestas)
+      let header_title = document.getElementById('presta-fiche-header-titre-text')
+      header_title.innerText = prestas[0].nom_rubrique.toUpperCase()
+      let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
+      presta_fiche_main_container.style.display = 'block'
+    } else if (e.currentTarget.classList.contains('presta_menuiserie')) {
+      let prestas = getPrestasFromIdRubrique(3)
+      updateFichePresta(prestas)
+      let header_title = document.getElementById('presta-fiche-header-titre-text')
+      header_title.innerText = prestas[0].nom_rubrique.toUpperCase()
+      let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
+      presta_fiche_main_container.style.display = 'block'
+    }
   })
 }
 let presta_fiche_header_close_btn = document.getElementById('presta-fiche-header-close-btn')

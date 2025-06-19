@@ -224,6 +224,77 @@ input[type=text] {
     cursor:pointer;
 }
 
+.fiche-produit-container {
+    position:absolute;
+    left:0; top:140px; width:100%; height:calc(100% - 140px);
+}
+.fiche-produit {
+    position:relative;  
+    max-width: calc(100% - 100px);
+    margin: 0 auto;
+    height: calc(100% - 25px);
+}
+.fiche-produit .modal-main {
+    /* flex: 1; */
+    text-align: left;
+    overflow: auto;
+    padding: 0 10px;
+    
+    height: calc(100%);
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 15px;
+}
+.fiche-produit .modal-main-separator {
+    height:20px;
+}
+.fiche-produit .modal-main .produit-marque-1 {
+    font-family: "JosefinSans-Regular";
+    padding: 15px 0²px 2px 0px;
+    font-size:2.2em;
+    line-height: 1.2em;
+}
+.fiche-produit .modal-main .produit-marque-2 {
+    font-family: "JosefinSans-Bold";
+    padding: 10px 0px 2px 0px;
+    font-size:2.2em;
+    font-weight: 600;
+    line-height: 1.2em;
+    color:var(--greencity-yellow);
+}
+.fiche-produit .modal-main .produit-separator {
+    width:100px;
+}
+.fiche-produit .modal-main .produit-nom {
+    font-family: "JosefinSans-Bold";
+    font-weight: 600; 
+    font-size: 1.6em;
+    padding: 10px 0;
+}
+.fiche-produit .modal-main .produit-group {
+    width: 100%;
+    font-family: "JosefinSans-Regular";
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    gap: 10px;
+}
+
+.fiche-produit .modal-main .produit-picture {
+    max-width:40%;
+    opacity: 1;
+}
+.fiche-produit .modal-main .produit-descriptif {
+    font-size:1.6em;
+
+}
+
 /* #endregion */
 
 
