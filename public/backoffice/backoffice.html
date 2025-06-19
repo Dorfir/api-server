@@ -4,7 +4,7 @@
 <head>
   <title>Backoffice</title>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="backoffice.css">
   <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 
   <link rel="shortcut icon" href="../favicon.png" type="image/png">
@@ -16,20 +16,23 @@
 
     <div id="form-container">
 
-      <div class="ligne" id="create_famille">
-      </div>
+      <div class="ligne" id="create_famille"></div>
 
-      <div class="ligne" id="create_categorie">
+      <div class="ligne" id="create_categorie"></div>
+
+      <div class="ligne" id="create_nom">
+        <div class="form_label">Nom</div>
+        <input type="text" id="input_nom" placeholder="Nom du produit" autocomplete="new-password">
       </div>
 
       <div class="ligne" id="create_marque">
         <div class="form_label">Marque</div>
-        <input type="text" id="input_marque" placeholder="Marque du produit">
+        <input type="text" id="input_marque" placeholder="Marque du produit" autocomplete="new-password">
       </div>
 
-      <div class="ligne" id="create_nom">
-        <div class="form_label">Nom</div>
-        <input type="text" id="input_nom" placeholder="Nom du produit">
+      <div class="ligne" id="create_titre_group">
+        <div class="form_label">Titre</div>
+        <input type="text" id="input_titre_groupe" placeholder="Titre section" autocomplete="new-password">
       </div>
 
       <div id="description-big-container">
@@ -63,8 +66,7 @@
         <svg id="produit-header-close-btn" viewBox="0 0 50 50">
           <rect x="0" y="0" width="50" height="50" fill="#ffffff" opacity="0.001"></rect>
           <path fill="#1a2a48" d="M0,0v50h50V0h0ZM47.58,47.58H2.41V2.41h45.17v45.17Z" />
-          <polygon fill="#1a2a48"
-            points="14.92 16.75 16.49 15.18 25.1 23.56 33.25 15.18 34.92 16.74 26.83 25.03 35.11 33.2 33.53 34.78 24.92 26.4 16.76 34.78 15.09 33.22 23.19 24.92 14.92 16.75" />
+          <polygon fill="#1a2a48" points="14.92 16.75 16.49 15.18 25.1 23.56 33.25 15.18 34.92 16.74 26.83 25.03 35.11 33.2 33.53 34.78 24.92 26.4 16.76 34.78 15.09 33.22 23.19 24.92 14.92 16.75" />
         </svg>
       </div>
 
@@ -72,14 +74,20 @@
         <div class="fiche-produit">
           <div class="modal-main">
             <div class="modal-main-separator">&nbsp;</div>
-            <div class="produit-marque">
-              <div class="produit-marque-1" id="produit-marque-1"></div>
-              <div class="produit-marque-2" id="produit-marque-2"></div>
+            <div class="produit-marque-container">
+              <div class="produit-nom" id="produit-nom"></div>
+              <div class="produit-marque" id="produit-marque"></div>
               <svg viewBox="0 0 100 5" class="produit-separator">
                 <line x1="0" y1="3" x2="100" y2="3" class="line-svg-thin" />
               </svg>
             </div>
-            <div class="produit-nom" id="produit-nom"></div>
+            <div class="produit-titre-groupe" id="produit-titre-groupe"></div>
+
+            <div class="produit-group">
+              <div class="produit-descriptif" id='produit-descriptif'></div>
+              <img src="../img/produits/paroisDouche_concertoWalkAlterna.jpg" class="produit-picture">
+            </div>
+
           </div>
         </div>
 
@@ -127,7 +135,7 @@
   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 
   <!-- Initialize Quill editor -->
-  <script src="script.js"></script>
+  <script src="backoffice.js"></script>
 
 
 </body>

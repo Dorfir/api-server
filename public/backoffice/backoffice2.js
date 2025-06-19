@@ -1,33 +1,5 @@
 displayLoader()
 /* https://quilljs.com/docs/api#content */
-// var app = app || {}
-// app.edit = app.edit || {}
-// app.edit = {
-
-//   quill: new Quill('#editor', {
-//     modules: {
-//       toolbar: true,
-//     },
-//     theme: 'snow',
-//     placeholder: "Votre description ..."
-//   }),
-
-//   initQuillEvent: () => {
-//     app.edit.quill.on('text-change', (delta, oldDelta, source) => {
-//       app.edit.renderPreview(app.edit.quill.getSemanticHTML())
-//     })
-//   },
-
-//   renderPreview: ((html) => {
-//     console.log("render")
-//     let renderDiv = document.getElementById('render')
-//     renderDiv.innerHTML = html
-//   })
-
-// }
-// console.log(app.edit.quill)
-// app.edit.initQuillEvent()
-
 
 let famillesReceived = false
 let categoriesReceived = false
@@ -38,7 +10,6 @@ let id_famille_selected = null
 let id_categorie_selected = null
 
 const eventListeFamilleReceived = new Event("event-liste-famille-received")
-
 
 
 // getAllProduits()
@@ -101,9 +72,10 @@ function getFamilleIndex(id_famille) {
 function initCreateProduct() {
   setSelectFamille()
   setSelectCategorie(id_famille_selected)
-  initMarque()
   initNom()
-  initDesciptions()
+  initMarque()
+  initTitre()
+  initDescriptions()
   render()
 }
 
@@ -149,6 +121,7 @@ function selectFamilleOnChange() {
   let select_famille = document.getElementById('select_famille')
   id_famille_selected = parseInt(select_famille.value)
   setSelectCategorie(parseInt(select_famille.value))
+  // render()
 }
 
 function setSelectCategorie(id_famille) {
@@ -188,25 +161,13 @@ function setSelectCategorie(id_famille) {
   select_cat.addEventListener('change', selectCategorieOnChange)
   add_cat_btn.addEventListener('click', openEditCategoriePopup)
 
+  selectCategorieOnChange()
+
 }
 function selectCategorieOnChange() {
   let select_categorie = document.getElementById('select_categorie')
   id_categorie_selected = parseInt(select_categorie.value)
   render()
-}
-
-function initMarque() {
-  let input_marque = document.getElementById('input_marque')
-  input_marque.addEventListener('keyup', (e) => {
-    // console.log(e.target.value)
-    let produit_marque_1 = document.getElementById('produit-marque-1')
-    let produit_marque_2 = document.getElementById('produit-marque-2')
-    let splitted_marque = splitColorNameProduit(e.target.value, ' ')
-    produit_marque_1.innerText = splitted_marque[0]
-    if (splitted_marque.length > 1) {
-      produit_marque_2.innerText = splitted_marque[1]
-    }
-  })
 }
 
 function initNom() {
@@ -215,15 +176,27 @@ function initNom() {
     let produit_nom = document.getElementById('produit-nom')
     produit_nom.innerText = e.target.value
   })
-
-  
+}
+function initMarque() {
+  let input_marque = document.getElementById('input_marque')
+  input_marque.addEventListener('keyup', (e) => {
+    let produit_marque = document.getElementById('produit-marque')
+    produit_marque.innerText = e.target.value.toUpperCase()
+  })
+}
+function initTitre() {
+  let input_titre_group = document.getElementById('input_titre_groupe')
+  input_titre_group.addEventListener('keyup', (e) => {
+    let produit_titre_groupe = document.getElementById('produit-titre-groupe')
+    produit_titre_groupe.innerText = e.target.value
+  })
 }
 
 /* Desciptions */
 var createProductDescriptionQuills = Array()
 var createProductDescriptionQuillsIndex = 0
 var description_content = []
-function initDesciptions() {
+function initDescriptions() {
 
   let quill_1 = new Quill('#description-0', {
     modules: {
@@ -284,7 +257,10 @@ function initDesciptions() {
       selected_quill = createProductDescriptionQuills[quill_index]
       selected_quill.enable(false)
       selected_quill = null
+      // createProductDescriptionQuills.splice(quill_index, 1)
+      // description_content.splice(quill_index, 1)
       delete createProductDescriptionQuills[quill_index]
+      delete description_content[quill_index]
       description_big_container.removeChild(document.getElementById('quill_container-'+(quill_index)))
     })
   }
@@ -293,7 +269,9 @@ function initDesciptions() {
     quill.on('text-change', (delta, oldDelta, source) => {
       // renderPreview(quill.getSemanticHTML())
       description_content[quill_index] = quill.getSemanticHTML()
-      console.log(description_content)
+      // console.log(description_content)
+      // console.log(createProductDescriptionQuills)
+      render()
     })
   }
   function renderPreview(html) {
@@ -403,6 +381,10 @@ function render() {
   
   let header_titre = document.getElementById('produit-header-titre-text')
   header_titre.innerText = getCategorieName(id_categorie_selected).toUpperCase()
+
+  let produit_descriptif = document.getElementById('produit-descriptif')
+  if (description_content.length > 0) 
+    produit_descriptif.innerHTML = description_content[0]
 }
 
 
@@ -542,3 +524,4 @@ function splitColorNameProduit(nom_prod, separator) {
   })
   return [blanc, gold]
 }
+
