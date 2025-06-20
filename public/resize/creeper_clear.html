@@ -1,69 +1,59 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Creeper Thumb</title>
-        <meta charset="UTF-8">
-        <link rel="stylesheet" href="creeper_clear.css">
-    </head>
-    <body style="background-color:#eee;">
-        
-        <div id="popup-canvas-container">
+<head>
+  <title>Creeper Thumb</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="creeper_clear.css">
+</head>
 
-            <div id="popup-canvas">
+<body style="background-color:#eee;">
 
-                <div id="canvas_big_container">
-                    <div id="canvas-zoom-container">
-                        Zoom de l'image : <input type="range" name="zoom" id="zoom" min="-1" max="1" step="0.1" value="0">
-                    </div>
-                    <canvas id="canvas"></canvas>
-                    <div id="drag-drop-area">
-                        <div class="drop-container">
-                            <span class="drop-title">Déposer votre fichier image</span>
-                            ou
-                            <input type="file" id="filesearch_button" accept="image/*" required>
-                        </div>
-                    </div>
+  <div id="popup-canvas-container">
 
-                    
+    <div id="popup-canvas">
 
-                    <div id="download_btn_container">
-                        <div id="reload-button">
-                            <img src="./img/reload.svg" alt=""> <span>Charger une autre image</span>
-                        </div>
-                        <button class="download">Valider cette sélection</button>
-                    </div>
-
-                </div>
-
-            </div>
-
+      <div id="canvas_big_container">
+        <div id="canvas-zoom-container">
+          Zoom de l'image : <input type="range" name="zoom" id="zoom" min="-1" max="1" step="0.1" value="0">
+        </div>
+        <canvas id="canvas"></canvas>
+        <div id="drag-drop-area">
+          <div class="drop-container">
+            <span class="drop-title">Déposer votre fichier image</span>
+            ou
+            <input type="file" id="filesearch_button" accept="image/*" required>
+          </div>
         </div>
 
-        <div id="display-result">
-            <img id="display-result-img" src="" alt="">
-        </div>
-        
-
-        <canvas id="canvas2"></canvas>
-        
-
-        <div id="console">
-            <div>Global : <span id='consoleGlobalCoord'></span></div>
-            <div>Canvas : <span id='consoleLocalCoord'></span></div>
-            <div>Bounds : <span id='consoleCanvasCoord'></span></div>
+        <div id="download_btn_container">
+          <div id="reload-button">
+            <img src="./img/reload.svg" alt=""> <span>Charger une autre image</span>
+          </div>
+          <button class="download">Valider cette sélection</button>
         </div>
 
-        <script>
-            
-        </script>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div id="display-result">
+    <img id="display-result-img" src="" alt="">
+  </div>
 
 
-
-        <script src="creeper_clear.js"></script>
-
-        
+  <canvas id="canvas2"></canvas>
 
 
-    </body>
+  <div id="console">
+    <div>Global : <span id='consoleGlobalCoord'></span></div>
+    <div>Canvas : <span id='consoleLocalCoord'></span></div>
+    <div>Bounds : <span id='consoleCanvasCoord'></span></div>
+  </div>
+
+
+  <script src="creeper_clear.js"></script>
+
+</body>
 </html>
-

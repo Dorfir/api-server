@@ -1,6 +1,7 @@
 displayLoader()
 /* https://quilljs.com/docs/api#content */
 
+
 let famillesReceived = false
 let categoriesReceived = false
 
@@ -10,6 +11,7 @@ let id_famille_selected = null
 let id_categorie_selected = null
 
 const eventListeFamilleReceived = new Event("event-liste-famille-received")
+
 
 
 // getAllProduits()
@@ -75,7 +77,7 @@ function initCreateProduct() {
   initNom()
   initMarque()
   initTitre()
-  initDescriptions()
+  initDesciptions()
   render()
 }
 
@@ -196,7 +198,7 @@ function initTitre() {
 var createProductDescriptionQuills = Array()
 var createProductDescriptionQuillsIndex = 0
 var description_content = []
-function initDescriptions() {
+function initDesciptions() {
 
   let quill_1 = new Quill('#description-0', {
     modules: {

@@ -34,6 +34,8 @@ html, body {
     gap:12px;
     
 }
+
+
 #form-container {
     display: flex;
     flex-direction: column;
@@ -60,11 +62,6 @@ html, body {
 
 #description-big-container {
     /* border: 2px solid red; */
-}
-
-#form-container hr {
-    border:1px solid #eee;
-    width: 100%;
 }
 
 .description-editor {
@@ -286,7 +283,7 @@ input[type=text] {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     gap: 10px;
 }

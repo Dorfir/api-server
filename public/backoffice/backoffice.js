@@ -1,7 +1,6 @@
 displayLoader()
 /* https://quilljs.com/docs/api#content */
 
-
 let famillesReceived = false
 let categoriesReceived = false
 
@@ -11,7 +10,6 @@ let id_famille_selected = null
 let id_categorie_selected = null
 
 const eventListeFamilleReceived = new Event("event-liste-famille-received")
-
 
 
 // getAllProduits()
@@ -77,7 +75,7 @@ function initCreateProduct() {
   initNom()
   initMarque()
   initTitre()
-  initDesciptions()
+  initDescriptions()
   render()
 }
 
@@ -194,11 +192,11 @@ function initTitre() {
   })
 }
 
-/* Desciptions */
+/* Descriptions */
 var createProductDescriptionQuills = Array()
 var createProductDescriptionQuillsIndex = 0
 var description_content = []
-function initDesciptions() {
+function initDescriptions() {
 
   let quill_1 = new Quill('#description-0', {
     modules: {
@@ -372,6 +370,20 @@ function createNewCategorie() {
     sendNewCategorie(input_value, id_famille_selected)
   }
 }
+
+/* Image */
+document.getElementById('add_thumb').addEventListener('click', (e) => {
+  let popup_canvas_container = document.getElementById('popup-canvas-container')
+  popup_canvas_container.style.display = "block"
+})
+window.addEventListener('event-image-canvas2', (e) => {
+  let popup_canvas_container = document.getElementById('popup-canvas-container')
+  popup_canvas_container.style.display = "none"
+  let display_result_img = document.getElementById('produit-picture')
+    display_result_img.src = canvas2.toDataURL("image/jpeg", 0.7)
+    display_result_img.style.display = "block"
+
+}, false)
 
 /* Render */
 function render() {
