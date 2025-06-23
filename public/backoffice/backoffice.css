@@ -279,14 +279,9 @@ input[type=text] {
 
 /* #region Render zone */
 #render {
-  /* display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    justify-content: flex-start; */
   position: relative;
   flex-grow: 1;
   min-width: 45vw;
-  /* max-width: 50vw; */
   height: calc(100vh - 45px);
   gap: 10px;
   border: 1px solid #444444;
@@ -347,13 +342,10 @@ input[type=text] {
 }
 
 .fiche-produit .modal-main {
-  /* flex: 1; */
   text-align: left;
   overflow: auto;
   padding: 0 10px;
-
-  height: calc(100%);
-
+  height: 100%;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -369,14 +361,14 @@ input[type=text] {
 .fiche-produit .modal-main .produit-nom {
   font-family: "JosefinSans-Regular";
   padding: 15px 0px 2px 0px;
-  font-size: 2.2em;
+  font-size: 1.9em;
   line-height: 1.2em;
 }
 
 .fiche-produit .modal-main .produit-marque {
   font-family: "JosefinSans-Bold";
   padding: 10px 0px 2px 0px;
-  font-size: 2.2em;
+  font-size: 2.1em;
   font-weight: 600;
   line-height: 1.2em;
   color: var(--greencity-yellow);
@@ -569,6 +561,13 @@ input[type=text] {
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 
   box-sizing: border-box;
+}
+
+#close-popup-canvas-container {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  display: block;
 }
 
 /* #endregion */

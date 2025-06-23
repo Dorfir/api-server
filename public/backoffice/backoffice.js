@@ -384,6 +384,10 @@ window.addEventListener('event-image-canvas2', (e) => {
     display_result_img.style.display = "block"
 
 }, false)
+document.getElementById('close-popup-canvas-container').addEventListener('click', (e) => {
+  let popup_canvas_container = document.getElementById('popup-canvas-container')
+  popup_canvas_container.style.display = "none"
+})
 
 /* Render */
 function render() {

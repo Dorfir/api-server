@@ -115,6 +115,7 @@ accueil_options.addEventListener('click', (e) => {
 })
 let accueil_presta = document.getElementById('accueil_presta')
 accueil_presta.addEventListener('click', (e) => {
+  console.log('-- accueil presta')
   let options_main_container = document.getElementById('options-main-container')
   let presta_main_container = document.getElementById('presta-main-container')
   options_main_container.style.display = "none"
@@ -176,7 +177,9 @@ options_retour_btn.addEventListener('click', (e) => {
 let liste_li = document.querySelectorAll('.options-element-liste li')
 for (var li of liste_li) {
   li.addEventListener('click', (e) => {
+    console.log('click options li element')
     let id_categorie = parseInt(e.target.getAttribute('id').split('famille_')[1])
+    // console.log(id_categorie)
     if (isCatExistInProductList(id_categorie)) initOptionsListPage(id_categorie)
   })
 }
@@ -223,6 +226,7 @@ const swiperOption = new Swiper('.swiperOption', {
 
 function initOptionsListPage(id_cat) {
 
+  console.log('-- initOptionsListPage')
   // create options list page
   let liste_produits = getProduitsFromCategorie(id_cat)
   
