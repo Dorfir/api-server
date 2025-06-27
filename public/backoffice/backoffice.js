@@ -15,7 +15,8 @@ const eventListeFamilleReceived = new Event("event-liste-famille-received")
 // getAllProduits()
 async function getAllProduits() {
   let json = null
-  const url = "http://localhost/green_catalogue_rest/getProduits.php";
+  const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getProduits.php";
+  // const url = "http://localhost/green_catalogue_rest/getProduits.php";
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -36,7 +37,8 @@ async function getAllProduits() {
 getListeFamilles()
 async function getListeFamilles() {
   let json = null
-  const url = "http://localhost/green_catalogue_rest/getFamillesAndCategories.php";
+  const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getFamillesAndCategories.php";
+  // const url = "http://localhost/green_catalogue_rest/getFamillesAndCategories.php";
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -64,7 +66,7 @@ window.addEventListener('event-liste-famille-received', (e) => {
 function getFamilleIndex(id_famille) {
   let famille_index = null
   liste_familles.forEach((famille, index_famille) => {
-    if (famille['id_famille'] === id_famille) famille_index = index_famille
+    if (parseInt(famille['id_famille']) === id_famille) famille_index = index_famille
   });
   return famille_index
 }
@@ -192,6 +194,65 @@ function initTitre() {
   })
 }
 
+/* Description group */
+createDescriptionGroup()
+function createDescriptionGroup() {
+
+  let top_separator = document.createElement('hr')
+
+  let titre_group = xCreateElement('div', 'ligne', 'create_titre_gorupe')
+  let titre_group_label = xCreateElement('div', 'ligne form_label', '')
+  titre_group_label.innerHTML = "Titre"
+  titre_group.appendChild(titre_group_label)
+  let titre_group_input = xCreateElement('input', '', 'input_titre_groupe')
+  titre_group_input.setAttribute('type', 'text')
+  titre_group_input.setAttribute('placeholder', 'Titre section')
+  titre_group_input.setAttribute('autocomplete', 'new-password')
+  titre_group.appendChild(titre_group_input)
+
+  let description_big_container = xCreateElement('div', '', 'description-big-container')
+  let description_form_label = xCreateElement('div', 'form_label', '')
+  description_form_label.innerHTML = 'Descriptions'
+  let quill_container = xCreateElement('div', 'quill-container', '')
+  let editor_container = xCreateElement('div', 'editor-container', '')
+  let description_editor = xCreateElement('div', 'description-editor', 'description-0')
+  editor_container.appendChild(description_editor)
+  quill_container.appendChild(editor_container)
+  description_big_container.appendChild(quill_container)
+
+  let image_ligne = xCreateElement('div', 'ligne', '')
+  let image_form_label = xCreateElement('div', 'form_label', '')
+  let image_input = xCreateElement('input', '', 'add_thumb')
+  image_input.setAttribute('type', 'button')
+  image_input.setAttribute('value', 'Ajouter une image vignette')
+  image_form_label.appendChild(image_input)
+  image_ligne.appendChild(image_form_label)
+
+  
+
+  // <hr />
+
+  // <div class="ligne" id="create_titre_group">
+  //   <div class="form_label">Titre</div>
+  //   <input type="text" id="input_titre_groupe" placeholder="Titre section" autocomplete="new-password">
+  // </div>
+
+  // <div id="description-big-container">
+  //   <div class="form_label">Descriptions</div>
+  //   <div class="quill-container">
+  //     <div class="editor-container">
+  //       <div class="description-editor" id="description-0"></div>
+  //     </div>
+  //   </div>
+  //   <input type="button" value="+ Ajouter un paragraphe de description" id="add_desciption_item">
+  // </div>
+
+  // <div class="ligne">
+  //   <div class="form_label">Vignette</div>
+  //   <input type="button" value="Ajouter une image vignette" id="add_thumb">
+  // </div>
+}
+
 /* Descriptions */
 var createProductDescriptionQuills = Array()
 var createProductDescriptionQuillsIndex = 0
@@ -267,7 +328,6 @@ function initDescriptions() {
 
   function initQuillEvent(quill, quill_index) {
     quill.on('text-change', (delta, oldDelta, source) => {
-      // renderPreview(quill.getSemanticHTML())
       description_content[quill_index] = quill.getSemanticHTML()
       // console.log(description_content)
       // console.log(createProductDescriptionQuills)
@@ -389,13 +449,17 @@ document.getElementById('close-popup-canvas-container').addEventListener('click'
   popup_canvas_container.style.display = "none"
 })
 
+
+
+
+
 /* Render */
 function render() {
   let select_categorie = document.getElementById('select_categorie')
   id_categorie_selected = parseInt(select_categorie.value)
 
-  console.log(id_famille_selected)
-  console.log(id_categorie_selected)
+  // console.log(id_famille_selected)
+  // console.log(id_categorie_selected)
   
   let header_titre = document.getElementById('produit-header-titre-text')
   header_titre.innerText = getCategorieName(id_categorie_selected).toUpperCase()
@@ -541,5 +605,16 @@ function splitColorNameProduit(nom_prod, separator) {
     }
   })
   return [blanc, gold]
+}
+
+function xCreateElement(type, elem_classes, elem_id) {
+  let element = document.createElement(type)
+  if (elem_classes !== "") {
+    elem_classes.split(' ').forEach((elem_class) => {
+      element.classList.add(elem_class)
+    })
+  }
+  if (elem_id !== "") element.id = elem_id
+  return element
 }
 

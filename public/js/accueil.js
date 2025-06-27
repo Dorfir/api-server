@@ -4,7 +4,8 @@ var json_data = null
 
 getData()
 async function getData() {
-  const url = "http://localhost/green_catalogue_rest/getProduits.php";
+  // const url = "http://localhost/green_catalogue_rest/getProduits.php";
+  const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getProduits.php";
   // const url = "../green_catalogue_rest/getProduits.php";
   // const url = "http://localhost:80/green_catalogue_rest/test.json";
   // const url = "https://www.visiolab.fr/test.json";
