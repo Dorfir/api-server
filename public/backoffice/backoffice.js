@@ -15,8 +15,8 @@ const eventListeFamilleReceived = new Event("event-liste-famille-received")
 // getAllProduits()
 async function getAllProduits() {
   let json = null
-  const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getProduits.php";
-  // const url = "http://localhost/green_catalogue_rest/getProduits.php";
+  // const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getProduits.php";
+  const url = "http://localhost/green_catalogue_rest/getProduits.php";
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -37,8 +37,8 @@ async function getAllProduits() {
 getListeFamilles()
 async function getListeFamilles() {
   let json = null
-  const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getFamillesAndCategories.php";
-  // const url = "http://localhost/green_catalogue_rest/getFamillesAndCategories.php";
+  // const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getFamillesAndCategories.php";
+  const url = "http://localhost/green_catalogue_rest/getFamillesAndCategories.php";
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -77,7 +77,7 @@ function initCreateProduct() {
   initNom()
   initMarque()
   initTitre()
-  initDescriptions()
+  // initDescriptions()
   render()
 }
 
@@ -198,9 +198,11 @@ function initTitre() {
 createDescriptionGroup()
 function createDescriptionGroup() {
 
+  let description_group = xCreateElement('div', '', 'description-group')
+
   let top_separator = document.createElement('hr')
 
-  let titre_group = xCreateElement('div', 'ligne', 'create_titre_gorupe')
+  let titre_group = xCreateElement('div', 'ligne', 'create_titre_groupe')
   let titre_group_label = xCreateElement('div', 'ligne form_label', '')
   titre_group_label.innerHTML = "Titre"
   titre_group.appendChild(titre_group_label)
@@ -228,7 +230,13 @@ function createDescriptionGroup() {
   image_form_label.appendChild(image_input)
   image_ligne.appendChild(image_form_label)
 
-  
+  description_group.appendChild(top_separator)
+  description_group.appendChild(titre_group)
+  description_group.appendChild(description_big_container)
+  description_group.appendChild(image_ligne)
+
+  let form_container = document.getElementById('form-container')
+  form_container.appendChild(description_group)
 
   // <hr />
 
