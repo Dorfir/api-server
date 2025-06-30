@@ -116,6 +116,9 @@ body {
   border: 1px solid #444444;
   border-radius: 5px;
   padding: 10px;
+  height: calc(100vh - 45px);
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .ligne {
@@ -759,3 +762,55 @@ div.wrapper {
 }
 
 /* #endregion */
+
+
+/* ---------------------------------------------------------------- */
+/* #region 		  xCustomScroll	         							*/
+/* width */
+.xCustomScroll::-webkit-scrollbar {
+	width: 6px;
+  height: 6px;
+}
+
+/* button */
+.xCustomScroll::-webkit-scrollbar-button {
+	background: #fff;
+	display: none;
+}
+
+/* Handle */
+.xCustomScroll::-webkit-scrollbar-thumb {
+	background: #727272;
+	border-radius: 4px;
+}
+
+/* Handle on hover */
+.xCustomScroll::-webkit-scrollbar-thumb:hover {
+	background: #838383;
+}
+
+/* Track */
+.xCustomScroll::-webkit-scrollbar-track {
+	background: #e5e5e5;
+	border-radius: 4px;
+}
+
+/* The track NOT covered by the handle.
+::-webkit-scrollbar-track-piece {
+    background: #000;
+}
+
+/* Corner */
+/* .xCustomScroll::-webkit-scrollbar-corner {
+    background: #999;
+}*/
+
+/* Resizer */
+/*.xCustomScroll::-webkit-resizer {
+    background: #111;
+} */
+/* #endregion														*/
+/* ---------------------------------------------------------------- */
+
+
+

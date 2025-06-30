@@ -9,14 +9,16 @@ let liste_familles = null
 let id_famille_selected = null
 let id_categorie_selected = null
 
+
+/* -- Gathering Data ---------------------------------------------------------------------------------------------------- */
+const eventProduitsReceived = new Event("event-produits-received")
 const eventListeFamilleReceived = new Event("event-liste-famille-received")
 
-
-// getAllProduits()
+getAllProduits()
 async function getAllProduits() {
   let json = null
-  // const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getProduits.php";
-  const url = "http://localhost/green_catalogue_rest/getProduits.php";
+  const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getProduits.php";
+  // const url = "http://localhost/green_catalogue_rest/getProduits.php";
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -28,17 +30,21 @@ async function getAllProduits() {
     json = await response.json()
     if (json['status'] == 200) {
       liste_produits = json['produits']
-      window.dispatchEvent(eventListeFamilleReceived)
+      window.dispatchEvent(eventProduitsReceived)
     }
   } catch (error) {
     console.error(error.message);
   }
 }
+window.addEventListener('event-produits-received', (e)=> {
+  console.log(liste_produits)
+})
+
 getListeFamilles()
 async function getListeFamilles() {
   let json = null
-  // const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getFamillesAndCategories.php";
-  const url = "http://localhost/green_catalogue_rest/getFamillesAndCategories.php";
+  const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getFamillesAndCategories.php";
+  // const url = "http://localhost/green_catalogue_rest/getFamillesAndCategories.php";
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -71,13 +77,17 @@ function getFamilleIndex(id_famille) {
   return famille_index
 }
 
+
+
+/* -- Formulaire initialization ------------------------------------------------------------------------------------------- */
 function initCreateProduct() {
   setSelectFamille()
   setSelectCategorie(id_famille_selected)
   initNom()
   initMarque()
-  initTitre()
+  // initTitre()
   // initDescriptions()
+  initDescriptionGroup()
   render()
 }
 
@@ -186,27 +196,36 @@ function initMarque() {
     produit_marque.innerText = e.target.value.toUpperCase()
   })
 }
-function initTitre() {
-  let input_titre_group = document.getElementById('input_titre_groupe')
-  input_titre_group.addEventListener('keyup', (e) => {
-    let produit_titre_groupe = document.getElementById('produit-titre-groupe')
-    produit_titre_groupe.innerText = e.target.value
-  })
-}
+
 
 /* Description group */
-createDescriptionGroup()
-function createDescriptionGroup() {
+var createProductDescriptionQuills = Array()
+var createProductDescriptionQuillsIndex = 0
+var description_content = []
 
-  let description_group = xCreateElement('div', '', 'description-group')
+function initDescriptionGroup() {
+  createDescriptionGroup(0)
+
+  let add_description_group_btn = document.getElementById('add_desciption_group')
+  add_description_group_btn.addEventListener('click', (e) => {
+    createDescriptionGroup(createProductDescriptionQuills.length)
+  })
+
+}
+
+function createDescriptionGroup(index) {
+
+  let description_group_container = document.getElementById('description-group-container')
+
+  let description_group = xCreateElement('div', '', `description-group-${index}`)
 
   let top_separator = document.createElement('hr')
 
-  let titre_group = xCreateElement('div', 'ligne', 'create_titre_groupe')
+  let titre_group = xCreateElement('div', 'ligne', '')
   let titre_group_label = xCreateElement('div', 'ligne form_label', '')
-  titre_group_label.innerHTML = "Titre"
+  titre_group_label.innerHTML = "Bloc de description"
   titre_group.appendChild(titre_group_label)
-  let titre_group_input = xCreateElement('input', '', 'input_titre_groupe')
+  let titre_group_input = xCreateElement('input', 'input_titre_groupe', `input_titre_groupe-${index}`)
   titre_group_input.setAttribute('type', 'text')
   titre_group_input.setAttribute('placeholder', 'Titre section')
   titre_group_input.setAttribute('autocomplete', 'new-password')
@@ -217,9 +236,18 @@ function createDescriptionGroup() {
   description_form_label.innerHTML = 'Descriptions'
   let quill_container = xCreateElement('div', 'quill-container', '')
   let editor_container = xCreateElement('div', 'editor-container', '')
-  let description_editor = xCreateElement('div', 'description-editor', 'description-0')
+  let description_editor = xCreateElement('div', 'description-editor', `description-${index}`)
   editor_container.appendChild(description_editor)
   quill_container.appendChild(editor_container)
+  let btn_remove_quill = null
+  if (index > 0) {
+    let quill_btn_container = xCreateElement('div', 'quill_btn_container', '')
+    btn_remove_quill = xCreateElement('input', '', `remove_description-${index}`)
+    btn_remove_quill.setAttribute('type', 'button')
+    btn_remove_quill.setAttribute('value', "Supp.")
+    quill_btn_container.appendChild(btn_remove_quill)
+    quill_container.appendChild(quill_btn_container)
+  }
   description_big_container.appendChild(quill_container)
 
   let image_ligne = xCreateElement('div', 'ligne', '')
@@ -235,36 +263,72 @@ function createDescriptionGroup() {
   description_group.appendChild(description_big_container)
   description_group.appendChild(image_ligne)
 
-  let form_container = document.getElementById('form-container')
-  form_container.appendChild(description_group)
+  description_group_container.appendChild(description_group)
 
-  // <hr />
+  if (index > 0) {
+    btn_remove_quill.addEventListener('click', (e) => {
+      console.log('-- remove description group')
+    })
+  }
 
-  // <div class="ligne" id="create_titre_group">
-  //   <div class="form_label">Titre</div>
-  //   <input type="text" id="input_titre_groupe" placeholder="Titre section" autocomplete="new-password">
-  // </div>
+  
+  titre_group_input.addEventListener('keyup', (e) => {
+    let produit_titre_groupe = document.getElementById('produit-titre-groupe')
+    produit_titre_groupe.innerText = e.target.value
+  })
 
-  // <div id="description-big-container">
-  //   <div class="form_label">Descriptions</div>
-  //   <div class="quill-container">
-  //     <div class="editor-container">
-  //       <div class="description-editor" id="description-0"></div>
-  //     </div>
-  //   </div>
-  //   <input type="button" value="+ Ajouter un paragraphe de description" id="add_desciption_item">
-  // </div>
+  let new_quill = new Quill(`#description-${index}`, {
+    modules: {
+      toolbar: true,
+    },
+    theme: 'snow',
+    placeholder: "Votre description ..."
+  })
+  createProductDescriptionQuills.push(new_quill)
 
-  // <div class="ligne">
-  //   <div class="form_label">Vignette</div>
-  //   <input type="button" value="Ajouter une image vignette" id="add_thumb">
-  // </div>
+  new_quill.on('text-change', (delta, oldDelta, source) => {
+    description_content[index] = new_quill.getSemanticHTML()
+    render()
+  })
+
+  initImage()
+
+  // let add_description_item_btn = document.getElementById('add_desciption_item')
+  // add_description_item_btn.addEventListener('click', (e) => {
+  //   createQuillDescription()
+  // })
+
 }
 
-/* Descriptions */
-var createProductDescriptionQuills = Array()
-var createProductDescriptionQuillsIndex = 0
-var description_content = []
+function initImage() {
+  document.getElementById('add_thumb').addEventListener('click', (e) => {
+    let popup_canvas_container = document.getElementById('popup-canvas-container')
+    popup_canvas_container.style.display = "block"
+  })
+  window.addEventListener('event-image-canvas2', (e) => {
+    let popup_canvas_container = document.getElementById('popup-canvas-container')
+    popup_canvas_container.style.display = "none"
+    let display_result_img = document.getElementById('produit-picture')
+      display_result_img.src = canvas2.toDataURL("image/jpeg", 0.7)
+      display_result_img.style.display = "block"
+
+  }, false)
+  document.getElementById('close-popup-canvas-container').addEventListener('click', (e) => {
+    let popup_canvas_container = document.getElementById('popup-canvas-container')
+    popup_canvas_container.style.display = "none"
+  })
+}
+
+
+
+/* OLD Descriptions */
+function initTitre() {
+  let input_titre_group = document.getElementById('input_titre_groupe')
+  input_titre_group.addEventListener('keyup', (e) => {
+    let produit_titre_groupe = document.getElementById('produit-titre-groupe')
+    produit_titre_groupe.innerText = e.target.value
+  })
+}
 function initDescriptions() {
 
   let quill_1 = new Quill('#description-0', {
@@ -349,7 +413,11 @@ function initDescriptions() {
   }
 }
 
-/* Popup d'édition Familles - Catégories */
+
+
+
+
+/* -- Popup d'édition Familles - Catégories ---------------------------------------------------------------------------------- */
 function openEditFamillePopup() {
 
   let popup_container = document.getElementById('popup-container')
@@ -439,29 +507,11 @@ function createNewCategorie() {
   }
 }
 
-/* Image */
-document.getElementById('add_thumb').addEventListener('click', (e) => {
-  let popup_canvas_container = document.getElementById('popup-canvas-container')
-  popup_canvas_container.style.display = "block"
-})
-window.addEventListener('event-image-canvas2', (e) => {
-  let popup_canvas_container = document.getElementById('popup-canvas-container')
-  popup_canvas_container.style.display = "none"
-  let display_result_img = document.getElementById('produit-picture')
-    display_result_img.src = canvas2.toDataURL("image/jpeg", 0.7)
-    display_result_img.style.display = "block"
-
-}, false)
-document.getElementById('close-popup-canvas-container').addEventListener('click', (e) => {
-  let popup_canvas_container = document.getElementById('popup-canvas-container')
-  popup_canvas_container.style.display = "none"
-})
 
 
 
 
-
-/* Render */
+/* -- Render ------------------------------------------------------------------------------------------------------------------ */
 function render() {
   let select_categorie = document.getElementById('select_categorie')
   id_categorie_selected = parseInt(select_categorie.value)
@@ -599,6 +649,7 @@ function getCategorieName(id_cat) {
   })
   return nom_cat
 }
+
 
 /* Divers */
 function splitColorNameProduit(nom_prod, separator) {
