@@ -252,9 +252,12 @@ function createDescriptionGroup(index) {
 
   let image_ligne = xCreateElement('div', 'ligne', '')
   let image_form_label = xCreateElement('div', 'form_label', '')
-  let image_input = xCreateElement('input', '', 'add_thumb')
-  image_input.setAttribute('type', 'button')
-  image_input.setAttribute('value', 'Ajouter une image vignette')
+  let image_input = xCreateElement('input', 'description-add-image', 'add_thumb')
+  image_input.setAttribute('type', 'image')
+  image_input.setAttribute('src', './img/image-add.svg')
+  // let image_input = xCreateElement('input', '', 'add_thumb')
+  // image_input.setAttribute('type', 'button')
+  // image_input.setAttribute('value', 'Ajouter une image vignette')
   image_form_label.appendChild(image_input)
   image_ligne.appendChild(image_form_label)
 
