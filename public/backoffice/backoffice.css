@@ -139,6 +139,21 @@ body {
   width: 100%;
 }
 
+.delete-description-group {
+  float: right;
+  /* width:30px; */
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px;
+  clear: both;
+  text-align: center;
+}
+.delete-description-group:hover {
+  background-color: #294a73;
+}
+
 .description-editor {
   background-color: #ffffff;
 }

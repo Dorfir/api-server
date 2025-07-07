@@ -1,6 +1,7 @@
 displayLoader()
 /* https://quilljs.com/docs/api#content */
 
+/* -- Variables -------------------------------------------------------------------------------------------------------- */
 let famillesReceived = false
 let categoriesReceived = false
 
@@ -10,6 +11,21 @@ let id_famille_selected = null
 let id_categorie_selected = null
 
 
+/* -- Data created ----------------------------------------------------------------------------------------------------- */
+let data = {
+  'description': [],
+  'id_categorie': 0,
+  'id_famille': 0,
+  'id_produit': 0,
+  'images': [],
+  'marque': "",
+  'nom': "",
+  'nom_categorie': "",
+  'nom_famille': "",
+  'prix': "",
+  'thumb': "",
+}
+
 /* -- Gathering Data ---------------------------------------------------------------------------------------------------- */
 const eventProduitsReceived = new Event("event-produits-received")
 const eventListeFamilleReceived = new Event("event-liste-famille-received")
@@ -17,8 +33,8 @@ const eventListeFamilleReceived = new Event("event-liste-famille-received")
 getAllProduits()
 async function getAllProduits() {
   let json = null
-  const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getProduits.php";
-  // const url = "http://localhost/green_catalogue_rest/getProduits.php";
+  // const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getProduits.php";
+  const url = "http://localhost/green_catalogue_rest/getProduits.php";
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -43,8 +59,8 @@ window.addEventListener('event-produits-received', (e)=> {
 getListeFamilles()
 async function getListeFamilles() {
   let json = null
-  const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getFamillesAndCategories.php";
-  // const url = "http://localhost/green_catalogue_rest/getFamillesAndCategories.php";
+  // const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getFamillesAndCategories.php";
+  const url = "http://localhost/green_catalogue_rest/getFamillesAndCategories.php";
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -216,10 +232,15 @@ function initDescriptionGroup() {
 function createDescriptionGroup(index) {
 
   let description_group_container = document.getElementById('description-group-container')
-
-  let description_group = xCreateElement('div', '', `description-group-${index}`)
+  let description_group = xCreateElement('div', 'description-group', `description-group-${index}`)
 
   let top_separator = document.createElement('hr')
+
+  let delete_description_group_btn = null
+  if (index > 0) {
+    delete_description_group_btn = xCreateElement('div', 'delete-description-group', `delete-description-group-${index}`)
+    delete_description_group_btn.innerHTML = "X"
+  }
 
   let titre_group = xCreateElement('div', 'ligne', '')
   let titre_group_label = xCreateElement('div', 'ligne form_label', '')
@@ -239,15 +260,6 @@ function createDescriptionGroup(index) {
   let description_editor = xCreateElement('div', 'description-editor', `description-${index}`)
   editor_container.appendChild(description_editor)
   quill_container.appendChild(editor_container)
-  let btn_remove_quill = null
-  if (index > 0) {
-    let quill_btn_container = xCreateElement('div', 'quill_btn_container', '')
-    btn_remove_quill = xCreateElement('input', '', `remove_description-${index}`)
-    btn_remove_quill.setAttribute('type', 'button')
-    btn_remove_quill.setAttribute('value', "Supp.")
-    quill_btn_container.appendChild(btn_remove_quill)
-    quill_container.appendChild(quill_btn_container)
-  }
   description_big_container.appendChild(quill_container)
 
   let image_ligne = xCreateElement('div', 'ligne', '')
@@ -259,6 +271,8 @@ function createDescriptionGroup(index) {
   image_ligne.appendChild(image_form_label)
 
   description_group.appendChild(top_separator)
+  if (delete_description_group_btn !== null)
+    description_group.appendChild(delete_description_group_btn)
   description_group.appendChild(titre_group)
   description_group.appendChild(description_big_container)
   description_group.appendChild(image_ligne)
@@ -266,12 +280,11 @@ function createDescriptionGroup(index) {
   description_group_container.appendChild(description_group)
 
   if (index > 0) {
-    btn_remove_quill.addEventListener('click', (e) => {
+    delete_description_group_btn.addEventListener('click', (e) => {
       console.log('-- remove description group')
     })
   }
 
-  
   titre_group_input.addEventListener('keyup', (e) => {
     let produit_titre_groupe = document.getElementById('produit-titre-groupe')
     produit_titre_groupe.innerText = e.target.value
