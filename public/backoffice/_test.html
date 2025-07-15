@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>test</title>
+        <style>
+            #container { padding : 10px; background-color:#eee; border:1px solid black; border-radius:5px; margin: 10px 0; display: inline-block; }
+            .element { background-color: blueviolet; color: #eee; margin:5px 0; }
+        </style>
+    </head>
+    <body>
+        <div id="btn-container">
+            <button id="btn_plus">+ plus</button>
+            <button id="btn_moins">- moins</button> <input type="number" name="" id="input_index">
+        </div>
+        <div id="container"></div>
+
+
+    </body>
+
+    <script>
+        let container = document.getElementById('container')
+        let compteurElement = 0
+        let liste = []
+
+        let btn_plus = document.getElementById('btn_plus')
+        let btn_moins = document.getElementById('btn_moins')
+        let input_index = document.getElementById('input_index')
+
+        btn_plus.addEventListener('click', (e)=>{
+            addGroup()
+            console.table(liste)
+        })
+        btn_moins.addEventListener('click', (e)=> {
+            console.log(e.currentTarget)
+            let index = liste.indexOf(e.currentTarget)
+            removeGroup(index)
+            console.table(liste)
+        })
+
+
+        function addGroup() {
+            let element = document.createElement('div')
+            compteurElement++
+            element.id = 'element-'+compteurElement
+            element.classList.add('element')
+            element.innerHTML = 'element '+ compteurElement
+            container.appendChild(element)
+            liste.push(element)
+        }
+
+        function removeGroup(index) {
+            console.log('-- removeGroup')
+            console.table(liste)
+            console.log(index)
+            let elem = liste[index]
+            elem.parentNode.removeChild(elem)
+            liste.splice(index, 1)
+        }
+
+
+
+    </script>
+</html>
