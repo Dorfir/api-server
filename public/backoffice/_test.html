@@ -4,7 +4,8 @@
         <title>test</title>
         <style>
             #container { padding : 10px; background-color:#eee; border:1px solid black; border-radius:5px; margin: 10px 0; display: inline-block; }
-            .element { background-color: blueviolet; color: #eee; margin:5px 0; }
+            .group_container { padding: 5px; display: flex; flex-flow: row nowrap; gap:8px;}
+            .group_label { background-color: blueviolet; color: #eee; }
         </style>
     </head>
     <body>
@@ -30,22 +31,39 @@
             addGroup()
             console.table(liste)
         })
-        btn_moins.addEventListener('click', (e)=> {
-            console.log(e.currentTarget)
-            let index = liste.indexOf(e.currentTarget)
-            removeGroup(index)
-            console.table(liste)
-        })
+        // btn_moins.addEventListener('click', (e)=> {
+        //     console.log(e.currentTarget)
+        //     let index = liste.indexOf(e.currentTarget)
+        //     // removeGroup(index)
+        //     console.table(liste)
+        // })
 
 
         function addGroup() {
-            let element = document.createElement('div')
+            let group = document.createElement('div')
+            group.classList.add('group_container')
             compteurElement++
-            element.id = 'element-'+compteurElement
-            element.classList.add('element')
-            element.innerHTML = 'element '+ compteurElement
-            container.appendChild(element)
-            liste.push(element)
+            group.id = 'group-'+compteurElement
+
+            let label = document.createElement('div')
+            label.classList.add('group_label')
+            label.innerHTML = 'element '+ compteurElement
+            
+            let btn = document.createElement('button')
+            btn.classList.add('group-btn')
+            btn.id = 'group-btn-'+compteurElement
+            btn.innerHTML = "supp"
+
+            group.appendChild(label)
+            group.appendChild(btn)
+
+            container.appendChild(group)
+
+            liste.push(group)
+
+            btn.addEventListener('click', (e)=>{
+                
+            })
         }
 
         function removeGroup(index) {
@@ -53,6 +71,7 @@
             console.table(liste)
             console.log(index)
             let elem = liste[index]
+            console.log(liste[index])
             elem.parentNode.removeChild(elem)
             liste.splice(index, 1)
         }
