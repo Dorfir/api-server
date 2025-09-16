@@ -33,8 +33,8 @@ const eventListeFamilleReceived = new Event("event-liste-famille-received")
 getAllProduits()
 async function getAllProduits() {
   let json = null
-  // const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getProduits.php";
-  const url = "http://localhost/green_catalogue_rest/getProduits.php";
+  const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getProduits.php";
+  // const url = "http://localhost/green_catalogue_rest/getProduits.php";
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -59,8 +59,8 @@ window.addEventListener('event-produits-received', (e)=> {
 getListeFamilles()
 async function getListeFamilles() {
   let json = null
-  // const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getFamillesAndCategories.php";
-  const url = "http://localhost/green_catalogue_rest/getFamillesAndCategories.php";
+  const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getFamillesAndCategories.php";
+  // const url = "http://localhost/green_catalogue_rest/getFamillesAndCategories.php";
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -215,11 +215,14 @@ function initMarque() {
 
 
 /* Description group */
+var liste_description_groups = Array()
 var createProductDescriptionQuills = Array()
 var createProductDescriptionQuillsIndex = 0
 var description_content = []
 
 function initDescriptionGroup() {
+
+  // only one group at start
   createDescriptionGroup(0)
 
   let add_description_group_btn = document.getElementById('add_desciption_group')
@@ -229,7 +232,107 @@ function initDescriptionGroup() {
 
 }
 
+
 function createDescriptionGroup(index) {
+
+  // création des éléments du groupe de description
+  let description_group_container = document.getElementById('description-group-container')
+  let description_group = xCreateElement('div', 'description-group', `description-group-${index}`)
+
+  let top_separator = document.createElement('hr')
+
+  let delete_description_group_btn = null
+  if (index > 0) {
+    delete_description_group_btn = xCreateElement('div', 'delete-description-group', `delete-description-group-${index}`)
+    delete_description_group_btn.innerHTML = "X"
+  }
+
+  let titre_group = xCreateElement('div', 'ligne', '')
+  let titre_group_label = xCreateElement('div', 'ligne form_label', '')
+  titre_group_label.innerHTML = "Bloc de description"
+  titre_group.appendChild(titre_group_label)
+  let titre_group_input = xCreateElement('input', 'input_titre_groupe', `input_titre_groupe-${index}`)
+  titre_group_input.setAttribute('type', 'text')
+  titre_group_input.setAttribute('placeholder', 'Titre section')
+  titre_group_input.setAttribute('autocomplete', 'new-password')
+  titre_group.appendChild(titre_group_input)
+
+  let description_big_container = xCreateElement('div', '', 'description-big-container')
+  let description_form_label = xCreateElement('div', 'form_label', '')
+  description_form_label.innerHTML = 'Descriptions'
+  let quill_container = xCreateElement('div', 'quill-container', '')
+  let editor_container = xCreateElement('div', 'editor-container', '')
+  let description_editor = xCreateElement('div', 'description-editor', `description-${index}`)
+  editor_container.appendChild(description_editor)
+  quill_container.appendChild(editor_container)
+  description_big_container.appendChild(quill_container)
+
+  let image_ligne = xCreateElement('div', 'ligne', '')
+  let image_form_label = xCreateElement('div', 'form_label', '')
+  let image_input = xCreateElement('input', 'description-add-image', 'add_thumb')
+  image_input.setAttribute('type', 'image')
+  image_input.setAttribute('src', './img/image-add.svg')
+  image_form_label.appendChild(image_input)
+  image_ligne.appendChild(image_form_label)
+
+  // assemblage des éléments du groupe de description
+  description_group.appendChild(top_separator)
+  if (delete_description_group_btn !== null)
+    description_group.appendChild(delete_description_group_btn)
+  description_group.appendChild(titre_group)
+  description_group.appendChild(description_big_container)
+  description_group.appendChild(image_ligne)
+
+  description_group_container.appendChild(description_group)
+
+  // ajout du conteneur html du groupe de description dans la liste des groupes
+  liste_description_groups.push(description_group)
+
+  // event de suppression du groupe de description
+  if (delete_description_group_btn !== null) {
+    delete_description_group_btn.addEventListener('click', (e) => {
+      console.log('-- remove description group')
+      removeDescriptionGroup(index)
+    })
+  }
+
+  // event de transposition du titre du groupe de description dans l'aperçu
+  titre_group_input.addEventListener('keyup', (e) => {
+    let produit_titre_groupe = document.getElementById('produit-titre-groupe')
+    produit_titre_groupe.innerText = e.target.value
+  })
+
+  // création du quill
+  let new_quill = new Quill(`#description-${index}`, {
+    modules: {
+      toolbar: true,
+    },
+    theme: 'snow',
+    placeholder: "Votre description ..."
+  })
+  createProductDescriptionQuills.push(new_quill)
+
+  new_quill.on('text-change', (delta, oldDelta, source) => {
+    description_content[index] = new_quill.getSemanticHTML()
+    render()
+  })
+
+  initImage()
+
+  // let add_description_item_btn = document.getElementById('add_desciption_item')
+  // add_description_item_btn.addEventListener('click', (e) => {
+  //   createQuillDescription()
+  // })
+
+}
+
+function removeDescriptionGroup(index) {
+  let description_group = document.getElementById(`description-group-${index}`)
+  description_group.parentNode.removeChild(description_group)
+}
+
+
+function createDescriptionGroup2(index) {
 
   let description_group_container = document.getElementById('description-group-container')
   let description_group = xCreateElement('div', 'description-group', `description-group-${index}`)

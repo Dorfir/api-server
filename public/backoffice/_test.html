@@ -11,7 +11,6 @@
     <body>
         <div id="btn-container">
             <button id="btn_plus">+ plus</button>
-            <button id="btn_moins">- moins</button> <input type="number" name="" id="input_index">
         </div>
         <div id="container"></div>
 
@@ -29,14 +28,7 @@
 
         btn_plus.addEventListener('click', (e)=>{
             addGroup()
-            console.table(liste)
         })
-        // btn_moins.addEventListener('click', (e)=> {
-        //     console.log(e.currentTarget)
-        //     let index = liste.indexOf(e.currentTarget)
-        //     // removeGroup(index)
-        //     console.table(liste)
-        // })
 
 
         function addGroup() {
@@ -52,7 +44,7 @@
             let btn = document.createElement('button')
             btn.classList.add('group-btn')
             btn.id = 'group-btn-'+compteurElement
-            btn.innerHTML = "supp"
+            btn.innerHTML = "- moins"
 
             group.appendChild(label)
             group.appendChild(btn)
@@ -62,18 +54,21 @@
             liste.push(group)
 
             btn.addEventListener('click', (e)=>{
-                
+                let id = e.currentTarget.id
+                id = parseInt(id.split('group-btn-')[1])
+                let group = document.getElementById('group-'+id)
+                let index = liste.indexOf(group)
+                removeGroup(index)
             })
         }
 
         function removeGroup(index) {
             console.log('-- removeGroup')
-            console.table(liste)
-            console.log(index)
             let elem = liste[index]
-            console.log(liste[index])
             elem.parentNode.removeChild(elem)
             liste.splice(index, 1)
+            
+            console.log(liste)
         }
 
 
