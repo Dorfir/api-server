@@ -33,8 +33,8 @@ const eventListeFamilleReceived = new Event("event-liste-famille-received")
 getAllProduits()
 async function getAllProduits() {
   let json = null
-  const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getProduits.php";
-  // const url = "http://localhost/green_catalogue_rest/getProduits.php";
+  // const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getProduits.php";
+  const url = "http://localhost/green_catalogue_rest/getProduits.php";
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -59,8 +59,8 @@ window.addEventListener('event-produits-received', (e)=> {
 getListeFamilles()
 async function getListeFamilles() {
   let json = null
-  const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getFamillesAndCategories.php";
-  // const url = "http://localhost/green_catalogue_rest/getFamillesAndCategories.php";
+  // const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getFamillesAndCategories.php";
+  const url = "http://localhost/green_catalogue_rest/getFamillesAndCategories.php";
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -218,6 +218,7 @@ function initMarque() {
 var liste_description_groups = Array()
 var createProductDescriptionQuills = Array()
 var createProductDescriptionQuillsIndex = 0
+var productDescriptionActiveIndexes = Array()
 var description_content = []
 
 function initDescriptionGroup() {
