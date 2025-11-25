@@ -216,6 +216,20 @@ input[type=text] {
   width:40px;
 }
 
+#send_server_container {
+  padding: 3px;
+  text-align: right;
+  margin-top:20px;
+}
+#send_server {
+  cursor: pointer;
+}
+#image {
+  position: absolute;
+  left: 110%;
+  top: 110%;
+}
+
 /* #endregion */
 
 /* #region popup-container */

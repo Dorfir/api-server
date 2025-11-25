@@ -7,23 +7,23 @@ let categoriesReceived = false
 
 let liste_produits = null
 let liste_familles = null
-let id_famille_selected = null
-let id_categorie_selected = null
 
 let firstLoad = true
+
+let description_active = 0
 
 
 /* -- Data created ----------------------------------------------------------------------------------------------------- */
 let data = {
-  'description': [],
-  'id_categorie': 0,
-  'id_famille': 0,
   'id_produit': 0,
-  'images': [],
-  'marque': "",
-  'nom': "",
-  'nom_categorie': "",
+  'id_famille': 0,
   'nom_famille': "",
+  'id_categorie': 0,
+  'nom_categorie': "",
+  'nom': "",
+  'marque': "",
+  'description': [],
+  'images': [],
   'prix': "",
   'thumb': "",
 }
@@ -74,7 +74,7 @@ async function getListeFamilles() {
     json = await response.json()
     if (json['status'] == 200) {
       liste_familles = json['familles']
-      console.log(liste_familles)
+      // console.log(liste_familles)
       window.dispatchEvent(eventListeFamilleReceived)
     }
   } catch (error) {
@@ -112,16 +112,18 @@ function getFamilleIndex(id_famille) {
 /* -- Formulaire initialization ------------------------------------------------------------------------------------------- */
 function initCreateProduct() {
   setSelectFamille(0)
-  setSelectCategorie(id_famille_selected)
+  setSelectCategorie(data.id_famille)
   initNom()
   initMarque()
   initDescriptionGroup()
+  initSendServer()
   render()
 }
 
+/* Famille et catégories */
 function setSelectFamille(index_selected) {
 
-  console.log(`-- setSelectFamille ${index_selected}`)
+  // console.log(`-- setSelectFamille ${index_selected}`)
 
   let create_famille = document.getElementById('create_famille')
   create_famille.innerHTML = ""
@@ -139,7 +141,7 @@ function setSelectFamille(index_selected) {
     option_famille.setAttribute('value', parseInt(famille['id_famille']))
     if (index_famille == index_selected) {
       option_famille.setAttribute('selected', 'selected')
-      id_famille_selected = parseInt(famille['id_famille'])
+      data.id_famille = parseInt(famille['id_famille'])
     }
     option_famille.innerText = famille['nom_famille']
     select_famille.appendChild(option_famille)
@@ -156,29 +158,28 @@ function setSelectFamille(index_selected) {
 }
 function selectFamilleOnChange() {
   let select_famille = document.getElementById('select_famille')
-  id_famille_selected = parseInt(select_famille.value)
-  setSelectCategorie(parseInt(select_famille.value))
-  // render()
+  data.id_famille = parseInt(select_famille.value)
+  data.nom_famille = getFamilleName(data.id_famille)
+  setSelectCategorie(data.id_famille)
+  render()
 }
 
-function setSelectCategorie(id_famille) {
+function setSelectCategorie() {
 
-  console.log(`-- setSelectCategorie ${id_famille}`)
+  // console.log(`-- setSelectCategorie ${data.id_famille}`)
 
   let create_categorie = document.getElementById('create_categorie')
   create_categorie.innerHTML = ""
-  let categorie_label = document.createElement('div')
-  categorie_label.classList.add('form_label')
+  let categorie_label = xCreateElement('div', 'form_label', '')
   categorie_label.innerText = "Catégorie"
   create_categorie.appendChild(categorie_label)
 
-  let create_cat_container = document.createElement('div')
-  create_cat_container.classList.add('select_container')
+  let create_cat_container = xCreateElement('div', 'select_container')
 
-  let select_cat = document.createElement('select')
+  let select_cat = xCreateElement('select', '', 'select_categorie')
   select_cat.setAttribute('name', 'select_categorie')
-  select_cat.setAttribute('id', 'select_categorie')
-  let liste_cat = liste_familles[getFamilleIndex(id_famille)].liste_categories
+  let liste_cat = getFamilleObject(data.id_famille).liste_categories
+  // let liste_cat = liste_familles[getFamilleIndex(data.id_famille)].liste_categories
   liste_cat.forEach(categorie => {
     let option_cat = document.createElement('option')
     option_cat.setAttribute('value', parseInt(categorie['id_categorie']))
@@ -187,9 +188,7 @@ function setSelectCategorie(id_famille) {
   })
   create_cat_container.appendChild(select_cat)
 
-  let add_cat_btn = document.createElement('div')
-  add_cat_btn.classList.add('form_button')
-  add_cat_btn.setAttribute('id', 'edit_categorie_button')
+  let add_cat_btn = xCreateElement('div', 'form_button', 'edit_categorie_button')
   add_cat_btn.innerText = "+"
   create_cat_container.appendChild(add_cat_btn)
 
@@ -203,10 +202,12 @@ function setSelectCategorie(id_famille) {
 }
 function selectCategorieOnChange() {
   let select_categorie = document.getElementById('select_categorie')
-  id_categorie_selected = parseInt(select_categorie.value)
+  data.id_categorie = parseInt(select_categorie.value)
+  data.nom_categorie = getCategorieName(data.id_categorie)
   render()
 }
 
+/* Nom et marque */
 function initNom() {
   let input_nom = document.getElementById('input_nom')
   input_nom.addEventListener('keyup', (e) => {
@@ -225,8 +226,6 @@ function initMarque() {
     // produit_marque.innerText = e.target.value.toUpperCase()
   })
 }
-
-
 /* Description group */
 var xliste_descriptions = Array()
 function initDescriptionGroup() {
@@ -240,13 +239,14 @@ function initDescriptionGroup() {
   })
 
 }
-
 function createDescriptionGroup() {
 
-  console.log('-- createDescriptionGroup')
+  // console.log('-- createDescriptionGroup')
 
   let desc_handler = initDescriptionGroupHandler()
   data.description.push({'title': '', 'content': '', 'global_index': desc_handler.global_index})
+  data.images.push({'data': '', 'global_index': desc_handler.global_index})
+  description_active = parseInt(desc_handler.global_index)
 
   // création des éléments du groupe de description
   let description_group_container = document.getElementById('description-group-container')
@@ -282,7 +282,7 @@ function createDescriptionGroup() {
 
   let image_ligne = xCreateElement('div', 'ligne', '')
   let image_form_label = xCreateElement('div', 'form_label', '')
-  let image_input = xCreateElement('input', 'description-add-image', 'add_thumb')
+  let image_input = xCreateElement('input', 'description-add-image', `add-desc-image-${desc_handler.global_index}`)
   image_input.setAttribute('type', 'image')
   image_input.setAttribute('src', './img/image-add.svg')
   image_form_label.appendChild(image_input)
@@ -338,20 +338,16 @@ function createDescriptionGroup() {
 
   initImage()
 
-  // let add_description_item_btn = document.getElementById('add_desciption_item')
-  // add_description_item_btn.addEventListener('click', (e) => {
-  //   createQuillDescription()
-  // })
-
-  console.log(desc_handler)
+  // console.log(desc_handler)
 
 }
 
 function removeDescriptionGroup(global_index) {
-  console.log(`-- removeDescriptionGroup - ${global_index}`)
+  // console.log(`-- removeDescriptionGroup - ${global_index}`)
   let desc_handler_index = getDescriptionGroupHandlerIndex(global_index)
   xliste_descriptions.splice(desc_handler_index, 1)
   data.description.splice(desc_handler_index, 1)
+  data.images.splice(desc_handler_index, 1)
   let description_group = document.getElementById(`description-group-${global_index}`)
   description_group.parentNode.removeChild(description_group)
   render()
@@ -383,16 +379,22 @@ function getDescriptionGroupHandlerIndex(global_index) {
 }
 
 function initImage() {
-  document.getElementById('add_thumb').addEventListener('click', (e) => {
-    let popup_canvas_container = document.getElementById('popup-canvas-container')
-    popup_canvas_container.style.display = "block"
+  // todo reset handlers au recall d'initImage()
+  let boutons_add_desc_image = document.querySelectorAll('.description-add-image')
+  boutons_add_desc_image.forEach(btn_add_img => {
+    btn_add_img.addEventListener('click', (e) => {
+      //todo passer l'index 'absolu' de la description a la popup de cropping image pour qu'elle soit renvoyé en data avec l'event de event-image-canvas2
+      description_active = parseInt(e.currentTarget.getAttribute('id').split('-').slice(-1))
+      let popup_canvas_container = document.getElementById('popup-canvas-container')
+      popup_canvas_container.style.display = "block"
+    })
   })
   window.addEventListener('event-image-canvas2', (e) => {
     let popup_canvas_container = document.getElementById('popup-canvas-container')
     popup_canvas_container.style.display = "none"
-    let display_result_img = document.getElementById('produit-picture')
-      display_result_img.src = canvas2.toDataURL("image/jpeg", 0.7)
-      display_result_img.style.display = "block"
+    
+    data.images[getDescriptionIndex(description_active)].data = canvas2.toDataURL("image/jpeg", 0.7)
+    render()
 
   }, false)
   document.getElementById('close-popup-canvas-container').addEventListener('click', (e) => {
@@ -400,6 +402,9 @@ function initImage() {
     popup_canvas_container.style.display = "none"
   })
 }
+
+
+
 
 /* -- Popup d'édition Familles - Catégories ---------------------------------------------------------------------------------- */
 function openEditFamillePopup() {
@@ -494,11 +499,8 @@ function createNewCategorie() {
 /* -- Render ------------------------------------------------------------------------------------------------------------------ */
 function render() {
 
-  let select_categorie = document.getElementById('select_categorie')
-  id_categorie_selected = parseInt(select_categorie.value)
-  
   let header_titre = document.getElementById('produit-header-titre-text')
-  header_titre.innerText = getCategorieName(id_categorie_selected).toUpperCase()
+  header_titre.innerText = getCategorieName(data.id_categorie).toUpperCase()
 
   let render_parent = document.getElementById('render-parent')
   render_parent.innerHTML = ""
@@ -521,13 +523,19 @@ function render() {
   `
   render_parent.appendChild(produit_marque_container)
   
-  data.description.forEach((desc) => {
+  data.description.forEach((desc, index_desc) => {
     let produit_titre_groupe = xCreateElement('div', 'produit-titre-groupe', `produit-titre-groupe-${desc.global_index}`)
     produit_titre_groupe.innerHTML = desc.title
     let produit_group = xCreateElement('div', 'produit-group', `produit-group-${desc.global_index}`)
     let produit_descriptif = xCreateElement('div', 'produit-descriptif', `produit-descriptif-${desc.global_index}`)
     produit_descriptif.innerHTML = desc.content
     produit_group.appendChild(produit_descriptif)
+    let produit_image = xCreateElement('img', 'produit-picture', 'produit-picture')
+    // console.log(data.images[index_desc])
+    produit_image.setAttribute('src', data.images[index_desc].data)
+    produit_image.style.display = "block"
+    produit_group.appendChild(produit_image)
+    
     render_parent.appendChild(produit_titre_groupe)
     render_parent.appendChild(produit_group)
   })
@@ -564,10 +572,10 @@ async function sendNewFamille(nom_famille) {
       throw new Error(`Response status: ${response.status}`);
     }
     json = await response.json()
-    console.log(json)
+    // console.log(json)
     if (json['status'] == 200) {
       let inserted_id_famille = json['id_famille']
-      console.log(inserted_id_famille)
+      // console.log(inserted_id_famille)
       window.dispatchEvent(eventNewFamilleInserted)
     }
   } catch (error) {
@@ -576,7 +584,7 @@ async function sendNewFamille(nom_famille) {
 }
 window.addEventListener('event-new-famille-inserted', newFamilleInserted, false)
 function newFamilleInserted() {
-  console.log('-- new famille inserted')
+  // console.log('-- new famille inserted')
   // todo popup message
   getListeFamilles()
   closeEditFamillePopup()
@@ -599,10 +607,10 @@ async function sendNewCategorie(nom_categorie, id_famille) {
       throw new Error(`Response status: ${response.status}`);
     }
     json = await response.json()
-    console.log(json)
+    // console.log(json)
     if (json['status'] == 200) {
       let inserted_id_categorie = json['id_categorie']
-      console.log(inserted_id_categorie)
+      // console.log(inserted_id_categorie)
       window.dispatchEvent(eventNewCategorieInserted)
     }
   } catch (error) {
@@ -611,10 +619,27 @@ async function sendNewCategorie(nom_categorie, id_famille) {
 }
 window.addEventListener('event-new-categorie-inserted', newCategorieInserted, false)
 function newCategorieInserted() {
-  console.log('-- new categorie inserted')
+  // console.log('-- new categorie inserted')
   // todo popup message
   getListeFamilles()
   closeEditCategoriePopup()
+}
+
+
+
+
+/* Send server */
+function initSendServer() {
+  document.getElementById('send_server').addEventListener('click', (e) => {
+    console.log('-- sendServer()')
+    // console.log(data)
+    // uploadImage()
+    if (data.images.length > 0) {
+      if (data.images[0].data !== '') {
+        
+      }
+    }
+  })
 }
 
 /* Upload file */
@@ -639,6 +664,7 @@ function uploadImage() {
       return fetch('http://localhost/green_catalogue_rest/createImage.php', { method: 'POST', body: fd });
     })
     .then(function (res) {
+      console.log(res.json())
       return res.json();
     })
     .then(console.log)
@@ -656,6 +682,23 @@ function hideLoader() {
 }
 
 /* Data manipulation */
+function getFamilleObject(id_fam) {
+  let obj_fam = null
+  liste_familles.forEach(famille => {
+    if (famille.id_famille == id_fam) obj_fam = famille
+  })
+  return obj_fam
+}
+function getFamilleName(id_fam) {
+  let nom_fam = null
+  let obj_fam = getFamilleObject(id_fam)
+  if (obj_fam == null) {
+    nom_fam = null
+  } else {
+    nom_fam = obj_fam.nom_famille
+  }
+  return nom_fam
+}
 function getCategorieName(id_cat) {
   let nom_cat = null
   liste_familles.forEach(famille => {
@@ -664,6 +707,13 @@ function getCategorieName(id_cat) {
     })
   })
   return nom_cat
+}
+function getDescriptionIndex(index_absolute) {
+  let index = 0
+  data.description.forEach((desc, desc_index)=> {
+    if (desc.global_index == index_absolute) index = desc_index
+  })
+  return index
 }
 
 /* Divers */
