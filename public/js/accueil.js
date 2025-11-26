@@ -329,7 +329,7 @@ function changeFicheProduitSwiper(produits) {
 
 function createFicheProduit(prod) {
 
-  console.log(prod)
+  // console.log(prod)
 
   let swiperSlide = document.createElement('div')
   swiperSlide.classList.add('swiper-slide')
@@ -347,6 +347,7 @@ function createFicheProduit(prod) {
 
   let produitMarque = document.createElement('div')
   produitMarque.classList.add('produit-marque')
+  // TODO change
   let titre = splitColorNameProduit(prod.marque, " ")
   let produitMarqueBlanc = document.createElement('div')
   produitMarqueBlanc.classList.add('produit-marque-1')
@@ -368,16 +369,26 @@ function createFicheProduit(prod) {
   //     </svg>
   //   </div>
 
-  let produitNom = document.createElement('div')
-  produitNom.classList.add('produit-nom')
-  produitNom.innerText = prod.nom
+  
 
   modalMain.appendChild(modalMainSeparator)
   modalMain.appendChild(produitMarque)
-  modalMain.appendChild(produitNom)
 
+  
+
+  // todo a voir ce max desc/images ...
   let group_count = Math.max(prod.descriptifs.length, prod.images.length)
   for (let i = 0; i < group_count; i++) {
+
+    let isDescExist = (i < prod.descriptifs.length)
+
+    if (isDescExist) {
+      let produitTitreGroupe = document.createElement('div')
+      produitTitreGroupe.classList.add('produit-titre-groupe')
+      produitTitreGroupe.innerText = prod.descriptifs[i].titre
+      modalMain.appendChild(produitTitreGroupe)
+    }
+    
 
     let produitGroup = document.createElement('div')
     produitGroup.classList.add('produit-group')
@@ -386,7 +397,7 @@ function createFicheProduit(prod) {
     if (prod.descriptifs.length > i) {
       produitDescriptif = document.createElement('div')
       produitDescriptif.classList.add('produit-descriptif')
-      produitDescriptif.innerHTML = prod.descriptifs[i]
+      produitDescriptif.innerHTML = prod.descriptifs[i].html
     }
 
     let produitPicture = null

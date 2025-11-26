@@ -693,6 +693,7 @@ body {
   height: 20px;
 }
 
+
 .fiche-produit .modal-main .produit-marque-1 {
   font-family: "JosefinSans-Regular";
   padding: 15px 0px 2px 0px;
@@ -713,12 +714,18 @@ body {
   width: 100px;
 }
 
-.fiche-produit .modal-main .produit-nom {
+.fiche-produit .modal-main .produit-titre-groupe {
   font-family: "JosefinSans-Bold";
   font-weight: 600;
   font-size: 1.6em;
   padding: 10px 0;
 }
+/* .fiche-produit .modal-main .produit-nom {
+  font-family: "JosefinSans-Bold";
+  font-weight: 600;
+  font-size: 1.6em;
+  padding: 10px 0;
+} */
 
 .fiche-produit .modal-main .produit-group {
   width: 100%;
