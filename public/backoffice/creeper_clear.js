@@ -21,6 +21,9 @@ var imgWidth = 0
 var imgHeight = 0
 var aspectRatio = 0
 
+// TODO - Gestion de la taille max de l'import - export
+
+
 var cropBounds = { 
     x1: Math.round((canvasSize.w - cropFormat.w)/2),
     y1: Math.round((canvasSize.h - cropFormat.h)/2),

@@ -2,10 +2,12 @@ console.log('-- DOM loaded')
 
 var json_data = null
 
+const image_path = "http://localhost/green_catalogue_rest/uploads/"
+
 getData()
 async function getData() {
-  // const url = "http://localhost/green_catalogue_rest/getProduits.php";
-  const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getProduits.php";
+  const url = "http://localhost/green_catalogue_rest/getProduits.php";
+  // const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getProduits.php";
   // const url = "../green_catalogue_rest/getProduits.php";
   // const url = "http://localhost:80/green_catalogue_rest/test.json";
   // const url = "https://www.visiolab.fr/test.json";
@@ -327,6 +329,8 @@ function changeFicheProduitSwiper(produits) {
 
 function createFicheProduit(prod) {
 
+  console.log(prod)
+
   let swiperSlide = document.createElement('div')
   swiperSlide.classList.add('swiper-slide')
   let swiperSlideSubcontainer = document.createElement('div')
@@ -389,7 +393,12 @@ function createFicheProduit(prod) {
     if (prod.images.length > i) {
       produitPicture = document.createElement('img')
       produitPicture.classList.add('produit-picture')
-      produitPicture.setAttribute('src', prod.images[i])
+      if (prod.id_produit == 21) {
+        produitPicture.setAttribute('src', image_path + prod.images[i])
+      } else {
+        produitPicture.setAttribute('src', prod.images[i])
+      }
+      
     }
 
     if (i % 2 == 0) {

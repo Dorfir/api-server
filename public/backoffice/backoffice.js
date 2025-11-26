@@ -631,15 +631,87 @@ function newCategorieInserted() {
 /* Send server */
 function initSendServer() {
   document.getElementById('send_server').addEventListener('click', (e) => {
+
+    // TODO gestion de la taille max de la requete POST -+ 8Mb max
     console.log('-- sendServer()')
-    // console.log(data)
-    // uploadImage()
-    if (data.images.length > 0) {
-      if (data.images[0].data !== '') {
-        
-      }
-    }
+
+    console.log(data)
+    sendProduit()
+
+
+    // if (data.images.length > 0) {
+    //   if (data.images[0].data != '') {
+
+    //     imgBase64 = data.images[0].data
+    //     const myfile = DataURIToBlob(imgBase64)
+      
+    //     sendImageDescription(myfile)
+
+    //   }      
+    // }
+
   })
+}
+async function sendProduit() {
+
+  let json = null
+  const url = "http://localhost/green_catalogue_rest/uploadProduit.php"
+  let formData = new FormData()
+  formData.append('id_famille', data.id_famille)
+  formData.append('id_categorie', data.id_categorie)
+  formData.append('nom', data.nom)
+  formData.append('marque', data.marque)
+  data.description.forEach((desc, index_desc) => {
+    formData.append(`desc_${index_desc}`, desc.content)
+  })
+  data.images.forEach((image_produit, index_image) => {
+    let imgBase64 = image_produit.data
+    let myfile = DataURIToBlob(imgBase64)
+    formData.append(`file_image_${index_image}`, myfile, `file_image_${index_image}.jpeg`)
+  })
+
+  try {
+    const response = await fetch(url, {
+      method: "post",
+      body: formData,
+    });
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    json = await response.json()
+    console.log(json)
+    
+  } catch (error) {
+    console.error(error.message);
+  }
+  
+  
+}
+
+/* Send new categorie création */
+async function sendImageDescription(myfile) {
+
+  let json = null
+  const url = "http://localhost/green_catalogue_rest/upload_image.php"
+  let formData = new FormData()
+  formData.append('fichier_image', myfile, 'myfile.jpeg')
+  try {
+    const response = await fetch(url, {
+      method: "post",
+      body: formData,
+    });
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    json = await response.json()
+    console.log(json)
+    // if (json['status'] == 200) {
+    //   let inserted_id_categorie = json['id_categorie']
+    //   window.dispatchEvent(eventNewCategorieInserted)
+    // }
+  } catch (error) {
+    console.error(error.message);
+  }
 }
 
 /* Upload file */
@@ -670,8 +742,21 @@ function uploadImage() {
     .then(console.log)
     .catch(console.error)
 }
+function DataURIToBlob(dataURI) {
+  const splitDataURI = dataURI.split(',')
+  const byteString = splitDataURI[0].indexOf('base64') >= 0 ? atob(splitDataURI[1]) : decodeURI(splitDataURI[1])
+  const mimeString = splitDataURI[0].split(':')[1].split(';')[0]
 
-/* Loader */
+  const ia = new Uint8Array(byteString.length)
+  for (let i = 0; i < byteString.length; i++)
+      ia[i] = byteString.charCodeAt(i)
+
+  return new Blob([ia], { type: mimeString })
+}
+
+
+
+/* ------------------- Loader ------------------- */
 function displayLoader() {
   let loaderContainer = document.getElementById('loader-container')
   loaderContainer.style.display = "block"
@@ -681,7 +766,7 @@ function hideLoader() {
   loaderContainer.style.display = "none"
 }
 
-/* Data manipulation */
+/* ------------------- Data manipulation ------------------- */
 function getFamilleObject(id_fam) {
   let obj_fam = null
   liste_familles.forEach(famille => {
