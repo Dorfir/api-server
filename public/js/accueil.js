@@ -1,6 +1,7 @@
 console.log('-- DOM loaded')
 
 var json_data = null
+var liste_familles = null
 
 const image_path = "http://localhost/green_catalogue_rest/uploads/"
 
@@ -28,6 +29,40 @@ async function getData() {
     console.error(error.message);
   }
 }
+
+const eventListeFamilleReceived = new Event("event-liste-famille-received")
+getListeFamilles()
+async function getListeFamilles() {
+  let json = null
+  // const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getFamillesAndCategories.php";
+  const url = "http://localhost/green_catalogue_rest/getFamillesAndCategories.php";
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    json = await response.json()
+    if (json['status'] == 200) {
+      liste_familles = json['familles']
+      // console.log(liste_familles)
+      window.dispatchEvent(eventListeFamilleReceived)
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+window.addEventListener('event-liste-famille-received', (e) => {
+    // firstLoad = false
+    // initCreateProduct()
+    // window.setTimeout(() => {
+    //   hideLoader()
+    // }, 400)
+    initOptionsSummery()
+}, false)
+
 
 var liste_prestas = [
   {
@@ -177,15 +212,7 @@ options_retour_btn.addEventListener('click', (e) => {
   options_main_container.style.display = "none"
   optionslist_main_container.style.display = "none"
 })
-let liste_li = document.querySelectorAll('.options-element-liste li')
-for (var li of liste_li) {
-  li.addEventListener('click', (e) => {
-    console.log('click options li element')
-    let id_categorie = parseInt(e.target.getAttribute('id').split('famille_')[1])
-    // console.log(id_categorie)
-    if (isCatExistInProductList(id_categorie)) initOptionsListPage(id_categorie)
-  })
-}
+
 let optionslist_close_btn = document.getElementById('optionslist-close-btn')
 optionslist_close_btn.addEventListener('click', (e) => {
   let accueil_main_container = document.getElementById('accueil-main-container')
@@ -227,6 +254,46 @@ const swiperOption = new Swiper('.swiperOption', {
   },
 });
 
+function initOptionsSummery() {
+  let options_body = document.getElementById('options-body')
+
+  options_body.innerHTML = ""
+
+  liste_familles.forEach(famille => {
+    let options_element_container = xCreateElement('div', 'options-element-container', '')
+    let options_element = xCreateElement('div', 'options-element', '')
+    let options_element_titre = xCreateElement('div', 'options-element-titre', '')
+    options_element_titre.innerHTML = famille.nom_famille.toUpperCase()
+    let options_element_liste = xCreateElement('div', 'options-element-liste', '')
+    let options_element_ul = xCreateElement('ul', '', '')
+    famille.liste_categories.forEach(cat=> {
+      let options_element_li = xCreateElement('li', '', `famille_${cat.id_categorie}`)
+      options_element_li.innerHTML = cat.nom_categorie
+      options_element_ul.appendChild(options_element_li)
+    })
+    options_element_liste.appendChild(options_element_ul)
+    options_element.appendChild(options_element_titre)
+    options_element.appendChild(options_element_liste)
+    options_element_container.appendChild(options_element)
+
+    options_body.appendChild(options_element_container)
+
+  })
+
+
+  let liste_li = document.querySelectorAll('.options-element-liste li')
+  for (var li of liste_li) {
+    li.addEventListener('click', (e) => {
+      console.log('click options li element')
+      let id_categorie = parseInt(e.target.getAttribute('id').split('famille_')[1])
+      // console.log(id_categorie)
+      if (isCatExistInProductList(id_categorie)) initOptionsListPage(id_categorie)
+    })
+  }
+
+
+}
+
 function initOptionsListPage(id_cat) {
 
   console.log('-- initOptionsListPage')
@@ -249,19 +316,25 @@ function initOptionsListPage(id_cat) {
     let list_element_image_div = document.createElement('div')
     list_element_image_div.classList.add('optionslist-element-image')
     let list_element_image = document.createElement('img')
-    list_element_image.setAttribute('src', prod.thumb)
+    if (prod.id_produit >= 21) {
+      list_element_image.setAttribute('src', image_path + prod.thumb)
+    } else {
+      list_element_image.setAttribute('src', prod.thumb)
+    }    
     list_element_image_div.appendChild(list_element_image)
     list_element.appendChild(list_element_image_div)
 
     let list_element_titre = document.createElement('div')
     list_element_titre.classList.add('optionslist-element-titre')
-    let titre = splitColorNameProduit(prod.marque, "&nbsp;")
+    // let titre = splitColorNameProduit(prod.marque, "&nbsp;")
     let titre_blanc = document.createElement('span')
     titre_blanc.classList.add('white')
-    titre_blanc.innerHTML = titre[0]
+    // titre_blanc.innerHTML = titre[0]
+    titre_blanc.innerHTML = prod.nom+"&nbsp;"
     let titre_gold = document.createElement('span')
     titre_gold.classList.add('gold')
-    titre_gold.innerHTML = titre[1]
+    // titre_gold.innerHTML = titre[1]
+    titre_gold.innerHTML = prod.marque
     list_element_titre.appendChild(titre_blanc)
     list_element_titre.appendChild(titre_gold)
     list_element.appendChild(list_element_titre)
@@ -348,13 +421,15 @@ function createFicheProduit(prod) {
   let produitMarque = document.createElement('div')
   produitMarque.classList.add('produit-marque')
   // TODO change
-  let titre = splitColorNameProduit(prod.marque, " ")
+  // let titre = splitColorNameProduit(prod.marque, " ")
   let produitMarqueBlanc = document.createElement('div')
   produitMarqueBlanc.classList.add('produit-marque-1')
-  produitMarqueBlanc.innerText = titre[0]
+  // produitMarqueBlanc.innerText = titre[0]
+  produitMarqueBlanc.innerText = prod.nom
   let produitMarqueGold = document.createElement('div')
   produitMarqueGold.classList.add('produit-marque-2')
-  produitMarqueGold.innerText = titre[1]
+  // produitMarqueGold.innerText = titre[1]
+  produitMarqueGold.innerText = prod.marque
   let svg = `<svg viewBox="0 0 100 5" class="produit-separator">
             <line x1="0" y1="3" x2="100" y2="3" class="line-svg-thin" />
             </svg>`
@@ -404,7 +479,8 @@ function createFicheProduit(prod) {
     if (prod.images.length > i) {
       produitPicture = document.createElement('img')
       produitPicture.classList.add('produit-picture')
-      if (prod.id_produit == 21) {
+      // TODO change image path
+      if (prod.id_produit >= 21) {
         produitPicture.setAttribute('src', image_path + prod.images[i])
       } else {
         produitPicture.setAttribute('src', prod.images[i])
@@ -587,4 +663,20 @@ function getPrestasFromIdRubrique(id_presta_rubrique) {
     if (presta.id_rubrique == id_presta_rubrique) return_value.push(presta)
   })
   return return_value
-} 
+}
+
+function xCreateElement(type, elem_classes) {
+  return xCreateElement(type, elem_classes, '')
+}
+function xCreateElement(type, elem_classes, elem_id) {
+  let element = document.createElement(type)
+  if (elem_classes !== "") {
+    elem_classes.split(' ').forEach((elem_class) => {
+      element.classList.add(elem_class)
+    })
+  }
+  if (elem_id !== "") element.id = elem_id
+  return element
+}
+
+

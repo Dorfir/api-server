@@ -215,6 +215,9 @@ input[type=text] {
 .description-add-image {
   width:40px;
 }
+.add-thumb {
+  width:40px;
+}
 
 #send_server_container {
   padding: 3px;

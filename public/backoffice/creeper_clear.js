@@ -1,9 +1,11 @@
 /* -------------------------------------------------------------------------------------- */
 /* Variables - constantes */
+var cropper_options = { cropperThumbMode: false, cropper_image_index: 0 }
 const canvasDebug = false
 const cropFormatThumb = { w: 425, h: 250 }
-const cropFormat = { w: 650, h: 450 }
-const isLineDragabble = true
+const cropFormatLarge = { w: 650, h: 450 }
+var cropFormat = { w: 650, h: 450 }
+var isLineDragabble = true
 
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
@@ -24,12 +26,14 @@ var aspectRatio = 0
 // TODO - Gestion de la taille max de l'import - export
 
 
-var cropBounds = { 
-    x1: Math.round((canvasSize.w - cropFormat.w)/2),
-    y1: Math.round((canvasSize.h - cropFormat.h)/2),
-    x2: cropFormat.w + Math.round((canvasSize.w - cropFormat.w)/2),
-    y2: cropFormat.h + Math.round((canvasSize.h - cropFormat.h)/2),
-}
+
+var cropBounds = null
+// var cropBounds = { 
+//     x1: Math.round((canvasSize.w - cropFormat.w)/2),
+//     y1: Math.round((canvasSize.h - cropFormat.h)/2),
+//     x2: cropFormat.w + Math.round((canvasSize.w - cropFormat.w)/2),
+//     y2: cropFormat.h + Math.round((canvasSize.h - cropFormat.h)/2),
+// }
 
 let consoleGlobalCoord = document.getElementById('consoleGlobalCoord')
 let consoleLocalCoord = document.getElementById('consoleLocalCoord')
@@ -49,16 +53,51 @@ var pCoord2 = { x: 0, y: 0 }
 var canvasComputed = null
 
 var cropLinesDragged = []
-var cropLines = [
-    { id: "vleft", type:"vertical", cursor: "ew-resize", 
-        x1: cropBounds.x1, y1: 0, x2: cropBounds.x1, y2: canvasSize.h },
-    { id: "vright", type:"vertical", cursor: "ew-resize", 
-        x1: cropBounds.x2, y1: 0, x2: cropBounds.x2, y2: canvasSize.h },
-    { id: "htop", type:"horizontal", cursor: "ns-resize", 
-        x1: 0, y1: cropBounds.y1, x2: canvasSize.w, y2: cropBounds.y1 },
-    { id: "hbottom", type:"horizontal", cursor: "ns-resize", 
-        x1: 0, y1: cropBounds.y2, x2: canvasSize.w, y2: cropBounds.y2 },
-]
+var cropLines = null
+// var cropLines = [
+//     { id: "vleft", type:"vertical", cursor: "ew-resize", 
+//         x1: cropBounds.x1, y1: 0, x2: cropBounds.x1, y2: canvasSize.h },
+//     { id: "vright", type:"vertical", cursor: "ew-resize", 
+//         x1: cropBounds.x2, y1: 0, x2: cropBounds.x2, y2: canvasSize.h },
+//     { id: "htop", type:"horizontal", cursor: "ns-resize", 
+//         x1: 0, y1: cropBounds.y1, x2: canvasSize.w, y2: cropBounds.y1 },
+//     { id: "hbottom", type:"horizontal", cursor: "ns-resize", 
+//         x1: 0, y1: cropBounds.y2, x2: canvasSize.w, y2: cropBounds.y2 },
+// ]
+
+/* -------------------------------------------------------------------------------------- */
+/* Init Cropper */
+initCropper(false, 0)
+function initCropper(isThumb, index) {
+    console.log(`-- initCropper, isThumb: ${isThumb}`)
+    cropper_options.cropperThumbMode = isThumb
+    cropper_options.cropper_image_index = index
+    if (isThumb) { 
+        cropFormat = cropFormatThumb 
+        isLineDragabble = false
+    } else { 
+        cropFormat = cropFormatLarge
+        isLineDragabble = true
+    }
+    cropBounds = { 
+        x1: Math.round((canvasSize.w - cropFormat.w)/2),
+        y1: Math.round((canvasSize.h - cropFormat.h)/2),
+        x2: cropFormat.w + Math.round((canvasSize.w - cropFormat.w)/2),
+        y2: cropFormat.h + Math.round((canvasSize.h - cropFormat.h)/2),
+    }
+    cropLines = [
+        { id: "vleft", type:"vertical", cursor: "ew-resize", 
+            x1: cropBounds.x1, y1: 0, x2: cropBounds.x1, y2: canvasSize.h },
+        { id: "vright", type:"vertical", cursor: "ew-resize", 
+            x1: cropBounds.x2, y1: 0, x2: cropBounds.x2, y2: canvasSize.h },
+        { id: "htop", type:"horizontal", cursor: "ns-resize", 
+            x1: 0, y1: cropBounds.y1, x2: canvasSize.w, y2: cropBounds.y1 },
+        { id: "hbottom", type:"horizontal", cursor: "ns-resize", 
+            x1: 0, y1: cropBounds.y2, x2: canvasSize.w, y2: cropBounds.y2 },
+    ]
+
+    draw()
+}
 
 /* -------------------------------------------------------------------------------------- */
 /* Drag and drop - image + Button search file */
@@ -254,9 +293,11 @@ canvas.addEventListener('pointermove', (e) => {
 window.addEventListener('pointerup', (e) => {
     imgDragActive = false
     lineDragActive = false
-    cropLines.forEach(line => {
-        line.isGrabbed = false
-    })
+    if (isLineDragabble) {
+        cropLines.forEach(line => {
+            line.isGrabbed = false
+        })
+    }
 })
 canvas.addEventListener('pointerup', (e) => {
     imgDragActive = false
@@ -354,7 +395,7 @@ reloadBtn.addEventListener('click', function() {
 })
 
 var canvas2 = document.getElementById('canvas2')
-var event_image_canvas2 = new Event('event-image-canvas2')
+
 downloadBtn.addEventListener('click', function() {
     
     const canvas2 = document.getElementById('canvas2')
@@ -378,13 +419,22 @@ downloadBtn.addEventListener('click', function() {
     ctx2.fillRect(0, 0, canvas2Size.w, canvas2Size.h)
     ctx2.drawImage(image, imageBounds.x, imageBounds.y, imageBounds.w, imageBounds.h)
     
+    if (!cropper_options.cropperThumbMode) {
+        let event_image_canvas2 = new Event('event-image-canvas2')
+        event_image_canvas2.image_index = cropper_options.cropper_image_index
+        window.dispatchEvent(event_image_canvas2)
+    } else {
+        let event_thumb_canvas2 = new Event('event-thumb-canvas2')
+        window.dispatchEvent(event_thumb_canvas2)
+    }
+    
+
+    
     // let image2 = new Image(cropFormat.w, cropFormat.h)
     // image2.src = canvas2.toDataURL("image/jpeg", 0.7)
     // image2.addEventListener('load', () => {
     //     document.body.appendChild(image2)
     // })
-
-    window.dispatchEvent(event_image_canvas2)
 
     // let display_result_img = document.getElementById('display-result-img')
     // display_result_img.src = canvas2.toDataURL("image/jpeg", 0.7)

@@ -13,6 +13,8 @@ let firstLoad = true
 let description_active = 0
 
 
+
+
 /* -- Data created ----------------------------------------------------------------------------------------------------- */
 let data = {
   'id_produit': 0,
@@ -81,6 +83,7 @@ async function getListeFamilles() {
     console.error(error.message);
   }
 }
+// BORDEL ICI
 window.addEventListener('event-liste-famille-received', (e) => {
   if (firstLoad) {
     firstLoad = false
@@ -109,10 +112,12 @@ function getFamilleIndex(id_famille) {
 
 
 
+
 /* -- Formulaire initialization ------------------------------------------------------------------------------------------- */
 function initCreateProduct() {
   setSelectFamille(0)
   setSelectCategorie(data.id_famille)
+  initImageThumb()
   initNom()
   initMarque()
   initDescriptionGroup()
@@ -205,6 +210,41 @@ function selectCategorieOnChange() {
   data.id_categorie = parseInt(select_categorie.value)
   data.nom_categorie = getCategorieName(data.id_categorie)
   render()
+}
+
+/* Thumb du produit */
+function initImageThumb() {
+  let create_thumb = document.getElementById('create_thumb')
+  create_thumb.innerHTML = ""
+
+  let thumb_label = xCreateElement('div', 'form_label', '')
+  thumb_label.innerText = "Vignette / thumb"
+  create_thumb.appendChild(thumb_label)
+
+  let image_form_label = xCreateElement('div', 'form_label', '')
+  let thumb_input = xCreateElement('input', 'add-thumb', `add-thumb`)
+  thumb_input.setAttribute('type', 'image')
+  thumb_input.setAttribute('src', './img/image-add.svg')
+  image_form_label.appendChild(thumb_input)
+  create_thumb.appendChild(image_form_label)
+
+  // todo reset handlers ?
+
+  thumb_input.addEventListener('click', (e)=>{
+    initCropper(true, 0)
+    let popup_canvas_container = document.getElementById('popup-canvas-container')
+    popup_canvas_container.style.display = "block"
+  })
+
+  
+  window.addEventListener('event-thumb-canvas2', (e) => {
+    let popup_canvas_container = document.getElementById('popup-canvas-container')
+    popup_canvas_container.style.display = "none"
+    data.thumb = canvas2.toDataURL("image/jpeg", 0.7)
+    render()
+
+  }, false)
+  
 }
 
 /* Nom et marque */
@@ -336,7 +376,7 @@ function createDescriptionGroup() {
     render()
   })
 
-  initImage()
+  initImageDescription()
 
   // console.log(desc_handler)
 
@@ -378,30 +418,33 @@ function getDescriptionGroupHandlerIndex(global_index) {
   return return_value
 }
 
-function initImage() {
-  // todo reset handlers au recall d'initImage()
+function initImageDescription() {
+  // todo reset handlers au recall d'initImageDescription()
   let boutons_add_desc_image = document.querySelectorAll('.description-add-image')
   boutons_add_desc_image.forEach(btn_add_img => {
     btn_add_img.addEventListener('click', (e) => {
       //todo passer l'index 'absolu' de la description a la popup de cropping image pour qu'elle soit renvoyé en data avec l'event de event-image-canvas2
       description_active = parseInt(e.currentTarget.getAttribute('id').split('-').slice(-1))
+      initCropper(false, description_active)
       let popup_canvas_container = document.getElementById('popup-canvas-container')
       popup_canvas_container.style.display = "block"
     })
   })
   window.addEventListener('event-image-canvas2', (e) => {
+    console.log(`image created index : ${e.image_index}`)
     let popup_canvas_container = document.getElementById('popup-canvas-container')
     popup_canvas_container.style.display = "none"
-    
     data.images[getDescriptionIndex(description_active)].data = canvas2.toDataURL("image/jpeg", 0.7)
     render()
-
   }, false)
+
   document.getElementById('close-popup-canvas-container').addEventListener('click', (e) => {
     let popup_canvas_container = document.getElementById('popup-canvas-container')
     popup_canvas_container.style.display = "none"
   })
 }
+
+
 
 
 
@@ -492,7 +535,8 @@ function createNewCategorie() {
   let input_value = add_categorie_input.value
   if (input_value.length > 2) {
     input_value = input_value.charAt(0).toUpperCase() + input_value.slice(1)
-    sendNewCategorie(input_value, id_famille_selected)
+    // sendNewCategorie(input_value, id_famille_selected)
+    sendNewCategorie(input_value, data.id_famille)
   }
 }
 
@@ -574,7 +618,8 @@ async function sendNewFamille(nom_famille) {
     json = await response.json()
     // console.log(json)
     if (json['status'] == 200) {
-      let inserted_id_famille = json['id_famille']
+      // let id_famille_selected = json['id_famille']
+      data.id_famille = json['id_famille']
       // console.log(inserted_id_famille)
       window.dispatchEvent(eventNewFamilleInserted)
     }
@@ -639,16 +684,6 @@ function initSendServer() {
     sendProduit()
 
 
-    // if (data.images.length > 0) {
-    //   if (data.images[0].data != '') {
-
-    //     imgBase64 = data.images[0].data
-    //     const myfile = DataURIToBlob(imgBase64)
-      
-    //     sendImageDescription(myfile)
-
-    //   }      
-    // }
 
   })
 }
@@ -663,12 +698,18 @@ async function sendProduit() {
   formData.append('marque', data.marque)
   data.description.forEach((desc, index_desc) => {
     formData.append(`desc_${index_desc}`, desc.content)
+    formData.append(`desc_titre_${index_desc}`, desc.title)
+    formData.append(`desc_index_${index_desc}`, index_desc)
   })
   data.images.forEach((image_produit, index_image) => {
     let imgBase64 = image_produit.data
     let myfile = DataURIToBlob(imgBase64)
     formData.append(`file_image_${index_image}`, myfile, `file_image_${index_image}.jpeg`)
   })
+
+  let thumbBase64 = data.thumb
+  let fileThumb = DataURIToBlob(thumbBase64)
+  formData.append('file_thumb', fileThumb, 'fileThumb.jpeg')
 
   try {
     const response = await fetch(url, {
