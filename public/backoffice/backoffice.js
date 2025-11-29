@@ -30,10 +30,10 @@ let data = {
   'thumb': "",
 }
 
+
 /* -- Gathering Data ---------------------------------------------------------------------------------------------------- */
 const eventProduitsReceived = new Event("event-produits-received")
 const eventListeFamilleReceived = new Event("event-liste-famille-received")
-
 getAllProduits()
 async function getAllProduits() {
   let json = null
@@ -50,6 +50,7 @@ async function getAllProduits() {
     json = await response.json()
     if (json['status'] == 200) {
       liste_produits = json['produits']
+      console.log(liste_produits)
       window.dispatchEvent(eventProduitsReceived)
     }
   } catch (error) {
@@ -58,6 +59,7 @@ async function getAllProduits() {
 }
 window.addEventListener('event-produits-received', (e)=> {
   // console.log(liste_produits)
+  initListeProduits()
 })
 
 getListeFamilles()
@@ -83,11 +85,12 @@ async function getListeFamilles() {
     console.error(error.message);
   }
 }
-// BORDEL ICI
+// BORDEL ICI - repenser le loading général + gestion select famille
 window.addEventListener('event-liste-famille-received', (e) => {
   if (firstLoad) {
     firstLoad = false
     initCreateProduct()
+    // initListeProduits()
     window.setTimeout(() => {
       hideLoader()
     }, 400)
@@ -111,6 +114,68 @@ function getFamilleIndex(id_famille) {
 }
 
 
+/* MENU */
+initMenu()
+function initMenu() {
+  let list_produit_container = document.getElementById('list-produit-container')
+  list_produit_container.style.display = 'flex'
+  let new_produit_container = document.getElementById('new-produit-container')
+  new_produit_container.style.display = 'none'
+  let btns_menu = document.querySelectorAll('.menu-item')
+  btns_menu.forEach((btn_menu) => {
+    btn_menu.addEventListener('click', (e) => {
+      let btn_menu_clicked = e.currentTarget
+      btns_menu.forEach((btn) => {
+        if (btn == btn_menu_clicked) {
+          btn.classList.add('active')
+        } else {
+          btn.classList.remove('active')
+        }
+      })
+      switch (btn_menu_clicked.id) {
+        case "btn-menu-lister-produits":
+          list_produit_container.style.display = 'flex'
+          new_produit_container.style.display = 'none'
+          break;
+        case "btn-menu-nouveau-produit":
+          list_produit_container.style.display = 'none'
+          new_produit_container.style.display = 'flex'
+          break;
+      } 
+    })
+    
+  })
+}
+
+/* -- Liste des produits initialization ----------------------------------------------------------------------------- */
+function initListeProduits() {
+  let list_produit_container = document.getElementById('list-produit-container')
+  let last_id_famille = -1
+  let last_id_categorie = -1
+  liste_produits.forEach((produit) => {
+    if (last_id_famille != produit.id_famille) {
+      let list_produit_famille_title = xCreateElement('h3', 'list-produit-famille-title', '')
+      list_produit_famille_title.innerHTML = produit.nom_famille
+      list_produit_container.appendChild(list_produit_famille_title)
+      last_id_famille = produit.id_famille
+    }
+    if (last_id_categorie != produit.id_categorie) {
+      let list_produit_categorie_title = xCreateElement('h5', 'list-produit-categorie-title', '')
+      list_produit_categorie_title.innerHTML = produit.nom_categorie
+      list_produit_container.appendChild(list_produit_categorie_title)
+      last_id_categorie = produit.id_categorie
+    }
+
+    
+
+    let list_produit_element = xCreateElement('div', 'list-produit-element', `list-produit-element-${produit.id_produit}`)
+    list_produit_element.innerHTML = `${produit.nom} - ${produit.marque}`
+    list_produit_container.appendChild(list_produit_element)
+  })
+
+
+}
+
 
 
 /* -- Formulaire initialization ------------------------------------------------------------------------------------------- */
@@ -122,7 +187,7 @@ function initCreateProduct() {
   initMarque()
   initDescriptionGroup()
   initSendServer()
-  render()
+  renderNewProduit()
 }
 
 /* Famille et catégories */
@@ -166,7 +231,7 @@ function selectFamilleOnChange() {
   data.id_famille = parseInt(select_famille.value)
   data.nom_famille = getFamilleName(data.id_famille)
   setSelectCategorie(data.id_famille)
-  render()
+  renderNewProduit()
 }
 
 function setSelectCategorie() {
@@ -209,7 +274,7 @@ function selectCategorieOnChange() {
   let select_categorie = document.getElementById('select_categorie')
   data.id_categorie = parseInt(select_categorie.value)
   data.nom_categorie = getCategorieName(data.id_categorie)
-  render()
+  renderNewProduit()
 }
 
 /* Thumb du produit */
@@ -241,7 +306,7 @@ function initImageThumb() {
     let popup_canvas_container = document.getElementById('popup-canvas-container')
     popup_canvas_container.style.display = "none"
     data.thumb = canvas2.toDataURL("image/jpeg", 0.7)
-    render()
+    renderNewProduit()
 
   }, false)
   
@@ -252,7 +317,7 @@ function initNom() {
   let input_nom = document.getElementById('input_nom')
   input_nom.addEventListener('keyup', (e) => {
     data.nom = e.target.value
-    render()
+    renderNewProduit()
     // let produit_nom = document.getElementById('produit-nom')
     // produit_nom.innerText = e.target.value
   })
@@ -261,7 +326,7 @@ function initMarque() {
   let input_marque = document.getElementById('input_marque')
   input_marque.addEventListener('keyup', (e) => {
     data.marque = e.target.value.toUpperCase()
-    render()
+    renderNewProduit()
     // let produit_marque = document.getElementById('produit-marque')
     // produit_marque.innerText = e.target.value.toUpperCase()
   })
@@ -352,7 +417,7 @@ function createDescriptionGroup() {
   titre_group_input.addEventListener('keyup', (e) => {
     let index = getDescriptionGroupHandlerIndex(desc_handler.global_index)
     data.description[index].title = e.target.value
-    render()
+    renderNewProduit()
     // let produit_titre_groupe = document.getElementById('produit-titre-groupe')
     // produit_titre_groupe.innerText = e.target.value
   })
@@ -373,7 +438,7 @@ function createDescriptionGroup() {
     desc_handler.text_content = new_quill.getSemanticHTML()
     let index = getDescriptionGroupHandlerIndex(desc_handler.global_index)
     data.description[index].content = desc_handler.text_content
-    render()
+    renderNewProduit()
   })
 
   initImageDescription()
@@ -390,7 +455,7 @@ function removeDescriptionGroup(global_index) {
   data.images.splice(desc_handler_index, 1)
   let description_group = document.getElementById(`description-group-${global_index}`)
   description_group.parentNode.removeChild(description_group)
-  render()
+  renderNewProduit()
 }
 
 function initDescriptionGroupHandler() {
@@ -435,7 +500,7 @@ function initImageDescription() {
     let popup_canvas_container = document.getElementById('popup-canvas-container')
     popup_canvas_container.style.display = "none"
     data.images[getDescriptionIndex(description_active)].data = canvas2.toDataURL("image/jpeg", 0.7)
-    render()
+    renderNewProduit()
   }, false)
 
   document.getElementById('close-popup-canvas-container').addEventListener('click', (e) => {
@@ -443,10 +508,6 @@ function initImageDescription() {
     popup_canvas_container.style.display = "none"
   })
 }
-
-
-
-
 
 
 /* -- Popup d'édition Familles - Catégories ---------------------------------------------------------------------------------- */
@@ -540,8 +601,8 @@ function createNewCategorie() {
   }
 }
 
-/* -- Render ------------------------------------------------------------------------------------------------------------------ */
-function render() {
+/* -- Render New Produit ----------------------------------------------------------------------------------------------------- */
+function renderNewProduit() {
 
   let header_titre = document.getElementById('produit-header-titre-text')
   header_titre.innerText = getCategorieName(data.id_categorie).toUpperCase()
@@ -671,8 +732,6 @@ function newCategorieInserted() {
 }
 
 
-
-
 /* Send server */
 function initSendServer() {
   document.getElementById('send_server').addEventListener('click', (e) => {
@@ -756,33 +815,6 @@ async function sendImageDescription(myfile) {
 }
 
 /* Upload file */
-function srcToFile(src, fileName, mimeType) {
-  return (fetch(src)
-    .then(function (res) { return res.arrayBuffer(); })
-    .then(function (buf) { return new File([buf], fileName, { type: mimeType }); })
-  );
-}
-function uploadImage() {
-
-  const imagePath = './img/dragon2.jpg'
-  const image = new Image()
-  image.src = imagePath
-  let myImage = document.getElementById('image')
-  myImage.setAttribute('src', imagePath)
-
-  srcToFile('./img/dragon2.jpg', 'new.jpg', 'image/jpg')
-    .then(function (file) {
-      var fd = new FormData();
-      fd.append('image', file);
-      return fetch('http://localhost/green_catalogue_rest/createImage.php', { method: 'POST', body: fd });
-    })
-    .then(function (res) {
-      console.log(res.json())
-      return res.json();
-    })
-    .then(console.log)
-    .catch(console.error)
-}
 function DataURIToBlob(dataURI) {
   const splitDataURI = dataURI.split(',')
   const byteString = splitDataURI[0].indexOf('base64') >= 0 ? atob(splitDataURI[1]) : decodeURI(splitDataURI[1])

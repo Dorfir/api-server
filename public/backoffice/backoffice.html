@@ -17,14 +17,19 @@
 
     <div id="menu-container">
       <img src="./img/green_city_logo_blue.svg" alt="GreenCity" class="logo">
-      <div class="menu-item">Lister</div>
-      <div class="menu-item active">Créer</div>
-      <div class="menu-item">Modifier</div>
+      <div class="menu-item active" id="btn-menu-lister-produits">Lister</div>
+      <div class="menu-item" id="btn-menu-nouveau-produit">Créer</div>
+      <!-- <div class="menu-item">Modifier</div> -->
     </div>
 
     <div id="content-container">
 
-      <div id="main-container">
+      <div id="list-produit-container" class="xCustomScroll">
+
+
+      </div>
+
+      <div id="new-produit-container">
 
         <div id="form-container" class="xCustomScroll">
 
@@ -141,6 +146,7 @@
     </div>
   </div>
 
+  <!-- Cropper Image -->
   <div id="popup-canvas-container">
   
     <div id="popup-canvas">
@@ -172,11 +178,9 @@
     <button id="close-popup-canvas-container">Fermer</button>
 
   </div>
-
   <canvas id="canvas2"></canvas>
 
-  <img src="" alt="" id="image">
-
+  <!-- Loader -->
   <div id="loader-container">
     <div class="lds-ring">
       <div></div>

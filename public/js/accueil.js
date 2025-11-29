@@ -457,9 +457,12 @@ function createFicheProduit(prod) {
 
     let isDescExist = (i < prod.descriptifs.length)
 
+    // console.log(`isDescExist ${isDescExist}`)
+
     if (isDescExist) {
       let produitTitreGroupe = document.createElement('div')
       produitTitreGroupe.classList.add('produit-titre-groupe')
+      if (i % 2 !== 0) produitTitreGroupe.classList.add('right')
       produitTitreGroupe.innerText = prod.descriptifs[i].titre
       modalMain.appendChild(produitTitreGroupe)
     }

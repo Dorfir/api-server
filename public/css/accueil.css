@@ -715,10 +715,14 @@ body {
 }
 
 .fiche-produit .modal-main .produit-titre-groupe {
+  width: 100%;
   font-family: "JosefinSans-Bold";
   font-weight: 600;
   font-size: 1.6em;
   padding: 10px 0;
+}
+.fiche-produit .modal-main .produit-titre-groupe.right {
+  text-align: right;
 }
 /* .fiche-produit .modal-main .produit-nom {
   font-family: "JosefinSans-Bold";
@@ -736,6 +740,7 @@ body {
   justify-content: space-around;
   align-items: center;
   gap: 10px;
+  padding-bottom: 25px;
 }
 
 .fiche-produit .modal-main .produit-picture {
