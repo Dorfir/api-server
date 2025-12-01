@@ -26,7 +26,7 @@ let data = {
   'marque': "",
   'description': [],
   'images': [],
-  'prix': "",
+  'prix': -1,
   'thumb': "",
 }
 
@@ -118,9 +118,9 @@ function getFamilleIndex(id_famille) {
 initMenu()
 function initMenu() {
   let list_produit_container = document.getElementById('list-produit-container')
-  list_produit_container.style.display = 'flex'
+  list_produit_container.style.display = 'none'
   let new_produit_container = document.getElementById('new-produit-container')
-  new_produit_container.style.display = 'none'
+  new_produit_container.style.display = 'flex'
   let btns_menu = document.querySelectorAll('.menu-item')
   btns_menu.forEach((btn_menu) => {
     btn_menu.addEventListener('click', (e) => {
@@ -140,6 +140,9 @@ function initMenu() {
         case "btn-menu-nouveau-produit":
           list_produit_container.style.display = 'none'
           new_produit_container.style.display = 'flex'
+          break;
+        case "btn-menu-reset-produit":
+          resetNouveauProduitPage()
           break;
       } 
     })
@@ -178,13 +181,14 @@ function initListeProduits() {
 
 
 
-/* -- Formulaire initialization ------------------------------------------------------------------------------------------- */
+/* -- Ajouter un nouveau produit ------------------------------------------------------------------------------------- */
 function initCreateProduct() {
   setSelectFamille(0)
   setSelectCategorie(data.id_famille)
   initImageThumb()
   initNom()
   initMarque()
+  initPrix()
   initDescriptionGroup()
   initSendServer()
   renderNewProduit()
@@ -277,6 +281,7 @@ function selectCategorieOnChange() {
   renderNewProduit()
 }
 
+
 /* Thumb du produit */
 function initImageThumb() {
   let create_thumb = document.getElementById('create_thumb')
@@ -318,8 +323,6 @@ function initNom() {
   input_nom.addEventListener('keyup', (e) => {
     data.nom = e.target.value
     renderNewProduit()
-    // let produit_nom = document.getElementById('produit-nom')
-    // produit_nom.innerText = e.target.value
   })
 }
 function initMarque() {
@@ -331,6 +334,16 @@ function initMarque() {
     // produit_marque.innerText = e.target.value.toUpperCase()
   })
 }
+
+/* Prix */
+function initPrix() {
+  let input_prix = document.getElementById('input_prix')
+  input_prix.addEventListener('keyup', (e) => {
+    data.prix = parseInt(e.target.value)
+    renderNewProduit()
+  })
+}
+
 /* Description group */
 var xliste_descriptions = Array()
 function initDescriptionGroup() {
@@ -350,7 +363,7 @@ function createDescriptionGroup() {
 
   let desc_handler = initDescriptionGroupHandler()
   data.description.push({'title': '', 'content': '', 'global_index': desc_handler.global_index})
-  data.images.push({'data': '', 'global_index': desc_handler.global_index})
+  data.images.push({'data': '', 'global_index': desc_handler.global_index, 'display_size': 'medium'})
   description_active = parseInt(desc_handler.global_index)
 
   // création des éléments du groupe de description
@@ -385,13 +398,47 @@ function createDescriptionGroup() {
   quill_container.appendChild(editor_container)
   description_big_container.appendChild(quill_container)
 
-  let image_ligne = xCreateElement('div', 'ligne', '')
+  let image_ligne = xCreateElement('div', 'ligne-large', '')
   let image_form_label = xCreateElement('div', 'form_label', '')
   let image_input = xCreateElement('input', 'description-add-image', `add-desc-image-${desc_handler.global_index}`)
   image_input.setAttribute('type', 'image')
   image_input.setAttribute('src', './img/image-add.svg')
   image_form_label.appendChild(image_input)
   image_ligne.appendChild(image_form_label)
+
+  let image_size_large_container = xCreateElement('div', 'checkbox_container', '')
+  let image_size_large_label = xCreateElement('label', '', '')
+  image_size_large_label.setAttribute('for', `add-desc-image-large-${desc_handler.global_index}`)
+  image_size_large_label.innerHTML = 'large&nbsp;'
+  let image_size_large = xCreateElement('input', 'add-desc-image-radio', `add-desc-image-large-${desc_handler.global_index}`)
+  image_size_large.setAttribute('type', 'radio')
+  image_size_large.setAttribute('name', `image-size-${desc_handler.global_index}`)
+  image_size_large_container.appendChild(image_size_large_label)
+  image_size_large_container.appendChild(image_size_large)
+  image_ligne.appendChild(image_size_large_container)
+
+  let image_size_medium_container = xCreateElement('div', 'checkbox_container', '')
+  let image_size_medium_label = xCreateElement('label', '', '')
+  image_size_medium_label.setAttribute('for', `add-desc-image-medium-${desc_handler.global_index}`)
+  image_size_medium_label.innerHTML = 'medium&nbsp;'
+  let image_size_medium = xCreateElement('input', 'add-desc-image-radio', `add-desc-image-medium-${desc_handler.global_index}`)
+  image_size_medium.setAttribute('type', 'radio')
+  image_size_medium.setAttribute('name', `image-size-${desc_handler.global_index}`)
+  image_size_medium.checked = true
+  image_size_medium_container.appendChild(image_size_medium_label)
+  image_size_medium_container.appendChild(image_size_medium)
+  image_ligne.appendChild(image_size_medium_container)
+
+  let image_size_small_container = xCreateElement('div', 'checkbox_container', '')
+  let image_size_small_label = xCreateElement('label', '', '')
+  image_size_small_label.setAttribute('for', `add-desc-image-small-${desc_handler.global_index}`)
+  image_size_small_label.innerHTML = 'small&nbsp;'
+  let image_size_small = xCreateElement('input', 'add-desc-image-radio', `add-desc-image-small-${desc_handler.global_index}`)
+  image_size_small.setAttribute('type', 'radio')
+  image_size_small.setAttribute('name', `image-size-${desc_handler.global_index}`)
+  image_size_small_container.appendChild(image_size_small_label)
+  image_size_small_container.appendChild(image_size_small)
+  image_ligne.appendChild(image_size_small_container)
 
   // assemblage des éléments du groupe de description
   description_group.appendChild(top_separator)
@@ -441,7 +488,7 @@ function createDescriptionGroup() {
     renderNewProduit()
   })
 
-  initImageDescription()
+  initImageDescription(desc_handler.global_index)
 
   // console.log(desc_handler)
 
@@ -483,7 +530,7 @@ function getDescriptionGroupHandlerIndex(global_index) {
   return return_value
 }
 
-function initImageDescription() {
+function initImageDescription(global_index) {
   // todo reset handlers au recall d'initImageDescription()
   let boutons_add_desc_image = document.querySelectorAll('.description-add-image')
   boutons_add_desc_image.forEach(btn_add_img => {
@@ -494,12 +541,31 @@ function initImageDescription() {
       let popup_canvas_container = document.getElementById('popup-canvas-container')
       popup_canvas_container.style.display = "block"
     })
+    // let radio_image_size_large = document.getElementById(`add-desc-image-large-${global_index}`)
+    // radio_image_size_large.addEventListener('change', (e) => {
+    //   let index = parseInt(e.currentTarget.id.split('-').splice(-1))
+    //   let all_radios = document.querySelectorAll(`#description-group-${index} .add-desc-image`)
+    //   console.log(all_radios)
+    // })
+    let all_radios = document.querySelectorAll(`#description-group-${global_index} .add-desc-image-radio`)
+    all_radios.forEach((radio) => {
+      radio.addEventListener('change', (e) => {
+        let image_index = parseInt(e.currentTarget.id.split('-').splice(-1))
+        
+        let value = ""
+        if (e.target.id.includes('large')) value = 'large'
+        if (e.target.id.includes('medium')) value = 'medium'
+        if (e.target.id.includes('small')) value = 'small'
+        data.images[getDescriptionIndexFromGlobalIndex(image_index)].display_size = value
+      })
+    })
   })
   window.addEventListener('event-image-canvas2', (e) => {
     console.log(`image created index : ${e.image_index}`)
     let popup_canvas_container = document.getElementById('popup-canvas-container')
     popup_canvas_container.style.display = "none"
-    data.images[getDescriptionIndex(description_active)].data = canvas2.toDataURL("image/jpeg", 0.7)
+    data.images[getDescriptionIndexFromGlobalIndex(e.image_index)].data = canvas2.toDataURL("image/jpeg", 0.7)
+    // data.images[getDescriptionIndexFromGlobalIndex(description_active)].data = canvas2.toDataURL("image/jpeg", 0.7)
     renderNewProduit()
   }, false)
 
@@ -627,7 +693,16 @@ function renderNewProduit() {
     </svg>
   `
   render_parent.appendChild(produit_marque_container)
-  
+
+  console.log(data.prix)
+  if (data.prix > 10) {
+    let produit_prix_container = xCreateElement('div', 'produit-prix-container', '')
+    let produit_prix = xCreateElement('div', 'produit-prix')
+    produit_prix.innerHTML = `<b>Prix :</b> ${data.prix} &nbsp;&euro;`
+    produit_prix_container.appendChild(produit_prix)
+    render_parent.appendChild(produit_prix_container)
+  }
+
   data.description.forEach((desc, index_desc) => {
     let produit_titre_groupe = xCreateElement('div', 'produit-titre-groupe', `produit-titre-groupe-${desc.global_index}`)
     produit_titre_groupe.innerHTML = desc.title
@@ -673,15 +748,10 @@ async function sendNewFamille(nom_famille) {
       method: "post",
       body: formData,
     });
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`Response status: ${response.status}`)
     json = await response.json()
-    // console.log(json)
     if (json['status'] == 200) {
-      // let id_famille_selected = json['id_famille']
       data.id_famille = json['id_famille']
-      // console.log(inserted_id_famille)
       window.dispatchEvent(eventNewFamilleInserted)
     }
   } catch (error) {
@@ -732,17 +802,41 @@ function newCategorieInserted() {
 }
 
 
+/* Reset nouveau produit page */
+function resetNouveauProduitPage() {
+  data = {
+    'id_produit': 0,
+    'id_famille': 0,
+    'nom_famille': "",
+    'id_categorie': 0,
+    'nom_categorie': "",
+    'nom': "",
+    'marque': "",
+    'description': [],
+    'images': [],
+    'prix': -1,
+    'thumb': "",
+  }
+  setSelectFamille(0)
+  setSelectCategorie(data.id_famille)
+  initImageThumb()
+  initNom()
+  initMarque()
+  initPrix()
+  initDescriptionGroup()
+  initSendServer()
+  renderNewProduit()
+}
+
+
 /* Send server */
 function initSendServer() {
   document.getElementById('send_server').addEventListener('click', (e) => {
 
     // TODO gestion de la taille max de la requete POST -+ 8Mb max
     console.log('-- sendServer()')
-
     console.log(data)
     sendProduit()
-
-
 
   })
 }
@@ -755,6 +849,7 @@ async function sendProduit() {
   formData.append('id_categorie', data.id_categorie)
   formData.append('nom', data.nom)
   formData.append('marque', data.marque)
+  formData.append('prix', data.prix)
   data.description.forEach((desc, index_desc) => {
     formData.append(`desc_${index_desc}`, desc.content)
     formData.append(`desc_titre_${index_desc}`, desc.title)
@@ -764,11 +859,15 @@ async function sendProduit() {
     let imgBase64 = image_produit.data
     let myfile = DataURIToBlob(imgBase64)
     formData.append(`file_image_${index_image}`, myfile, `file_image_${index_image}.jpeg`)
+    formData.append(`image_display_size_${index_image}`, image_produit.display_size)
   })
 
-  let thumbBase64 = data.thumb
-  let fileThumb = DataURIToBlob(thumbBase64)
-  formData.append('file_thumb', fileThumb, 'fileThumb.jpeg')
+  if (data.thumb !== "") {
+    let thumbBase64 = data.thumb
+    let fileThumb = DataURIToBlob(thumbBase64)
+    formData.append('file_thumb', fileThumb, 'fileThumb.jpeg')
+  }
+  
 
   try {
     const response = await fetch(url, {
@@ -788,44 +887,7 @@ async function sendProduit() {
   
 }
 
-/* Send new categorie création */
-async function sendImageDescription(myfile) {
 
-  let json = null
-  const url = "http://localhost/green_catalogue_rest/upload_image.php"
-  let formData = new FormData()
-  formData.append('fichier_image', myfile, 'myfile.jpeg')
-  try {
-    const response = await fetch(url, {
-      method: "post",
-      body: formData,
-    });
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
-    json = await response.json()
-    console.log(json)
-    // if (json['status'] == 200) {
-    //   let inserted_id_categorie = json['id_categorie']
-    //   window.dispatchEvent(eventNewCategorieInserted)
-    // }
-  } catch (error) {
-    console.error(error.message);
-  }
-}
-
-/* Upload file */
-function DataURIToBlob(dataURI) {
-  const splitDataURI = dataURI.split(',')
-  const byteString = splitDataURI[0].indexOf('base64') >= 0 ? atob(splitDataURI[1]) : decodeURI(splitDataURI[1])
-  const mimeString = splitDataURI[0].split(':')[1].split(';')[0]
-
-  const ia = new Uint8Array(byteString.length)
-  for (let i = 0; i < byteString.length; i++)
-      ia[i] = byteString.charCodeAt(i)
-
-  return new Blob([ia], { type: mimeString })
-}
 
 
 
@@ -866,7 +928,7 @@ function getCategorieName(id_cat) {
   })
   return nom_cat
 }
-function getDescriptionIndex(index_absolute) {
+function getDescriptionIndexFromGlobalIndex(index_absolute) {
   let index = 0
   data.description.forEach((desc, desc_index)=> {
     if (desc.global_index == index_absolute) index = desc_index
@@ -902,3 +964,15 @@ function xCreateElement(type, elem_classes, elem_id) {
   return element
 }
 
+/* Upload file */
+function DataURIToBlob(dataURI) {
+  const splitDataURI = dataURI.split(',')
+  const byteString = splitDataURI[0].indexOf('base64') >= 0 ? atob(splitDataURI[1]) : decodeURI(splitDataURI[1])
+  const mimeString = splitDataURI[0].split(':')[1].split(';')[0]
+
+  const ia = new Uint8Array(byteString.length)
+  for (let i = 0; i < byteString.length; i++)
+      ia[i] = byteString.charCodeAt(i)
+
+  return new Blob([ia], { type: mimeString })
+}

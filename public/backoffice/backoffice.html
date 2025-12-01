@@ -19,6 +19,8 @@
       <img src="./img/green_city_logo_blue.svg" alt="GreenCity" class="logo">
       <div class="menu-item active" id="btn-menu-lister-produits">Lister</div>
       <div class="menu-item" id="btn-menu-nouveau-produit">Créer</div>
+      
+      <div class="menu-item" id="btn-menu-reset-produit">Reset</div>
       <!-- <div class="menu-item">Modifier</div> -->
     </div>
 
@@ -40,12 +42,10 @@
           </div>
           
           <hr />
-
           <div class="ligne" id="create_thumb">
           </div>
           
           <hr />
-
           <div class="ligne" id="create_nom">
             <div class="form_label">Nom</div>
             <input type="text" id="input_nom" placeholder="Nom du produit" autocomplete="new-password">
@@ -56,7 +56,13 @@
             <input type="text" id="input_marque" placeholder="Marque du produit" autocomplete="new-password">
           </div>
 
-          <!-- TODO add prix -->
+          <hr />
+          <div class="ligne" id="create_prix">
+            <div class="form_label">Prix</div>
+            <div id="ligne-large">
+              <input type="number" id="input_prix" placeholder="0" autocomplete="off"> &euro;
+            </div>
+          </div>
 
           <div id="description-group-container"></div>
 

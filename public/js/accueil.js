@@ -416,19 +416,15 @@ function createFicheProduit(prod) {
   let modalMainSeparator = document.createElement('div')
   modalMainSeparator.setAttribute('id', 'modal-main-separator')
   modalMainSeparator.innerHTML = "&nbsp;"
-  // <div id="modal-main-separator">&nbsp;</div>
 
   let produitMarque = document.createElement('div')
   produitMarque.classList.add('produit-marque')
   // TODO change
-  // let titre = splitColorNameProduit(prod.marque, " ")
   let produitMarqueBlanc = document.createElement('div')
   produitMarqueBlanc.classList.add('produit-marque-1')
-  // produitMarqueBlanc.innerText = titre[0]
   produitMarqueBlanc.innerText = prod.nom
   let produitMarqueGold = document.createElement('div')
   produitMarqueGold.classList.add('produit-marque-2')
-  // produitMarqueGold.innerText = titre[1]
   produitMarqueGold.innerText = prod.marque
   let svg = `<svg viewBox="0 0 100 5" class="produit-separator">
             <line x1="0" y1="3" x2="100" y2="3" class="line-svg-thin" />
@@ -436,20 +432,17 @@ function createFicheProduit(prod) {
   produitMarque.appendChild(produitMarqueBlanc)
   produitMarque.appendChild(produitMarqueGold)
   produitMarque.innerHTML += svg
-  // <div class="produit-marque">
-  //     <div class="produit-marque-1">STEPIN</div>
-  //     <div class="produit-marque-2">SANINDUSA</div>
-  //     <svg viewBox="0 0 100 5" class="produit-separator">
-  //       <line x1="0" y1="3" x2="100" y2="3" class="line-svg-thin" />
-  //     </svg>
-  //   </div>
-
   
-
   modalMain.appendChild(modalMainSeparator)
   modalMain.appendChild(produitMarque)
 
-  
+  if (parseInt(prod.prix) > 0) {
+    let produitPrixContainer = xCreateElement('div', 'produit-prix-container', '')
+    let produitPrix = xCreateElement('div', 'produit-prix', '')
+    produitPrix.innerHTML = `<b>Prix : </b>${prod.prix}&nbsp;&euro;`
+    produitPrixContainer.appendChild(produitPrix)
+    modalMain.appendChild(produitPrixContainer)
+  }
 
   // todo a voir ce max desc/images ...
   let group_count = Math.max(prod.descriptifs.length, prod.images.length)
@@ -484,9 +477,9 @@ function createFicheProduit(prod) {
       produitPicture.classList.add('produit-picture')
       // TODO change image path
       if (prod.id_produit >= 21) {
-        produitPicture.setAttribute('src', image_path + prod.images[i])
+        produitPicture.setAttribute('src', image_path + prod.images[i].image_url)
       } else {
-        produitPicture.setAttribute('src', prod.images[i])
+        produitPicture.setAttribute('src', prod.images[i].image_url)
       }
       
     }

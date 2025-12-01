@@ -125,6 +125,8 @@ body {
   background-color: #eeeee9;
 }
 
+/* #endregion */
+
 /* #region New element */
 #new-produit-container {
   position: relative;
@@ -158,7 +160,16 @@ body {
   flex-direction: column;
   text-align: start;
   justify-content: flex-start;
-  width: 300px;
+  max-width: 400px;
+  color: white;
+}
+.ligne-large {
+  display: flex;
+  flex-direction: row;
+  text-align: start;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
 }
 
 #form-container hr {
@@ -184,10 +195,40 @@ body {
   background-color: #ffffff;
 }
 
+.produit-prix-container {
+  padding: 3px;
+}
+.produit-prix {
+  color: #294a73;
+  font-size: 1.3em;
+
+}
+
 .form_label {
   margin: 2px 0;
   font-size: 0.94em;
   color: white;
+}
+.form_label2 {
+  margin: 2px 0;
+  font-size: 0.94em;
+  color: white;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+.checkbox_container {
+  display: flex;
+  color: white;
+  flex-flow: row nowrap;
+  /* gap: 5px; */
+  align-items: center;
+  justify-content: flex-start;
+}
+.checkbox_container input, .checkbox_container label {
+  cursor: pointer;
 }
 
 .select_container {
