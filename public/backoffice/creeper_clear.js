@@ -69,6 +69,7 @@ var cropLines = null
 /* Init Cropper */
 initCropper(false, 0)
 function initCropper(isThumb, index) {
+    // gerer reset zoom + image chargée
     console.log(`-- initCropper, isThumb: ${isThumb}`)
     cropper_options.cropperThumbMode = isThumb
     cropper_options.cropper_image_index = index

@@ -137,7 +137,7 @@ body {
   margin: 10px;
 }
 
-#form-container {
+#np_form_container {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -172,7 +172,7 @@ body {
   gap: 15px;
 }
 
-#form-container hr {
+#np_form_container hr {
   border: 1px solid #eee;
   width: 100%;
 }
@@ -378,7 +378,7 @@ input[type=text] {
 /* #endregion */
 
 /* #region Render zone */
-#render {
+#np_render {
   position: relative;
   flex-grow: 1;
   min-width: 45vw;
@@ -390,7 +390,7 @@ input[type=text] {
   background-color: #ffffff;
 }
 
-#produit-header {
+#np_produit_header {
   position: absolute;
   left: 0;
   top: 0;
