@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------------------------- */
 /* Variables - constantes */
-var cropper_options = { cropperThumbMode: false, cropper_image_index: 0 }
+var cropper_options = { cropperThumbMode: false, cropper_image_index: 0, export_mode: 'np' }
 const canvasDebug = false
 const cropFormatThumb = { w: 425, h: 250 }
 const cropFormatLarge = { w: 650, h: 450 }
@@ -67,10 +67,14 @@ var cropLines = null
 
 /* -------------------------------------------------------------------------------------- */
 /* Init Cropper */
-initCropper(false, 0)
-function initCropper(isThumb, index) {
-    // gerer reset zoom + image chargée
+initCropper(false, 0, 'np')
+function initCropper(isThumb, index, export_mode) {
+    // TODO reset image chargée + affichage dragndrop/loading
+    // + debug reset zoom
     console.log(`-- initCropper, isThumb: ${isThumb}`)
+
+    resetZoom()
+    cropper_options.export_mode = export_mode
     cropper_options.cropperThumbMode = isThumb
     cropper_options.cropper_image_index = index
     if (isThumb) { 
@@ -346,7 +350,7 @@ function draw() {
 }
 
 /* Gestion du Zoom de l'image dans le canvas via le input slide */
-let oldZoomRatio = 0
+var oldZoomRatio = 0
 document.getElementById('zoom').addEventListener('input', (e) => {
     zoomImage(e.target.value)
 })
@@ -369,6 +373,10 @@ function zoomImage(zoomRatio) {
 
     oldZoomRatio = zoomRatio
 
+}
+function resetZoom() {
+    oldZoomRatio = 0
+    document.getElementById('zoom').value = 0
 }
 
 /* -------------------------------------------------------------------------------------- */
@@ -422,10 +430,12 @@ downloadBtn.addEventListener('click', function() {
     
     if (!cropper_options.cropperThumbMode) {
         let event_image_canvas2 = new Event('event-image-canvas2')
+        event_image_canvas2.export_mode = cropper_options.export_mode
         event_image_canvas2.image_index = cropper_options.cropper_image_index
         window.dispatchEvent(event_image_canvas2)
     } else {
         let event_thumb_canvas2 = new Event('event-thumb-canvas2')
+        event_thumb_canvas2.export_mode = cropper_options.export_mode
         window.dispatchEvent(event_thumb_canvas2)
     }
     

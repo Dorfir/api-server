@@ -243,6 +243,7 @@ body {
   background-color: #ffffff;
   border: 1px solid #000000;
   cursor: pointer;
+  color: #000;
 }
 
 .form_button:hover {
@@ -279,19 +280,22 @@ input[type=text] {
   background-color: #aaa;
 }
 
-.description-add-image {
+.np_description-add-image {
+  width:40px;
+}
+.ep_description-add-image {
   width:40px;
 }
 .add-thumb {
   width:40px;
 }
 
-#send_server_container {
+#np_send_server_container {
   padding: 3px;
   text-align: right;
   margin-top:20px;
 }
-#send_server {
+#np_send_server_btn {
   cursor: pointer;
 }
 
@@ -398,7 +402,7 @@ input[type=text] {
   height: 100px;
 }
 
-#produit-header-titre {
+#np_produit-header-titre {
   position: absolute;
   left: 0;
   top: 20px;
@@ -413,7 +417,7 @@ input[type=text] {
   align-items: center;
 }
 
-#produit-header-titre-separator {
+.produit-header-titre-separator {
   width: 150px;
 }
 
