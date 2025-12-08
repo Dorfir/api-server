@@ -18,14 +18,15 @@ var ep_liste_descriptions_infos = Array()
 var current_mode = "new_produit"
 // var current_mode = "edit_produit"
 
-const url_send_new_produit = "http://localhost/green_catalogue_rest/uploadProduit.php"
-const url_create_famille = "http://localhost/green_catalogue_rest/createFamille.php"
-const url_get_produits = "http://localhost/green_catalogue_rest/getProduits.php"
-// const url_get_produits = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getProduits.php"
-const url_get_produit = "http://localhost/green_catalogue_rest/getProduit.php"
-const url_get_familles_et_cats = "http://localhost/green_catalogue_rest/getFamillesAndCategories.php"
+const url_rest_prefix = "http://localhost/green_catalogue_rest/"
+// const url_rest_prefix = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/"
 
-const url_create_categorie = "http://localhost/green_catalogue_rest/createCategorie.php"
+const url_send_new_produit = url_rest_prefix + "uploadProduit.php"
+const url_create_famille = url_rest_prefix + "createFamille.php"
+const url_get_produits = url_rest_prefix + "getProduits.php"
+const url_get_produit = url_rest_prefix + "getProduit.php"
+const url_get_familles_et_cats = url_rest_prefix + "getFamillesAndCategories.php"
+const url_create_categorie = url_rest_prefix + "createCategorie.php"
 
 
 
