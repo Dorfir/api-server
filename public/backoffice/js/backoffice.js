@@ -10,7 +10,10 @@ let liste_familles = null
 
 let firstLoad = true
 
-const image_path = "http://localhost/green_catalogue_rest/uploads/"
+
+const image_path = `${path_prefix}green_catalogue_rest/uploads/`
+// const image_path = "http://localhost/green_catalogue_rest/uploads/"
+// const image_path = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/uploads/"
 
 var np_liste_descriptions_infos = Array()
 var ep_liste_descriptions_infos = Array()
@@ -18,7 +21,8 @@ var ep_liste_descriptions_infos = Array()
 var current_mode = "new_produit"
 // var current_mode = "edit_produit"
 
-const url_rest_prefix = "http://localhost/green_catalogue_rest/"
+const url_rest_prefix = `${path_prefix}green_catalogue_rest/`
+// const url_rest_prefix = "http://localhost/green_catalogue_rest/"
 // const url_rest_prefix = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/"
 
 const url_send_new_produit = url_rest_prefix + "uploadProduit.php"

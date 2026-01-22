@@ -2,6 +2,10 @@
 _save
 _source
 _sources
+public/backoffice/js/path.js
+public/js/path.js
+
+
 
 # Logs
 logs

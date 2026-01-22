@@ -3,11 +3,15 @@ console.log('-- DOM loaded')
 var json_data = null
 var liste_familles = null
 
-const image_path = "http://localhost/green_catalogue_rest/uploads/"
+
+
+// const image_path = "http://localhost/green_catalogue_rest/uploads/"
+const image_path = `${path_prefix}green_catalogue_rest/uploads/`
 
 getData()
 async function getData() {
-  const url = "http://localhost/green_catalogue_rest/getProduits.php";
+  const url = `${path_prefix}green_catalogue_rest/getProduits.php`
+  // const url = "http://localhost/green_catalogue_rest/getProduits.php";
   // const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getProduits.php";
   // const url = "../green_catalogue_rest/getProduits.php";
   // const url = "http://localhost:80/green_catalogue_rest/test.json";
@@ -34,8 +38,9 @@ const eventListeFamilleReceived = new Event("event-liste-famille-received")
 getListeFamilles()
 async function getListeFamilles() {
   let json = null
+  const url = `${path_prefix}green_catalogue_rest/getFamillesAndCategories.php`
   // const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getFamillesAndCategories.php";
-  const url = "http://localhost/green_catalogue_rest/getFamillesAndCategories.php";
+  // const url = "http://localhost/green_catalogue_rest/getFamillesAndCategories.php";
   try {
     const response = await fetch(url, {
       method: "POST",
