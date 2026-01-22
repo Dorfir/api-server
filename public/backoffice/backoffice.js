@@ -22,6 +22,7 @@ const url_rest_prefix = "http://localhost/green_catalogue_rest/"
 // const url_rest_prefix = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/"
 
 const url_send_new_produit = url_rest_prefix + "uploadProduit.php"
+const url_send_edit_produit = url_rest_prefix + "updateProduit.php"
 const url_create_famille = url_rest_prefix + "createFamille.php"
 const url_get_produits = url_rest_prefix + "getProduits.php"
 const url_get_produit = url_rest_prefix + "getProduit.php"
@@ -446,6 +447,7 @@ let data_edit = {
   'prix': -1,
   'thumb': "",
 }
+let data_edit_received = null
 
 // ep_getProduit(1)
 function ep_initEditProduit() {
@@ -457,8 +459,9 @@ function ep_initEditProduit() {
   ep_initNomEtMarque()
   ep_initPrix()
   ep_liste_descriptions_infos = Array()
-  ep_createExistingDescritionGroup()
+  ep_createExistingDescritionGroups()
   ep_initAddDescriptionGroup()
+  ep_initSendServer()
   ep_render()
 }
 
@@ -704,7 +707,7 @@ function ep_initAddDescriptionGroup() {
   add_description_group_btn.addEventListener('click', ep_createNewDescriptionGroup)
 
 }
-function ep_createExistingDescritionGroup() {
+function ep_createExistingDescritionGroups() {
   let description_group_container = document.getElementById('ep_description_group_container')
   // TODO proper reset
   description_group_container.innerHTML = ""
@@ -831,7 +834,7 @@ function ep_createExistingDescriptionGroup(desc) {
   desc_info.titre_handler = (e) => {
     let index = ep_getDescriptionGroupInfoIndex(desc_info.global_index)
     data_edit.description[index].title = e.target.value
-    np_render()
+    ep_render()
   }
   titre_group_input.addEventListener('keyup', desc_info.titre_handler)
 
@@ -841,24 +844,25 @@ function ep_createExistingDescriptionGroup(desc) {
     theme: 'snow',
     placeholder: "Votre description ..."
   })
-
- 
-  let delta = new_quill.clipboard.convert({html: desc_info.text_content})
-  new_quill.setContents(delta, 'silent')
-  // new_quill.setText(desc_info.text_content)
+  
+  ep_liste_descriptions_infos.push(desc_info)
 
   new_quill.on('text-change', (delta, oldDelta, source) => {
-    if (source == 'user') {
+    // if (source == 'user') {
+      console.log(source)
       desc_info.text_content = new_quill.getSemanticHTML()
       let index = ep_getDescriptionGroupInfoIndex(desc_info.global_index)
       data_edit.description[index].content = desc_info.text_content
       ep_render()
-    }    
+    // }    
   })
-  
-  ep_liste_descriptions_infos.push(desc_info)
 
-  // ep_initImageDescription(desc_info.global_index)
+  
+  let delta = new_quill.clipboard.convert({html: desc_info.text_content})
+  new_quill.setContents(delta, 'api')
+  
+
+  ep_initImageDescription(desc_info.global_index)
 
 }
 
@@ -966,7 +970,7 @@ function ep_createNewDescriptionGroup() {
   desc_info.titre_handler = (e) => {
     let index = ep_getDescriptionGroupInfoIndex(desc_info.global_index)
     data_edit.description[index].title = e.target.value
-    np_render()
+    ep_render()
   }
   titre_group_input.addEventListener('keyup', desc_info.titre_handler)
 
@@ -1034,7 +1038,6 @@ function ep_getDescriptionGroupInfoIndex(global_index) {
 /* Description group Image */
 function ep_initImageDescription(global_index) {
 
-
   // todo reset handlers au recall d'initImageDescription()
   let boutons_add_desc_image = document.querySelectorAll('.ep_description-add-image')
   boutons_add_desc_image.forEach(btn_add_img => {
@@ -1049,12 +1052,13 @@ function ep_initImageDescription(global_index) {
     let all_radios = document.querySelectorAll(`#ep_description_group_${global_index} .ep_add-desc-image-radio`)
     all_radios.forEach((radio) => {
       radio.addEventListener('change', (e) => {
-        let image_index = parseInt(e.currentTarget.id.split('-').splice(-1))
+        let image_index = parseInt(e.currentTarget.id.split('_').splice(-1))
         let value = ""
         if (e.target.id.includes('large')) value = 'large'
         if (e.target.id.includes('medium')) value = 'medium'
         if (e.target.id.includes('small')) value = 'small'
-        data_edit.images[getDescriptionIndexFromGlobalIndex(image_index)].display_size = value
+        data_edit.images[ep_getDescriptionIndexFromGlobalIndex(image_index)].display_size = value
+        ep_render()
       })
     })
   })
@@ -1065,15 +1069,13 @@ function ep_initImageDescription(global_index) {
     popup_canvas_container.style.display = "none"
   })
 }
-/* Reset */
-function ep_reset() {
 
-}
 
 /* Génération / maj de l'apercu de la page produit en cours d'édition */
 function ep_render() {
   console.log('-- ep_render')
-  // console.log(data_edit)
+  console.log(data_edit)
+  console.log(data_edit_received)
 
   let header_titre = document.getElementById('ep_produit-header-titre-text')
   header_titre.innerText = getCategorieName(data_edit.id_categorie).toUpperCase()
@@ -1149,7 +1151,10 @@ function ep_render() {
 }
 
 
+/* Reset */
+function ep_reset() {
 
+}
 
 async function ep_getProduit(id_produit) {
   // console.log(`-- getProduit ${id_produit}`)
@@ -1226,13 +1231,81 @@ window.addEventListener('event-produit-received', (e)=> {
   console.log('---------- data_edit :')
   console.log(data_edit)
 
+  data_edit_received = structuredClone(data_edit)
+
   
   // console.log('------------------------------------')
   getListeFamilles('new')
 }, false)
 
 
+/* Send server */
+function ep_initSendServer() {
 
+  let old_send_server_btn = document.getElementById('ep_send_server_btn')
+  if (old_send_server_btn !== null) old_send_server_btn.removeEventListener('click', ep_sendProduit)
+
+  let send_server_container = document.getElementById('ep_send_server_container')
+  let send_server_btn = xCreateElement('button', '', 'ep_send_server_btn')
+  send_server_btn.innerHTML = "Envoyer au serveur"
+  send_server_container.appendChild(send_server_btn)
+
+  send_server_btn.addEventListener('click', ep_sendProduit)
+
+}
+async function ep_sendProduit() {
+
+  // on n'envoie que les éléments modifiés
+
+  let json = null
+  // const url_send_new_produit = "http://localhost/green_catalogue_rest/updateProduit.php"
+  let formData = new FormData()
+  formData.append('id_produit', data_edit.id_produit)
+
+  formData.append('id_famille', data_edit.id_famille)
+  formData.append('id_categorie', data_edit.id_categorie)
+  formData.append('nom', data_edit.nom)
+  formData.append('marque', data_edit.marque)
+  formData.append('prix', data_edit.prix)
+  data_edit.description.forEach((desc, index_desc) => {
+    formData.append(`desc_${index_desc}`, desc.content)
+    formData.append(`desc_titre_${index_desc}`, desc.title)
+    formData.append(`desc_index_${index_desc}`, index_desc)
+  })
+  data_edit.images.forEach((image_produit, index_image) => {
+    let imgBase64 = image_produit.data_edit
+    if (imgBase64 !== "") {   
+      let myfile = DataURIToBlob(imgBase64)
+      formData.append(`file_image_${index_image}`, myfile, `file_image_${index_image}.jpeg`)
+      formData.append(`image_display_size_${index_image}`, image_produit.display_size)
+      formData.append(`image_modified_${index_image}`, true)
+    } else {
+      formData.append(`image_modified_${index_image}`, false)
+    }
+  })
+  if (data_edit.thumb !== "") {
+    if (data_edit.thumb.split('.').splice(-1) !== 'jpg') {
+      let thumbBase64 = data_edit.thumb
+      let fileThumb = DataURIToBlob(thumbBase64)
+      formData.append('file_thumb', fileThumb, 'fileThumb.jpeg')
+      formData.append(`thumb_modified`, true)
+    } else {
+      formData.append(`thumb_modified`, false)
+    }
+  }
+  
+  try {
+    const response = await fetch(url_send_edit_produit, {
+      method: "post",
+      body: formData,
+    });
+    if (!response.ok) { throw new Error(`Response status: ${response.status}`); }
+    json = await response.json()
+    console.log(json)
+    
+  } catch (error) { console.error(error.message); }
+  
+}
 
 
 
@@ -1712,12 +1785,12 @@ function np_initImageDescription(global_index) {
     let all_radios = document.querySelectorAll(`#np_description_group_${global_index} .np_add-desc-image-radio`)
     all_radios.forEach((radio) => {
       radio.addEventListener('change', (e) => {
-        let image_index = parseInt(e.currentTarget.id.split('-').splice(-1))
+        let image_index = parseInt(e.currentTarget.id.split('_').splice(-1))
         let value = ""
         if (e.target.id.includes('large')) value = 'large'
         if (e.target.id.includes('medium')) value = 'medium'
         if (e.target.id.includes('small')) value = 'small'
-        data.images[getDescriptionIndexFromGlobalIndex(image_index)].display_size = value
+        data.images[np_getDescriptionIndexFromGlobalIndex(image_index)].display_size = value
         np_render()
       })
     })
@@ -1897,7 +1970,7 @@ function cropperLoadEventListeners() {
     console.log(`image created index : ${e.image_index}`)
     let popup_canvas_container = document.getElementById('popup-canvas-container')
     popup_canvas_container.style.display = "none"
-    data.images[getDescriptionIndexFromGlobalIndex(e.image_index)].data = canvas2.toDataURL("image/jpeg", 0.7)
+    data.images[np_getDescriptionIndexFromGlobalIndex(e.image_index)].data = canvas2.toDataURL("image/jpeg", 0.7)
     // data.images[getDescriptionIndexFromGlobalIndex(description_active)].data = canvas2.toDataURL("image/jpeg", 0.7)
     np_render()
   }, false)
@@ -1946,9 +2019,16 @@ function getCategorieName(id_cat) {
   })
   return nom_cat
 }
-function getDescriptionIndexFromGlobalIndex(index_absolute) {
+function np_getDescriptionIndexFromGlobalIndex(index_absolute) {
   let index = 0
   data.description.forEach((desc, desc_index)=> {
+    if (desc.global_index == index_absolute) index = desc_index
+  })
+  return index
+}
+function ep_getDescriptionIndexFromGlobalIndex(index_absolute) {
+  let index = 0
+  data_edit.description.forEach((desc, desc_index)=> {
     if (desc.global_index == index_absolute) index = desc_index
   })
   return index

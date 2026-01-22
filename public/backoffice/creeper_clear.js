@@ -72,7 +72,8 @@ function initCropper(isThumb, index, export_mode) {
     // TODO reset image chargée + affichage dragndrop/loading
     // + debug reset zoom
     console.log(`-- initCropper, isThumb: ${isThumb}`)
-
+    let dragDropArea = document.getElementById('drag-drop-area')
+    dragDropArea.style.display = "block"
     resetZoom()
     cropper_options.export_mode = export_mode
     cropper_options.cropperThumbMode = isThumb
@@ -375,6 +376,7 @@ function zoomImage(zoomRatio) {
 
 }
 function resetZoom() {
+    zoomValue = 0
     oldZoomRatio = 0
     document.getElementById('zoom').value = 0
 }
@@ -401,6 +403,7 @@ function pointerOverLine(pointerCoords, line) {
 /* -------------------------------------------------------------------------------------- */
 reloadBtn.addEventListener('click', function() {
     dragDropArea.style.display = "block"
+    initCropper(cropper_options.cropperThumbMode, cropper_options.cropper_image_index, cropper_options.export_mode)
 })
 
 var canvas2 = document.getElementById('canvas2')

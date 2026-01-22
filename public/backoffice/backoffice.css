@@ -119,10 +119,15 @@ body {
   border-radius: 5px;
   padding:10px;
   margin-right:10px;
-  cursor: pointer;
+  /* cursor: pointer;  */
 }
 .list-produit-element:hover {
   background-color: #eeeee9;
+}
+
+.list-produit-element-edit {
+  float: right;
+  cursor: pointer;
 }
 
 /* #endregion */
@@ -239,6 +244,7 @@ body {
   padding: 5px;
   clear: both;
   text-align: center;
+  font-size:0.9rem;
 }
 .delete-description-group:hover {
   background-color: #294a73;
@@ -282,6 +288,12 @@ body {
 }
 .checkbox_container input, .checkbox_container label {
   cursor: pointer;
+}
+.np_add-desc-image-radio {
+  margin: 0
+}
+.ep_add-desc-image-radio {
+  margin: 0
 }
 
 .select_container {
