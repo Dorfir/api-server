@@ -2,7 +2,8 @@ console.log('-- DOM loaded')
 
 getData()
 async function getData() {
-  const url = "http://localhost/green_catalogue_rest/crud.php";
+  const url = `${path_prefix}green_catalogue_rest/crud.php`
+  // const url = "http://localhost/green_catalogue_rest/crud.php";
   // const url = "http://localhost:80/green_catalogue_rest/test.json";
   // const url = "https://www.visiolab.fr/test.json";
   try {

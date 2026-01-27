@@ -1197,6 +1197,13 @@ body {
   width: 100px;
 }
 
+.fiche-presta .modal-main .presta-subtitle {
+  font-family: "JosefinSans-Regular";
+  text-align: center;
+  font-size: 2.0em;
+  width: 100%;
+}
+
 .fiche-presta .modal-main .presta-image-group {
   width: 100%;
   font-family: "JosefinSans-Regular";

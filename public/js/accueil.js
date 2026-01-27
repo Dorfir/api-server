@@ -69,79 +69,7 @@ window.addEventListener('event-liste-famille-received', (e) => {
 }, false)
 
 
-var liste_prestas = [
-  {
-    id_presta: 1,
-    id_rubrique: 1,
-    nom_rubrique: "Cuisines",
-    images: ['./img/presta/cuisine/cuisine_01.jpg', './img/presta/cuisine/cuisine_02.jpg'],
-    images_legende: ['Cuisine type T3', 'Cuisine type T2'],
-    descriptif: `
-      LES PRESTATIONS INCLUSES *<br><br>
-      Meubles bas avec étagères<br>
-      Plan de travail hydrofuge de couleur bois<br>
-      Plaque de cuisson vitrocéramique encastrée : 2 feux pour les T1-T2, 3 feux pour les T3<br>
-      Hotte aspirante intégrée<br>
-      Évier avec égouttoir (inox) encastré<br>
-      Robinet mitigeur avec double butée économique<br>
-      Meubles hauts avec étagères<br>
-      Emplacement pour four et micro-ondes<br>
-      Emplacement pour réfrigérateur<br>
-      Réfrigérateur fourni : Tabel Top pour les T1-T2, Réfrigérateur-Congélateur pour les T3<br>
-      Arrivées et évacuations pour lave-vaisselle<br><br>
-    `,
-    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
-  },
-  {
-    id_presta: 2,
-    id_rubrique: 2,
-    nom_rubrique: "Salles de bain",
-    images: ['./img/presta/sdb/sdb_01.jpg', './img/presta/sdb/sdb_02.jpg'],
-    images_legende: ['Salle de bains type T4', 'Salle de bains type T2'],
-    descriptif: `
-      LES PRESTATIONS INCLUSES *<br><br>
-      Meubles avec tiroirs recouvert d'une vasque en résine intégrée<br>
-      Robinetterie mitigeuse équipée de double butée<br>
-      Grand miroir rétroclairé par LED<br>
-      Emplacement machine à laver le linge (jusqu'au T3 inclus)<br>
-      Lave-linge fourni (jusqu'au T3 inclus)<br>
-      Baignoire en acier émaillé avec douchette, flexible, barre de douche et robinet mitigeur<br>
-      Radiateur sèche serviette<br>
-      WC avec cuvette céramique et abattant double avec frein de chute, réservoir avec chasse 3/6 l'économiseur d'eau (inclus dans les SDB pour les T2)<br>
-      WC séparé à partir des T3<br>
-    `,
-    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
-  },
-  {
-    id_presta: 3,
-    id_rubrique: 3,
-    nom_rubrique: "Prestations intérieures",
-    images: ['./img/presta/presta_interieures_01/presta1_interieures_01.jpg', './img/presta/presta_interieures_01/presta1_interieures_02.jpg'],
-    images_legende: ['Placards de rangement aménagés', 'Portes rainurées et laquées'],
-    descriptif: `
-      Tous nos logements sont équipés de la solution GreenCity Connect et profitent d'une box connectées intégrée au tableau éléectrique<br>
-      Depuis votre smartphone, votre tablette ou votre ordinateur, grâce à une application simple et intuitive, vous commandez à distance et
-      programmez les équipements connectés inclus de votre logement : le chauffage, l'alarme anti-intrusion et les volets roulants
-      électriques dans les T4 et T5.<br>
-      <br>
-      (sous réserve d'abonnement internet à la charge du client)
-      <br>
-    `,
-    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
-  },
-  {
-    id_presta: 4,
-    id_rubrique: 3,
-    nom_rubrique: "Prestations intérieures",
-    images: ['./img/presta/presta_interieures_02/presta2_interieures_01.jpg'],
-    images_legende: [],
-    descriptif: `
-      Porte palière à âme pleine avec affaiblissement acoustique, serrure 3 points, poignée de sécurité à protecteur de cylindre<br>
-      Clés avec badge de proximité intégré "Tout en un"<br>      
-    `,
-    contractuel: ``
-  }
-]
+
 
 
 /* -------------------------------------------------------------------- */
@@ -177,28 +105,59 @@ let liste_presta = document.querySelectorAll('.presta-element-liste li')
 for(var presta_li of liste_presta) {
   presta_li.addEventListener('click', (e) => {
     console.log('click presta li element')
-    if (e.currentTarget.classList.contains('presta_cuisine')) {
-      let prestas = getPrestasFromIdRubrique(1)
+
+    if (e.currentTarget.id !== '') {
+
+      let presta_id = parseInt(e.currentTarget.id.split('_').splice(-1)[0])
+      console.log(`presta clicked : ${presta_id}`)
+      
+      let current_presta = getPrestaFromId(presta_id)
+      let prestas = getPrestasFromIdFamille(current_presta.id_famille)
+
       updateFichePresta(prestas)
+
       let header_title = document.getElementById('presta-fiche-header-titre-text')
-      header_title.innerText = prestas[0].nom_rubrique.toUpperCase()
+      header_title.innerText = current_presta.nom_famille.toUpperCase()
+
+      swiperPresta.slideTo(current_presta.index)
+
       let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
-      presta_fiche_main_container.style.display = 'block'
-    } else if (e.currentTarget.classList.contains('presta_sdb')) {
-      let prestas = getPrestasFromIdRubrique(2)
-      updateFichePresta(prestas)
-      let header_title = document.getElementById('presta-fiche-header-titre-text')
-      header_title.innerText = prestas[0].nom_rubrique.toUpperCase()
-      let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
-      presta_fiche_main_container.style.display = 'block'
-    } else if (e.currentTarget.classList.contains('presta_menuiserie')) {
-      let prestas = getPrestasFromIdRubrique(3)
-      updateFichePresta(prestas)
-      let header_title = document.getElementById('presta-fiche-header-titre-text')
-      header_title.innerText = prestas[0].nom_rubrique.toUpperCase()
-      let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
-      presta_fiche_main_container.style.display = 'block'
+      presta_fiche_main_container.style.display = 'block' 
+
     }
+
+    
+
+
+    // if (e.currentTarget.classList.contains('presta_sdb')) {
+
+    //   let prestas = getPrestasFromIdFamille(1)
+    //   updateFichePresta(prestas)
+    //   let header_title = document.getElementById('presta-fiche-header-titre-text')
+    //   header_title.innerText = prestas[0].nom_famille.toUpperCase()
+    //   let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
+    //   presta_fiche_main_container.style.display = 'block'   
+
+    // } else if (e.currentTarget.classList.contains('presta_cuisine')) {   
+
+    //   let prestas = getPrestasFromIdFamille(2)
+    //   updateFichePresta(prestas)
+    //   let header_title = document.getElementById('presta-fiche-header-titre-text')
+    //   header_title.innerText = prestas[0].nom_famille.toUpperCase()
+    //   let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
+    //   presta_fiche_main_container.style.display = 'block'
+
+      
+    // } else if (e.currentTarget.classList.contains('presta_menuiserie')) {
+
+    //   let prestas = getPrestasFromIdFamille(3)
+    //   updateFichePresta(prestas)
+    //   let header_title = document.getElementById('presta-fiche-header-titre-text')
+    //   header_title.innerText = prestas[0].nom_famille.toUpperCase()
+    //   let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
+    //   presta_fiche_main_container.style.display = 'block'
+
+    // }
   })
 }
 let presta_fiche_header_close_btn = document.getElementById('presta-fiche-header-close-btn')
@@ -238,6 +197,117 @@ produit_header_close_btn.addEventListener('click', (e) => {
   optionslist_main_container.style.display = "block"
   produit_main_container.style.display = "none"
 })
+
+
+
+/* Prestations */
+const swiperPresta = new Swiper('.swiperPresta', {
+  direction: 'horizontal',
+  loop: false,
+  pagination: {
+    el: '.swiper-pagination',
+  },
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+  scrollbar: {
+    el: '.swiper-scrollbar',
+  },
+});
+
+function updateFichePresta(prestas) {
+  let swiperPresta_wrapper = document.getElementById('swiperPresta-wrapper')
+  swiperPresta_wrapper.innerHTML = ''
+  prestas.forEach(presta => {
+    swiperPresta_wrapper.appendChild(createFichePrestaSwiperSlide(presta))
+  })
+  swiperPresta.update()
+}
+
+function createFichePrestaSwiperSlide(presta) {
+
+  let swiperSlide = document.createElement('div')
+  swiperSlide.classList.add('swiper-slide')
+  let swiperSlideSubcontainer = document.createElement('div')
+  swiperSlideSubcontainer.classList.add('swiperPresta-slide-subcontainer')
+  let fichePresta = document.createElement('div')
+  fichePresta.classList.add('fiche-presta')
+  let modalMain = document.createElement('div')
+  modalMain.classList.add('modal-main')
+
+  let modalMainSeparator1 = document.createElement('div')
+  modalMainSeparator1.setAttribute('id', 'modal-main-separator')
+  modalMainSeparator1.innerHTML = "&nbsp;"
+  modalMain.appendChild(modalMainSeparator1)
+
+  let modalMainSubtitle = document.createElement('div')
+  modalMainSubtitle.classList.add('presta-subtitle')
+  modalMainSubtitle.innerHTML = presta.nom_cat
+  modalMain.appendChild(modalMainSubtitle)
+  
+  
+
+  let group_image_count = Math.max(presta.images.length, presta.images_legende.length)
+  for (let i=0; i<group_image_count; i++) {
+    let presta_image_group = document.createElement('div')
+    presta_image_group.classList.add('presta-image-group')
+    let presta_image = document.createElement('img')
+    presta_image.classList.add('presta-image')
+    presta_image.setAttribute('src', presta.images[i])
+    let presta_image_legende = document.createElement('div')
+    presta_image_legende.classList.add('presta-image-legende')
+    if (presta.images_legende.length >= i+1) {
+      presta_image_legende.innerHTML = presta.images_legende[i]
+    } else {
+      presta_image_legende.innerHTML = ""
+    }
+    
+    if (i%2 == 0) {
+      presta_image_group.appendChild(presta_image)
+      presta_image_group.appendChild(presta_image_legende)
+    } else {
+      presta_image_group.appendChild(presta_image_legende)
+      presta_image_group.appendChild(presta_image)
+    }
+
+    modalMain.appendChild(presta_image_group)
+  }
+  // <div class="presta-image-group">
+  //   <img class="presta-image" src="./img/presta/cuisine/cuisine_01.jpg" />
+  //   <div class="presta-image-legende">Cuisine type T3</div>
+  // </div>
+
+  let modalMainSeparator2 = document.createElement('div')
+  modalMainSeparator2.setAttribute('id', 'modal-main-separator')
+  modalMainSeparator2.innerHTML = "&nbsp;"
+  modalMain.appendChild(modalMainSeparator2)
+
+  let prestaDescriptif = document.createElement('div')
+  prestaDescriptif.classList.add('presta-descriptif')
+  prestaDescriptif.innerHTML = presta.descriptif
+  modalMain.appendChild(prestaDescriptif)
+
+  let modalMainSeparator3 = document.createElement('div')
+  modalMainSeparator3.setAttribute('id', 'modal-main-separator')
+  modalMainSeparator3.innerHTML = "&nbsp;"
+  modalMain.appendChild(modalMainSeparator3)
+
+  let prestaContractuel = document.createElement('div')
+  prestaContractuel.classList.add('presta-contractuel')
+  prestaContractuel.innerText = presta.contractuel  
+  modalMain.appendChild(prestaContractuel)
+
+  fichePresta.appendChild(modalMain)
+  swiperSlideSubcontainer.appendChild(fichePresta)
+  swiperSlide.appendChild(swiperSlideSubcontainer)
+
+  return swiperSlide
+}
+
+
+
+
 
 
 
@@ -523,106 +593,6 @@ function createFicheProduit(prod) {
 }
 
 
-/* Prestations */
-const swiperPresta = new Swiper('.swiperPresta', {
-  direction: 'horizontal',
-  loop: false,
-  pagination: {
-    el: '.swiper-pagination',
-  },
-  navigation: {
-    nextEl: '.swiper-button-next',
-    prevEl: '.swiper-button-prev',
-  },
-  scrollbar: {
-    el: '.swiper-scrollbar',
-  },
-});
-
-function updateFichePresta(prestas) {
-  let swiperPresta_wrapper = document.getElementById('swiperPresta-wrapper')
-  swiperPresta_wrapper.innerHTML = ''
-  prestas.forEach(presta => {
-    swiperPresta_wrapper.appendChild(createFichePrestaSwiperSlide(presta))
-  })
-  swiperPresta.update()
-}
-
-function createFichePrestaSwiperSlide(presta) {
-
-  let swiperSlide = document.createElement('div')
-  swiperSlide.classList.add('swiper-slide')
-  let swiperSlideSubcontainer = document.createElement('div')
-  swiperSlideSubcontainer.classList.add('swiperPresta-slide-subcontainer')
-  let fichePresta = document.createElement('div')
-  fichePresta.classList.add('fiche-presta')
-  let modalMain = document.createElement('div')
-  modalMain.classList.add('modal-main')
-
-  let modalMainSeparator1 = document.createElement('div')
-  modalMainSeparator1.setAttribute('id', 'modal-main-separator')
-  modalMainSeparator1.innerHTML = "&nbsp;"
-  modalMain.appendChild(modalMainSeparator1)
-
-  let group_image_count = Math.max(presta.images.length, presta.images_legende.length)
-  for (let i=0; i<group_image_count; i++) {
-    let presta_image_group = document.createElement('div')
-    presta_image_group.classList.add('presta-image-group')
-    let presta_image = document.createElement('img')
-    presta_image.classList.add('presta-image')
-    presta_image.setAttribute('src', presta.images[i])
-    let presta_image_legende = document.createElement('div')
-    presta_image_legende.classList.add('presta-image-legende')
-    if (presta.images_legende.length >= i+1) {
-      presta_image_legende.innerHTML = presta.images_legende[i]
-    } else {
-      presta_image_legende.innerHTML = ""
-    }
-    
-    
-    if (i%2 == 0) {
-      presta_image_group.appendChild(presta_image)
-      presta_image_group.appendChild(presta_image_legende)
-    } else {
-      presta_image_group.appendChild(presta_image_legende)
-      presta_image_group.appendChild(presta_image)
-    }
-
-    modalMain.appendChild(presta_image_group)
-  }
-  // <div class="presta-image-group">
-  //   <img class="presta-image" src="./img/presta/cuisine/cuisine_01.jpg" />
-  //   <div class="presta-image-legende">Cuisine type T3</div>
-  // </div>
-
-  let modalMainSeparator2 = document.createElement('div')
-  modalMainSeparator2.setAttribute('id', 'modal-main-separator')
-  modalMainSeparator2.innerHTML = "&nbsp;"
-  modalMain.appendChild(modalMainSeparator2)
-
-  let prestaDescriptif = document.createElement('div')
-  prestaDescriptif.classList.add('presta-descriptif')
-  prestaDescriptif.innerHTML = presta.descriptif
-  modalMain.appendChild(prestaDescriptif)
-
-  let modalMainSeparator3 = document.createElement('div')
-  modalMainSeparator3.setAttribute('id', 'modal-main-separator')
-  modalMainSeparator3.innerHTML = "&nbsp;"
-  modalMain.appendChild(modalMainSeparator3)
-
-  let prestaContractuel = document.createElement('div')
-  prestaContractuel.classList.add('presta-contractuel')
-  prestaContractuel.innerText = presta.contractuel  
-  modalMain.appendChild(prestaContractuel)
-
-  fichePresta.appendChild(modalMain)
-  swiperSlideSubcontainer.appendChild(fichePresta)
-  swiperSlide.appendChild(swiperSlideSubcontainer)
-
-  return swiperSlide
-}
-
-
 
 /* Divers */
 function isCatExistInProductList(id_cat) {
@@ -658,10 +628,18 @@ function splitColorNameProduit(nom_prod, separator) {
   return [blanc, gold]
 }
 
-function getPrestasFromIdRubrique(id_presta_rubrique) {
+function getPrestaFromId(id_presta) {
+  return_value = null
+  liste_prestas.forEach((presta) => {
+    if (presta.id_presta == id_presta) return_value = presta
+  })
+  return return_value
+}
+
+function getPrestasFromIdFamille(id_presta_famille) {
   return_value = []
   liste_prestas.forEach((presta) => {
-    if (presta.id_rubrique == id_presta_rubrique) return_value.push(presta)
+    if (presta.id_famille == id_presta_famille) return_value.push(presta)
   })
   return return_value
 }
