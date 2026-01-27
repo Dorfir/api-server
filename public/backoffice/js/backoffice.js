@@ -1353,9 +1353,7 @@ function initCreateProduct() {
   if (firstLoad) data_default = data
   firstLoad = false
   
-  // console.log(data)
-  // resetNouveauProduitPage()
-  // console.log(data)
+  resetNouveauProduitPage()
 
   np_setSelectFamille()
   np_setSelectCategorie()
