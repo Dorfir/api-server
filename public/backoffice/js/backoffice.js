@@ -89,15 +89,17 @@ async function getListeFamilles(mode) {
 // BORDEL ICI - repenser le loading général + gestion select famille
 window.addEventListener('event-liste-famille-received', (e) => {
 
-  console.log(`event-liste-famille-received - mode : ${e.mode}`)
+  // console.log(`event-liste-famille-received - mode : ${e.mode}`)
 
-  // se débarrasser du current_mode
+  // TODO se débarrasser du current_mode
   if (e.mode == "new") {
     if (current_mode == "new_produit") {
+      
       data.id_famille = liste_familles[0].id_famille
       data.nom_famille = liste_familles[0].nom_famille
       data.id_categorie = liste_familles[0].liste_categories[0].id_categorie
       data.nom_categorie = liste_familles[0].liste_categories[0].nom_categorie
+      
       initCreateProduct()
     } else if (current_mode == "edit_produit") {
       ep_initEditProduit()
@@ -110,6 +112,7 @@ window.addEventListener('event-liste-famille-received', (e) => {
       np_setSelectFamille()
       if (liste_familles[liste_familles.length - 1].liste_categories.length != 0) {
         data.id_famille = liste_familles[liste_familles.length - 1].id_famille
+        
         np_setSelectCategorie()
       } else {
         openEditCategoriePopup()
@@ -1007,7 +1010,7 @@ function ep_removeDescriptionGroup(e) {
   data_edit.images.splice(desc_info_index, 1)
   let description_group = document.getElementById(`ep_description_group_${global_index}`)
   description_group.parentNode.removeChild(description_group)
-  ep_renderNewProduit()
+  ep_render()
 }
 
 function ep_createDescriptionGroupInfo() {
@@ -1153,7 +1156,7 @@ function ep_render() {
 
 /* Reset */
 function ep_reset() {
-
+  console.log('-- ep_reset()')
 }
 
 async function ep_getProduit(id_produit) {
@@ -1243,15 +1246,18 @@ window.addEventListener('event-produit-received', (e)=> {
 function ep_initSendServer() {
 
   let old_send_server_btn = document.getElementById('ep_send_server_btn')
-  if (old_send_server_btn !== null) old_send_server_btn.removeEventListener('click', ep_sendProduit)
+  if (old_send_server_btn !== null) {
+    old_send_server_btn.removeEventListener('click', ep_sendProduit)
+    old_send_server_btn.addEventListener('click', ep_sendProduit)
+  } else {
+    let send_server_container = document.getElementById('ep_send_server_container')
+    let send_server_btn = xCreateElement('button', '', 'ep_send_server_btn')
+    send_server_btn.innerHTML = "Envoyer au serveur"
+    send_server_container.appendChild(send_server_btn)
 
-  let send_server_container = document.getElementById('ep_send_server_container')
-  let send_server_btn = xCreateElement('button', '', 'ep_send_server_btn')
-  send_server_btn.innerHTML = "Envoyer au serveur"
-  send_server_container.appendChild(send_server_btn)
+    send_server_btn.addEventListener('click', ep_sendProduit)
 
-  send_server_btn.addEventListener('click', ep_sendProduit)
-
+  }
 }
 async function ep_sendProduit() {
 
@@ -1337,10 +1343,20 @@ let data = {
   'prix': -1,
   'thumb': "",
 }
+let data_default = null
+
 
 
 function initCreateProduct() {
   console.log('-- initCreateProduct()')
+
+  if (firstLoad) data_default = data
+  firstLoad = false
+  
+  // console.log(data)
+  // resetNouveauProduitPage()
+  // console.log(data)
+
   np_setSelectFamille()
   np_setSelectCategorie()
   np_initImageThumb()
@@ -1367,6 +1383,7 @@ function np_setSelectFamille() {
 
   // création du select des familles
   let ligne_famille = document.getElementById('np_ligne_famille')
+  ligne_famille.innerHTML = ""
 
   let famille_label = xCreateElement('div', 'form_label', '')
   famille_label.innerText = "Famille"
@@ -1389,7 +1406,6 @@ function np_setSelectFamille() {
   add_famille_btn.innerText = "+"
   select_famille_container.appendChild(add_famille_btn)
 
-  ligne_famille.innerHTML = ""
   ligne_famille.appendChild(famille_label)
   ligne_famille.appendChild(select_famille_container)
 
@@ -1470,6 +1486,7 @@ function np_initImageThumb() {
 
   // initialisation du bouton de creation du thumb
   let ligne_thumb = document.getElementById('np_ligne_thumb')
+  ligne_thumb.innerHTML = ""
 
   let thumb_label = xCreateElement('div', 'form_label', '')
   thumb_label.innerText = "Vignette / thumb"
@@ -1484,7 +1501,6 @@ function np_initImageThumb() {
   let thumb_overview = xCreateElement('img', 'thumb_overview', 'np_thumb_overview')
   thumb_overview.setAttribute('src', '')
 
-  ligne_thumb.innerHTML = ""
   thumb_overview_container.innerHTML = ""
   ligne_thumb.appendChild(thumb_label)
   ligne_thumb.appendChild(image_form_label)
@@ -1510,24 +1526,24 @@ function np_initNomEtMarque() {
   }
   
   let ligne_nom = document.getElementById('np_ligne_nom')
+  ligne_nom.innerHTML = ""
   let nom_form_label = xCreateElement('div', 'form_label', '')
   nom_form_label.innerHTML = "Nom"
   let input_nom = xCreateElement('input', '', 'np_input_nom')
   input_nom.setAttribute('type', 'text')
   input_nom.setAttribute('placeholder', 'Nom du produit')
   input_nom.setAttribute('autocomplete', 'new-password')
-  ligne_nom.innerHTML = ""
   ligne_nom.appendChild(nom_form_label)
   ligne_nom.appendChild(input_nom)
 
   let ligne_marque = document.getElementById('np_ligne_marque')
+  ligne_marque.innerHTML = ""
   let marque_form_label = xCreateElement('div', 'form_label', '')
   marque_form_label.innerHTML = "Marque"
   let input_marque = xCreateElement('input', '', 'np_input_marque')
   input_marque.setAttribute('type', 'text')
   input_marque.setAttribute('placeholder', 'Marque du produit')
   input_marque.setAttribute('autocomplete', 'new-password')
-  ligne_marque.innerHTML = ""
   ligne_marque.appendChild(marque_form_label)
   ligne_marque.appendChild(input_marque)
 
@@ -1550,6 +1566,7 @@ function np_initPrix() {
 
   // initialisation de la saisie du prix
   let ligne_prix = document.getElementById('np_ligne_prix')
+  ligne_prix.innerHTML = ""
   let prix_form_label = xCreateElement('div', 'form_label', '')
   prix_form_label.innerHTML = 'Prix'
   let prix_ligne_large = xCreateElement('div', '', 'ligne-large')
@@ -1560,7 +1577,6 @@ function np_initPrix() {
   let input_prix_suffix = xCreateElement('span', '', '')
   input_prix_suffix.innerHTML = '&nbsp;&euro;'
 
-  ligne_prix.innerHTML = ""
   ligne_prix.appendChild(prix_form_label)
   prix_ligne_large.appendChild(input_prix)
   prix_ligne_large.appendChild(input_prix_suffix)
@@ -1578,18 +1594,22 @@ function np_prixHandler(e) {
 function np_initAddDescriptionGroup() {
 
   let old_add_description_group_btn = document.getElementById('np_add_description_group')
-  if (old_add_description_group_btn !== null) old_add_description_group_btn.removeEventListener('click', np_createDescriptionGroup)
-
-  let add_description_group_container = document.getElementById('np_add_description_group_container')
-  let add_description_group_btn = xCreateElement('input', '', 'np_add_description_group')
-  add_description_group_btn.setAttribute('type', 'button')
-  add_description_group_btn.setAttribute('value', '+ Ajouter un bloc de description')
-  add_description_group_container.innerHTML = ''
-  add_description_group_container.appendChild(add_description_group_btn)
-  add_description_group_btn.addEventListener('click', np_createDescriptionGroup)
-
+  if (old_add_description_group_btn !== null) {
+      old_add_description_group_btn.removeEventListener('click', np_createDescriptionGroup)
+      old_add_description_group_btn.addEventListener('click', np_createDescriptionGroup)
+  } else {
+    let add_description_group_container = document.getElementById('np_add_description_group_container')
+    let add_description_group_btn = xCreateElement('input', '', 'np_add_description_group')
+    add_description_group_btn.setAttribute('type', 'button')
+    add_description_group_btn.setAttribute('value', '+ Ajouter un bloc de description')
+    add_description_group_container.innerHTML = ''
+    add_description_group_container.appendChild(add_description_group_btn)
+    add_description_group_btn.addEventListener('click', np_createDescriptionGroup)
+  }
 }
 function np_createDescriptionGroup() {
+
+  console.log("-- np_createDescriptionGroup()")
 
   // creation d'un objet handle des informations du description group
   let desc_info = np_createDescriptionGroupInfo()
@@ -1798,6 +1818,8 @@ function np_initImageDescription(global_index) {
 /* -- Render New Produit ----------------------------------------------------------------------------------------------------- */
 function np_render() {
 
+  console.log("-- np_render()")
+
   // TODO gerer le rename prefixe np_
   let header_titre = document.getElementById('np_produit-header-titre-text')
   header_titre.innerText = getCategorieName(data.id_categorie).toUpperCase()
@@ -1859,19 +1881,27 @@ function np_render() {
 /* Reset nouveau produit page */
 function resetNouveauProduitPage() {
   console.log('-- resetNouveauProduitPage()')
-  data = {
-  'id_produit': 0,
-  'id_famille': 0,
-  'nom_famille': "",
-  'id_categorie': 0,
-  'nom_categorie': "",
-  'nom': "",
-  'marque': "",
-  'description': [],
-  'images': [],
-  'prix': -1,
-  'thumb': "",
-}
+  // data = {
+  //   'id_produit': 0,
+  //   'id_famille': 0,
+  //   'nom_famille': "",
+  //   'id_categorie': 0,
+  //   'nom_categorie': "",
+  //   'nom': "",
+  //   'marque': "",
+  //   'description': [],
+  //   'images': [],
+  //   'prix': -1,
+  //   'thumb': "",
+  // }
+
+  // console.error(data_default)
+  data = data_default
+  // console.error(data)
+
+  let description_group_container = document.getElementById('np_description_group_container')
+  description_group_container.innerHTML = ''
+
   // np_setSelectFamille(0)
   // np_setSelectCategorie()
   // np_initImageThumb()
@@ -1887,14 +1917,17 @@ function resetNouveauProduitPage() {
 function np_initSendServer() {
 
   let old_send_server_btn = document.getElementById('np_send_server_btn')
-  if (old_send_server_btn !== null) old_send_server_btn.removeEventListener('click', np_sendProduit)
+  if (old_send_server_btn !== null) {
+    old_send_server_btn.removeEventListener('click', np_sendProduit)
+    old_send_server_btn.addEventListener('click', np_sendProduit)
+  } else {
+    let send_server_container = document.getElementById('np_send_server_container')
+    let send_server_btn = xCreateElement('button', '', 'np_send_server_btn')
+    send_server_btn.innerHTML = "Envoyer au serveur"
+    send_server_container.appendChild(send_server_btn)
 
-  let send_server_container = document.getElementById('np_send_server_container')
-  let send_server_btn = xCreateElement('button', '', 'np_send_server_btn')
-  send_server_btn.innerHTML = "Envoyer au serveur"
-  send_server_container.appendChild(send_server_btn)
-
-  send_server_btn.addEventListener('click', np_sendProduit)
+    send_server_btn.addEventListener('click', np_sendProduit)
+  } 
 
 }
 async function np_sendProduit() {

@@ -4,7 +4,6 @@ var liste_prestas = [
   /* ---------------------------------------- */
   /* SDB */
   /* ---------------------------------------- */
-
   {
     id_presta: 0,
     id_famille: 1,
@@ -107,7 +106,6 @@ var liste_prestas = [
 /* ---------------------------------------- */
 /* CUISINE */
 /* ---------------------------------------- */
-
 {
     id_presta: 10,
     id_famille: 2,
@@ -215,16 +213,14 @@ var liste_prestas = [
 
 
 
-
-
-
   /* MENUISERIES */
   {
-    id_presta: 20,
+    id_presta: 30,
     id_famille: 3,
-    nom_famille: "Prestations intérieures",
-    id_cat: 20,
-    nom_cat: "Portes & placards",
+    nom_famille: "Menuiseries",
+    id_cat: 30,
+    index: 0,
+    nom_cat: "Prestations intérieures",
     images: ['./img/presta/presta_interieures_01/presta1_interieures_01.jpg', './img/presta/presta_interieures_01/presta1_interieures_02.jpg'],
     images_legende: ['Placards de rangement aménagés', 'Portes rainurées et laquées'],
     descriptif: `
@@ -239,23 +235,57 @@ var liste_prestas = [
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
   },
   {
-    id_presta: 21,
+    id_presta: 31,
     id_famille: 3,
-    nom_famille: "Prestations intérieures",
-    id_cat: 21,
-    nom_cat: "Porte palière",
-    images: ['./img/presta/presta_interieures_02/presta2_interieures_01.jpg'],
-    images_legende: [],
+    nom_famille: "Menuiseries",
+    id_cat: 31,
+    index: 1,
+    nom_cat: "Prestations intérieures",
+    images: ['./img/presta/presta_interieures_01/presta1_interieures_01.jpg', './img/presta/presta_interieures_01/presta1_interieures_02.jpg'],
+    images_legende: ['Placards de rangement aménagés', 'Portes rainurées et laquées'],
     descriptif: `
-      Porte palière à âme pleine avec affaiblissement acoustique, serrure 3 points, poignée de sécurité à protecteur de cylindre<br>
-      Clés avec badge de proximité intégré "Tout en un"<br>      
+      Tous nos logements sont équipés de la solution GreenCity Connect et profitent d'une box connectées intégrée au tableau éléectrique<br>
+      Depuis votre smartphone, votre tablette ou votre ordinateur, grâce à une application simple et intuitive, vous commandez à distance et
+      programmez les équipements connectés inclus de votre logement : le chauffage, l'alarme anti-intrusion et les volets roulants
+      électriques dans les T4 et T5.<br>
+      <br>
+      (sous réserve d'abonnement internet à la charge du client)
+      <br>
     `,
+    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
+  },
+  {
+    id_presta: 32,
+    id_famille: 3,
+    nom_famille: "Menuiseries",
+    id_cat: 32,
+    index: 2,
+    nom_cat: "Portes",
+    images: [ './img/presta/menuiseries/portes/porte_entree.jpg',
+              './img/presta/menuiseries/portes/porte_de_circulation.jpg',
+              './img/presta/menuiseries/portes/poignees_interieur.jpg',
+              './img/presta/menuiseries/portes/porte_fenetre.jpg',
+            ],
+    images_legende: [],
+    descriptif: ``,
+    contractuel: ``
+  },
+  {
+    id_presta: 33,
+    id_famille: 3,
+    nom_famille: "Menuiseries",
+    id_cat: 33,
+    index: 3,
+    nom_cat: "Placards",
+    images: [ './img/presta/menuiseries/placards/placards.jpg'],
+    images_legende: [],
+    descriptif: ``,
     contractuel: ``
   },
 
 
 
-  /* MENUISERIES */
+  /* EQUIPEMENT */
   {
     id_presta: 50,
     id_famille: 4,
@@ -287,8 +317,8 @@ var liste_prestas = [
     id_cat: 52,
     index: 2,
     nom_cat: "Points lumineux",
-    images: ['./img/presta/equipements/points_lumineux/spot.jpg', './img/presta/equipements/points_lumineux/douille_dcl.jpg'],
-    images_legende: ['', ''],
+    images: ['./img/presta/equipements/points_lumineux/douille_dcl.jpg'],
+    images_legende: [''],
     descriptif: ``,
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
   },

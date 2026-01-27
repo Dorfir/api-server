@@ -1,0 +1,45 @@
+url de l'application : 
+https://my-showroom.fr/gc_catalogue/app/
+
+
+Catégories des prestations :
+----------------------------
+Quid des pages de prestation précédentes (rubriques annotées "Version précédente" dans l'application) ?
+
+
+Catégories avec des éléments manquants :
+----------------------------------------
+Salle de bain -> Robinetterie
+Cuisine -> Cuisine T4
+Cuisine -> Meubles
+Equipements -> Evacuations
+Equipements -> Robinet extérieur
+
+
+Images classées mais a valider :
+--------------------------------
+Salle de bain -> WC
+Salle de bain -> Lave linge
+Menuiseries -> Porte fenetre
+Equipements -> Arrivées d'eau
+Equipements -> Evacuations
+Equipements -> Green Connect
+Equipements -> Thermosatat radiateur
+
+
+Elements / images non classés :
+-------------------------------
+Aération
+Ballon thermodynamique
+Bouche VMC
+Chaudière
+Climatisation
+Climatisation télécommande
+Compteur gaz
+Tableau éléectrique
+Terrasse bois
+Tydom
+
+
+
+
