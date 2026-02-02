@@ -45,8 +45,8 @@ var liste_prestas = [
     nom_famille: "Salle de bain / WC",
     id_cat: 2,
     index: 2,
-    nom_cat: "WC",
-    images: ['./img/presta/sdb/wc/wc.jpg'],
+    nom_cat: "Meuble vasque",
+    images: ['./img/presta/sdb/meuble_vasque/meuble_vasque.jpg'],
     images_legende: [''],
     descriptif: ``,
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
@@ -57,8 +57,8 @@ var liste_prestas = [
     nom_famille: "Salle de bain / WC",
     id_cat: 3,
     index: 3,
-    nom_cat: "Meuble vasque",
-    images: ['./img/presta/sdb/meuble_vasque/meuble_vasque.jpg'],
+    nom_cat: "Lave linge",
+    images: ['./img/presta/sdb/lave_linge/lave_linge.jpg'],
     images_legende: [''],
     descriptif: ``,
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
@@ -69,9 +69,9 @@ var liste_prestas = [
     nom_famille: "Salle de bain / WC",
     id_cat: 4,
     index: 4,
-    nom_cat: "Sèche-serviette",
-    images: ['./img/presta/sdb/seche_serviette/seche_serviette.jpg','./img/presta/sdb/seche_serviette/seche_serviette_elec.jpg'],
-    images_legende: ['', ''],
+    nom_cat: "Robinetterie",
+    images: ['./img/presta/sdb/robinetterie/robinetterie_sdb.jpg'],
+    images_legende: [''],
     descriptif: ``,
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
   },
@@ -81,9 +81,9 @@ var liste_prestas = [
     nom_famille: "Salle de bain / WC",
     id_cat: 5,
     index: 5,
-    nom_cat: "Lave linge",
-    images: ['./img/presta/sdb/lave_linge/lave_linge.jpg'],
-    images_legende: [''],
+    nom_cat: "Sèche-serviette",
+    images: ['./img/presta/sdb/seche_serviette/seche_serviette.jpg','./img/presta/sdb/seche_serviette/seche_serviette_elec.jpg'],
+    images_legende: ['', ''],
     descriptif: ``,
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
   },
@@ -93,8 +93,8 @@ var liste_prestas = [
     nom_famille: "Salle de bain / WC",
     id_cat: 6,
     index: 6,
-    nom_cat: "Robinetterie",
-    images: [''],
+    nom_cat: "WC",
+    images: ['./img/presta/sdb/wc/wc.jpg'],
     images_legende: [''],
     descriptif: ``,
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
@@ -161,30 +161,6 @@ var liste_prestas = [
     nom_famille: "Cuisine",
     id_cat: 13,
     index: 3,
-    nom_cat: "Cuisine T4",
-    images: [''],
-    images_legende: [''],
-    descriptif: ``,
-    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
-  },
-  {
-    id_presta: 14,
-    id_famille: 2,
-    nom_famille: "Cuisine",
-    id_cat: 14,
-    index: 4,
-    nom_cat: "Meubles",
-    images: [''],
-    images_legende: [''],
-    descriptif: ``,
-    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
-  },
-  {
-    id_presta: 15,
-    id_famille: 2,
-    nom_famille: "Cuisine",
-    id_cat: 15,
-    index: 5,
     nom_cat: "Electroménager",
     images: [ './img/presta/cuisine/electromenager/frigo.jpg',
               './img/presta/cuisine/electromenager/hotte.jpg',
@@ -196,11 +172,11 @@ var liste_prestas = [
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
   },
   {
-    id_presta: 16,
+    id_presta: 14,
     id_famille: 2,
     nom_famille: "Cuisine",
-    id_cat: 16,
-    index: 6,
+    id_cat: 14,
+    index: 4,
     nom_cat: "Robinetterie",
     images: [ './img/presta/cuisine/robinetterie/robinetterie.jpg',
             ],
@@ -221,8 +197,10 @@ var liste_prestas = [
     id_cat: 30,
     index: 0,
     nom_cat: "Prestations intérieures",
-    images: ['./img/presta/presta_interieures_01/presta1_interieures_01.jpg', './img/presta/presta_interieures_01/presta1_interieures_02.jpg'],
-    images_legende: ['Placards de rangement aménagés', 'Portes rainurées et laquées'],
+    images: ['./img/presta/menuiseries/_generic1/presta1_interieures_01.jpg',
+             './img/presta/menuiseries/_generic1/presta1_interieures_02.jpg',
+             './img/presta/menuiseries/_generic1/presta1_interieures_03.jpg',],
+    images_legende: ['Placards de rangement aménagés', 'Portes rainurées et laquées', ''],
     descriptif: `
       Tous nos logements sont équipés de la solution GreenCity Connect et profitent d'une box connectées intégrée au tableau éléectrique<br>
       Depuis votre smartphone, votre tablette ou votre ordinateur, grâce à une application simple et intuitive, vous commandez à distance et
@@ -241,17 +219,14 @@ var liste_prestas = [
     id_cat: 31,
     index: 1,
     nom_cat: "Prestations intérieures",
-    images: ['./img/presta/presta_interieures_01/presta1_interieures_01.jpg', './img/presta/presta_interieures_01/presta1_interieures_02.jpg'],
-    images_legende: ['Placards de rangement aménagés', 'Portes rainurées et laquées'],
-    descriptif: `
-      Tous nos logements sont équipés de la solution GreenCity Connect et profitent d'une box connectées intégrée au tableau éléectrique<br>
-      Depuis votre smartphone, votre tablette ou votre ordinateur, grâce à une application simple et intuitive, vous commandez à distance et
-      programmez les équipements connectés inclus de votre logement : le chauffage, l'alarme anti-intrusion et les volets roulants
-      électriques dans les T4 et T5.<br>
+    images: ['./img/presta/menuiseries/_generic2/presta2_interieures_01.jpg'],
+    images_legende: [`
+      Porte palière à âme pleine avec affaiblissement acoustique, serrure 3 points, poignée de sécurité à protecteur de cylindre.
+      <br><br>
+      Clés avec badge de proximité intégré "Tout en un"
       <br>
-      (sous réserve d'abonnement internet à la charge du client)
-      <br>
-    `,
+    `],
+    descriptif: '',
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
   },
   {
@@ -260,12 +235,8 @@ var liste_prestas = [
     nom_famille: "Menuiseries",
     id_cat: 32,
     index: 2,
-    nom_cat: "Portes",
-    images: [ './img/presta/menuiseries/portes/porte_entree.jpg',
-              './img/presta/menuiseries/portes/porte_de_circulation.jpg',
-              './img/presta/menuiseries/portes/poignees_interieur.jpg',
-              './img/presta/menuiseries/portes/porte_fenetre.jpg',
-            ],
+    nom_cat: "Fenêtres",
+    images: [ './img/presta/menuiseries/fenetres/porte_fenetre.jpg'],
     images_legende: [],
     descriptif: ``,
     contractuel: ``
@@ -276,6 +247,21 @@ var liste_prestas = [
     nom_famille: "Menuiseries",
     id_cat: 33,
     index: 3,
+    nom_cat: "Portes",
+    images: [ './img/presta/menuiseries/portes/porte_entree.jpg',
+              './img/presta/menuiseries/portes/porte_de_circulation.jpg',
+              './img/presta/menuiseries/portes/poignees_interieur.jpg',
+            ],
+    images_legende: [],
+    descriptif: ``,
+    contractuel: ``
+  },
+  {
+    id_presta: 34,
+    id_famille: 3,
+    nom_famille: "Menuiseries",
+    id_cat: 34,
+    index: 4,
     nom_cat: "Placards",
     images: [ './img/presta/menuiseries/placards/placards.jpg'],
     images_legende: [],
@@ -292,9 +278,9 @@ var liste_prestas = [
     nom_famille: "Équipements",
     id_cat: 50,
     index: 0,
-    nom_cat: "Prises",
-    images: ['./img/presta/equipements/prises/prises_rj45_tele.jpg', './img/presta/equipements/prises/prise_etanche.jpg'],
-    images_legende: ['', ''],
+    nom_cat: "Aération",
+    images: ['./img/presta/equipements/aeration/aeration.jpg'],
+    images_legende: [''],
     descriptif: ``,
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
   },
@@ -304,9 +290,9 @@ var liste_prestas = [
     nom_famille: "Équipements",
     id_cat: 51,
     index: 1,
-    nom_cat: "Interrupteurs",
-    images: ['./img/presta/equipements/interrupteurs/interrupteurs.jpg'],
-    images_legende: [''],
+    nom_cat: "Alarme",
+    images: ['./img/presta/equipements/alarme/alarme_clavier.jpg', './img/presta/equipements/alarme/alarme_hurleur.jpg'],
+    images_legende: ['', ''],
     descriptif: ``,
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
   },
@@ -316,8 +302,8 @@ var liste_prestas = [
     nom_famille: "Équipements",
     id_cat: 52,
     index: 2,
-    nom_cat: "Points lumineux",
-    images: ['./img/presta/equipements/points_lumineux/douille_dcl.jpg'],
+    nom_cat: "Arrivées d'eau",
+    images: [ './img/presta/equipements/arrivee_eau/arrivee_evac_LL.jpg'],
     images_legende: [''],
     descriptif: ``,
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
@@ -328,24 +314,21 @@ var liste_prestas = [
     nom_famille: "Équipements",
     id_cat: 53,
     index: 3,
-    nom_cat: "Volets roulants",
-    images: ['./img/presta/equipements/volet_roulant/volet_roulant.jpg'],
+    nom_cat: "Ballon thermodynamique",
+    images: ['./img/presta/equipements/ballon/ballon_thermodynamique.jpg'],
     images_legende: [''],
     descriptif: ``,
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
-  },  
+  },
   {
     id_presta: 54,
     id_famille: 4,
     nom_famille: "Équipements",
     id_cat: 54,
     index: 4,
-    nom_cat: "Arrivées d'eau",
-    images: [ './img/presta/equipements/arrivee_eau/arrivee_evac_LL.jpg', 
-              './img/presta/equipements/arrivee_eau/nourrices_alim_LL.jpg', 
-              './img/presta/equipements/arrivee_eau/compteur_eau.jpg',      
-            ],
-    images_legende: ['', ''],
+    nom_cat: "Bouche VMC",
+    images: ['./img/presta/equipements/bouche_vmc/bouche_vmc.jpg'],
+    images_legende: [''],
     descriptif: ``,
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
   },
@@ -355,9 +338,9 @@ var liste_prestas = [
     nom_famille: "Équipements",
     id_cat: 55,
     index: 5,
-    nom_cat: "Évacuations",
-    images: [],
-    images_legende: [],
+    nom_cat: "Chaudière",
+    images: ['./img/presta/equipements/chaudiere/chaudiere.jpg'],
+    images_legende: [''],
     descriptif: ``,
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
   },
@@ -367,9 +350,9 @@ var liste_prestas = [
     nom_famille: "Équipements",
     id_cat: 56,
     index: 6,
-    nom_cat: "Radiateurs",
-    images: ['./img/presta/equipements/radiateurs/radiateur.jpg', './img/presta/equipements/radiateurs/radiateur_elec.jpg'],
-    images_legende: ['', ''],
+    nom_cat: "Climatisation",
+    images: ['./img/presta/equipements/climatisation/climatisation.jpg', './img/presta/equipements/climatisation/climatisation_telecommande.jpg'],
+    images_legende: [''],
     descriptif: ``,
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
   },
@@ -379,20 +362,20 @@ var liste_prestas = [
     nom_famille: "Équipements",
     id_cat: 57,
     index: 7,
-    nom_cat: "Robinet extérieur",
-    images: [],
-    images_legende: [],
+    nom_cat: "Compteur d'eau",
+    images: ['./img/presta/equipements/compteur_eau/compteur_eau.jpg'],
+    images_legende: [''],
     descriptif: ``,
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
-  },  
+  },
   {
     id_presta: 58,
     id_famille: 4,
     nom_famille: "Équipements",
     id_cat: 58,
     index: 8,
-    nom_cat: "Green connect",
-    images: ['./img/presta/equipements/green_connect/green_connect.jpg'],
+    nom_cat: "Évacuations",
+    images: ['./img/presta/equipements/evacuation/arrivee_evac_LL.jpg', ],
     images_legende: [],
     descriptif: ``,
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
@@ -403,8 +386,9 @@ var liste_prestas = [
     nom_famille: "Équipements",
     id_cat: 59,
     index: 9,
-    nom_cat: "Alarme",
-    images: ['./img/presta/equipements/alarme/alarme_clavier.jpg', './img/presta/equipements/alarme/alarme_hurleur.jpg'],
+    nom_cat: "Green connect",
+    images: ['./img/presta/equipements/green_connect/green_connect.jpg',
+             './img/presta/equipements/green_connect/tydom.jpg'],
     images_legende: ['', ''],
     descriptif: ``,
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
@@ -415,13 +399,127 @@ var liste_prestas = [
     nom_famille: "Équipements",
     id_cat: 60,
     index: 10,
+    nom_cat: "Interrupteurs",
+    images: ['./img/presta/equipements/interrupteurs/interrupteurs.jpg'],
+    images_legende: [''],
+    descriptif: ``,
+    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
+  },
+  {
+    id_presta: 61,
+    id_famille: 4,
+    nom_famille: "Équipements",
+    id_cat: 61,
+    index: 11,
+    nom_cat: "Nourrices",
+    images: ['./img/presta/equipements/nourrices/nourrices.jpg'],
+    images_legende: [''],
+    descriptif: ``,
+    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
+  },
+  {
+    id_presta: 62,
+    id_famille: 4,
+    nom_famille: "Équipements",
+    id_cat: 62,
+    index: 12,
+    nom_cat: "Points lumineux",
+    images: ['./img/presta/equipements/points_lumineux/douille_dcl.jpg'],
+    images_legende: [''],
+    descriptif: ``,
+    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
+  },
+  {
+    id_presta: 63,
+    id_famille: 4,
+    nom_famille: "Équipements",
+    id_cat: 63,
+    index: 13,
+    nom_cat: "Prises",
+    images: ['./img/presta/equipements/prises/prises_rj45_tele.jpg', './img/presta/equipements/prises/prise_etanche.jpg'],
+    images_legende: ['', ''],
+    descriptif: ``,
+    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
+  },
+  {
+    id_presta: 64,
+    id_famille: 4,
+    nom_famille: "Équipements",
+    id_cat: 64,
+    index: 14,
+    nom_cat: "Radiateurs",
+    images: ['./img/presta/equipements/radiateurs/radiateur.jpg', './img/presta/equipements/radiateurs/radiateur_elec.jpg'],
+    images_legende: ['', ''],
+    descriptif: ``,
+    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
+  },
+  {
+    id_presta: 65,
+    id_famille: 4,
+    nom_famille: "Équipements",
+    id_cat: 65,
+    index: 15,
+    nom_cat: "Robinet extérieur",
+    images: [],
+    images_legende: [],
+    descriptif: ``,
+    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
+  },
+  {
+    id_presta: 66,
+    id_famille: 4,
+    nom_famille: "Équipements",
+    id_cat: 66,
+    index: 16,
+    nom_cat: "Tableau électrique",
+    images: ['./img/presta/equipements/tableau_electrique/tableau_electrique.jpg', './img/presta/equipements/tableau_electrique/tableau_electrique_ferme.jpg'],
+    images_legende: [''],
+    descriptif: ``,
+    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
+  },
+  {
+    id_presta: 67,
+    id_famille: 4,
+    nom_famille: "Équipements",
+    id_cat: 67,
+    index: 17,
+    nom_cat: "Terrasse bois",
+    images: ['./img/presta/equipements/terrasse_bois/terrasse_bois.jpg'],
+    images_legende: [''],
+    descriptif: ``,
+    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
+  },
+  {
+    id_presta: 68,
+    id_famille: 4,
+    nom_famille: "Équipements",
+    id_cat: 68,
+    index: 18,
     nom_cat: "Thermostat",
     images: ['./img/presta/equipements/thermostat/thermostat.jpg', './img/presta/equipements/thermostat/thermostatique_radiateur.jpg'],
     images_legende: ['', ''],
     descriptif: ``,
     contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
   },
+  {
+    id_presta: 69,
+    id_famille: 4,
+    nom_famille: "Équipements",
+    id_cat: 69,
+    index: 19,
+    nom_cat: "Volets roulants",
+    images: ['./img/presta/equipements/volet_roulant/volet_roulant.jpg'],
+    images_legende: [''],
+    descriptif: ``,
+    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
+  },
+  
+  
 
+
+
+
+  
 
   /* HAPIIX */
   {
@@ -430,6 +528,18 @@ var liste_prestas = [
     nom_famille: "Divers",
     id_cat: 80,
     index: 0,
+    nom_cat: "Compteur gaz",
+    images: ['./img/presta/divers/compteur_gaz/compteur_gaz.jpg'],
+    images_legende: [''],
+    descriptif: ``,
+    contractuel: `* Photos non contractuelles - Équipements de série ou équivalent`
+  },
+  {
+    id_presta: 81,
+    id_famille: 5,
+    nom_famille: "Divers",
+    id_cat: 81,
+    index: 1,
     nom_cat: "Hapiix",
     images: ['./img/presta/divers/hapiix/hapiix.jpg'],
     images_legende: [''],

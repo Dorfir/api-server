@@ -127,37 +127,6 @@ for(var presta_li of liste_presta) {
     }
 
     
-
-
-    // if (e.currentTarget.classList.contains('presta_sdb')) {
-
-    //   let prestas = getPrestasFromIdFamille(1)
-    //   updateFichePresta(prestas)
-    //   let header_title = document.getElementById('presta-fiche-header-titre-text')
-    //   header_title.innerText = prestas[0].nom_famille.toUpperCase()
-    //   let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
-    //   presta_fiche_main_container.style.display = 'block'   
-
-    // } else if (e.currentTarget.classList.contains('presta_cuisine')) {   
-
-    //   let prestas = getPrestasFromIdFamille(2)
-    //   updateFichePresta(prestas)
-    //   let header_title = document.getElementById('presta-fiche-header-titre-text')
-    //   header_title.innerText = prestas[0].nom_famille.toUpperCase()
-    //   let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
-    //   presta_fiche_main_container.style.display = 'block'
-
-      
-    // } else if (e.currentTarget.classList.contains('presta_menuiserie')) {
-
-    //   let prestas = getPrestasFromIdFamille(3)
-    //   updateFichePresta(prestas)
-    //   let header_title = document.getElementById('presta-fiche-header-titre-text')
-    //   header_title.innerText = prestas[0].nom_famille.toUpperCase()
-    //   let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
-    //   presta_fiche_main_container.style.display = 'block'
-
-    // }
   })
 }
 let presta_fiche_header_close_btn = document.getElementById('presta-fiche-header-close-btn')
