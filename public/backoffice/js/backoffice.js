@@ -1,26 +1,18 @@
-displayLoader()
-/* https://quilljs.com/docs/api#content */
 
 /* -- Variables -------------------------------------------------------------------------------------------------------- */
 let famillesReceived = false
 let categoriesReceived = false
-
 let liste_produits = null
 let liste_familles = null
-
 let firstLoad = true
-
-
-const image_path = `${path_prefix}green_catalogue_rest/uploads/`
 
 var np_liste_descriptions_infos = Array()
 var ep_liste_descriptions_infos = Array()
-
 var current_mode = "new_produit"
 // var current_mode = "edit_produit"
 
+const image_path = `${path_prefix}green_catalogue_rest/uploads/`
 const url_rest_prefix = `${path_prefix}green_catalogue_rest/`
-
 const url_send_new_produit = url_rest_prefix + "uploadProduit.php"
 const url_send_edit_produit = url_rest_prefix + "updateProduit.php"
 const url_create_famille = url_rest_prefix + "createFamille.php"
@@ -31,8 +23,78 @@ const url_create_categorie = url_rest_prefix + "createCategorie.php"
 
 
 
+/* -- Menu backoffice ---------------------------------------------------------------------------------------------------- */
+/* -- Menu backoffice ---------------------------------------------------------------------------------------------------- */
+/* -- Menu backoffice ---------------------------------------------------------------------------------------------------- */
+/* -- Menu backoffice ---------------------------------------------------------------------------------------------------- */
+/* -- Menu backoffice ---------------------------------------------------------------------------------------------------- */
+displayLoader()
+initMenu()
+function initMenu() {
+  let list_produit_container = document.getElementById('list-produit-container')
+  list_produit_container.style.display = 'flex'
+  let edit_produit_container = document.getElementById('edit-produit-container')
+  edit_produit_container.style.display = 'none'
+  let new_produit_container = document.getElementById('new-produit-container')
+  new_produit_container.style.display = 'none'
+  // current_mode = "new_produit"
+  current_mode = "edit_produit"
 
-/* -- Gathering Data ---------------------------------------------------------------------------------------------------- */
+  let btns_menu = document.querySelectorAll('.menu-item')
+  btns_menu.forEach((btn_menu) => {
+    btn_menu.addEventListener('click', (e) => {
+      let btn_menu_clicked = e.currentTarget
+      btns_menu.forEach((btn) => {
+        if (btn == btn_menu_clicked) {
+          btn.classList.add('active')
+        } else {
+          btn.classList.remove('active')
+        }
+      })
+      switch (btn_menu_clicked.id) {
+        case "btn-menu-lister-produits":
+          list_produit_container.style.display = 'flex'
+          new_produit_container.style.display = 'none'
+          break;
+        case "btn-menu-nouveau-produit":
+          menuSetPage('new')
+          break;
+        case "btn-menu-reset-produit":
+          resetNouveauProduitPage()
+          break;
+      } 
+    })    
+  })
+}
+function menuSetPage(page_ref) {
+  let list_produit_container = document.getElementById('list-produit-container')
+  let edit_produit_container = document.getElementById('edit-produit-container')
+  let new_produit_container = document.getElementById('new-produit-container')
+  switch (page_ref) {
+    case "edit":
+      list_produit_container.style.display = 'none'
+      edit_produit_container.style.display = 'flex'
+      new_produit_container.style.display = 'none'
+      current_mode = "edit_produit"
+      break
+    case "new":
+      list_produit_container.style.display = 'none'
+      edit_produit_container.style.display = 'none'
+      new_produit_container.style.display = 'flex'
+      current_mode = "new_produit"
+      getListeFamilles('new')
+      break
+  }
+}
+
+
+
+/* -- Gathering Data Produits -------------------------------------------------------------------------------------------- */
+/* -- Gathering Data Produits -------------------------------------------------------------------------------------------- */
+/* -- Gathering Data Produits -------------------------------------------------------------------------------------------- */
+/* -- Gathering Data Produits -------------------------------------------------------------------------------------------- */
+/* -- Gathering Data Produits -------------------------------------------------------------------------------------------- */
+/* -- Gathering Data Produits -------------------------------------------------------------------------------------------- */
 const eventProduitsReceived = new Event("event-produits-received")
 
 // TODO 
@@ -77,7 +139,7 @@ async function getListeFamilles(mode) {
     json = await response.json()
     if (json['status'] == 200) {
       liste_familles = json['familles']
-      console.log(liste_familles)
+      // console.log(liste_familles)
       let event_familles = new Event("event-liste-famille-received")
       event_familles.mode = mode
       window.dispatchEvent(event_familles)
@@ -89,7 +151,7 @@ async function getListeFamilles(mode) {
 // BORDEL ICI - repenser le loading général + gestion select famille
 window.addEventListener('event-liste-famille-received', (e) => {
 
-  // console.log(`event-liste-famille-received - mode : ${e.mode}`)
+  console.log(`event-liste-famille-received - mode : ${e.mode}`)
 
   // TODO se débarrasser du current_mode
   if (e.mode == "new") {
@@ -99,7 +161,13 @@ window.addEventListener('event-liste-famille-received', (e) => {
       data.nom_famille = liste_familles[0].nom_famille
       data.id_categorie = liste_familles[0].liste_categories[0].id_categorie
       data.nom_categorie = liste_familles[0].liste_categories[0].nom_categorie
-      
+      data.nom = ""
+      data.marque = ""
+      data.description = []
+      data.images = []
+      data.prix = -1
+      data.thumb = ""
+
       initCreateProduct()
     } else if (current_mode == "edit_produit") {
       ep_initEditProduit()
@@ -318,66 +386,15 @@ function newCategorieInserted(e) {
 }
 
 
-/* MENU */
-initMenu()
-function initMenu() {
-  let list_produit_container = document.getElementById('list-produit-container')
-  list_produit_container.style.display = 'flex'
-  let edit_produit_container = document.getElementById('edit-produit-container')
-  edit_produit_container.style.display = 'none'
-  let new_produit_container = document.getElementById('new-produit-container')
-  new_produit_container.style.display = 'none'
-  // current_mode = "new_produit"
-  current_mode = "edit_produit"
 
-  let btns_menu = document.querySelectorAll('.menu-item')
-  btns_menu.forEach((btn_menu) => {
-    btn_menu.addEventListener('click', (e) => {
-      let btn_menu_clicked = e.currentTarget
-      btns_menu.forEach((btn) => {
-        if (btn == btn_menu_clicked) {
-          btn.classList.add('active')
-        } else {
-          btn.classList.remove('active')
-        }
-      })
-      switch (btn_menu_clicked.id) {
-        case "btn-menu-lister-produits":
-          list_produit_container.style.display = 'flex'
-          new_produit_container.style.display = 'none'
-          break;
-        case "btn-menu-nouveau-produit":
-          menuSetPage('new')
-          break;
-        case "btn-menu-reset-produit":
-          resetNouveauProduitPage()
-          break;
-      } 
-    })    
-  })
-}
-function menuSetPage(page_ref) {
-  let list_produit_container = document.getElementById('list-produit-container')
-  let edit_produit_container = document.getElementById('edit-produit-container')
-  let new_produit_container = document.getElementById('new-produit-container')
-  switch (page_ref) {
-    case "edit":
-      list_produit_container.style.display = 'none'
-      edit_produit_container.style.display = 'flex'
-      new_produit_container.style.display = 'none'
-      current_mode = "edit_produit"
-      break
-    case "new":
-      list_produit_container.style.display = 'none'
-      edit_produit_container.style.display = 'none'
-      new_produit_container.style.display = 'flex'
-      current_mode = "new_produit"
-      getListeFamilles('new')
-      break
-  }
-}
 
-/* -- Liste des produits initialization ----------------------------------------------------------------------------- */
+/* -- Liste des produits ----------------------------------------------------------------------------- */
+/* -- Liste des produits ----------------------------------------------------------------------------- */
+/* -- Liste des produits ----------------------------------------------------------------------------- */
+/* -- Liste des produits ----------------------------------------------------------------------------- */
+/* -- Liste des produits ----------------------------------------------------------------------------- */
+/* -- Liste des produits ----------------------------------------------------------------------------- */
+/* -- Liste des produits ----------------------------------------------------------------------------- */
 function initListeProduits() {
 
   // reset des handlers de click des boutons d'edition des produits
@@ -429,14 +446,15 @@ function listProduitEditBtnHandler(e) {
 
 
 
-/* -- Editer un nouveau produit ------------------------------------------------------------------------------------- */
-/* -- Editer un nouveau produit ------------------------------------------------------------------------------------- */
-/* -- Editer un nouveau produit ------------------------------------------------------------------------------------- */
-/* -- Editer un nouveau produit ------------------------------------------------------------------------------------- */
-/* -- Editer un nouveau produit ------------------------------------------------------------------------------------- */
-/* -- Editer un nouveau produit ------------------------------------------------------------------------------------- */
-/* -- Editer un nouveau produit ------------------------------------------------------------------------------------- */
-/* -- Editer un nouveau produit ------------------------------------------------------------------------------------- */
+
+/* -- Editer un produit ------------------------------------------------------------------------------------- */
+/* -- Editer un produit ------------------------------------------------------------------------------------- */
+/* -- Editer un produit ------------------------------------------------------------------------------------- */
+/* -- Editer un produit ------------------------------------------------------------------------------------- */
+/* -- Editer un produit ------------------------------------------------------------------------------------- */
+/* -- Editer un produit ------------------------------------------------------------------------------------- */
+/* -- Editer un produit ------------------------------------------------------------------------------------- */
+/* -- Editer un produit ------------------------------------------------------------------------------------- */
 let data_edit = {
   'id_produit': 0,
   'id_famille': 0,
@@ -1319,9 +1337,6 @@ async function ep_sendProduit() {
 
 
 
-
-
-
 /* -- Ajouter un nouveau produit ------------------------------------------------------------------------------------- */
 /* -- Ajouter un nouveau produit ------------------------------------------------------------------------------------- */
 /* -- Ajouter un nouveau produit ------------------------------------------------------------------------------------- */
@@ -1343,14 +1358,11 @@ let data = {
   'prix': -1,
   'thumb': "",
 }
-let data_default = null
-
 
 
 function initCreateProduct() {
-  console.log('-- initCreateProduct()')
+  // console.log('-- initCreateProduct()')
 
-  if (firstLoad) data_default = data
   firstLoad = false
   
   resetNouveauProduitPage()
@@ -1607,7 +1619,7 @@ function np_initAddDescriptionGroup() {
 }
 function np_createDescriptionGroup() {
 
-  console.log("-- np_createDescriptionGroup()")
+  // console.log("-- np_createDescriptionGroup()")
 
   // creation d'un objet handle des informations du description group
   let desc_info = np_createDescriptionGroupInfo()
@@ -1816,7 +1828,7 @@ function np_initImageDescription(global_index) {
 /* -- Render New Produit ----------------------------------------------------------------------------------------------------- */
 function np_render() {
 
-  console.log("-- np_render()")
+  // console.log("-- np_render()")
 
   // TODO gerer le rename prefixe np_
   let header_titre = document.getElementById('np_produit-header-titre-text')
@@ -1875,7 +1887,6 @@ function np_render() {
 
 }
 
-
 /* Reset nouveau produit page */
 function resetNouveauProduitPage() {
   console.log('-- resetNouveauProduitPage()')
@@ -1893,10 +1904,6 @@ function resetNouveauProduitPage() {
   //   'thumb': "",
   // }
 
-  // console.error(data_default)
-  data = data_default
-  // console.error(data)
-
   let description_group_container = document.getElementById('np_description_group_container')
   description_group_container.innerHTML = ''
 
@@ -1909,7 +1916,6 @@ function resetNouveauProduitPage() {
   // np_initSendServer()
   // np_render()
 }
-
 
 /* Send server */
 function np_initSendServer() {
@@ -1998,6 +2004,19 @@ function cropperLoadEventListeners() {
     np_render()
   }, false)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2100,3 +2119,5 @@ function DataURIToBlob(dataURI) {
 
   return new Blob([ia], { type: mimeString })
 }
+
+/* https://quilljs.com/docs/api#content */
