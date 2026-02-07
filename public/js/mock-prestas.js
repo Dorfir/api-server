@@ -9,8 +9,8 @@ var liste_prestas = [
     id_famille: 1,
     nom_famille: "Salle de bain / WC",
     id_cat: 0,
-    index: 0,
     nom_cat: "Salle de bains T2 & T4",
+    index: 0,
     images: ['./img/presta/sdb/_generic/sdb_01.jpg', './img/presta/sdb/_generic/sdb_02.jpg'],
     images_legende: ['Salle de bains type T4', 'Salle de bains type T2'],
     descriptif: `

@@ -19,6 +19,9 @@
       <img src="./img/green_city_logo_blue.svg" alt="GreenCity" class="logo">
       <div class="menu-item active" id="btn-menu-lister-produits">Lister les produits</div>
       <div class="menu-item" id="btn-menu-nouveau-produit">Créer nouveau produit</div>
+      <hr>
+      <div class="menu-item" id="btn-menu-lister-prestas">Lister les prestations</div>
+      <div class="menu-item" id="btn-menu-nouveau-presta">Créer une prestation</div>
       
       <!-- <div class="menu-item" id="btn-menu-reset-produit">Reset</div> -->
       <!-- <div class="menu-item">Modifier</div> -->
@@ -26,12 +29,13 @@
 
     <div id="content-container">
 
+      <!-- PRODUITS ---------------------------------------------------------------- -->
       <div id="list-produit-container" class="xCustomScroll">
 
 
       </div>
 
-      <!-- Page de création d'un nouveau produit - suffixe 'ep_' -->
+      <!-- Page d'édition produit - suffixe 'ep_' -->
       <div id="edit-produit-container">
 
         <div class="xCustomScroll" id="ep_form_container">
@@ -145,10 +149,110 @@
 
       </div>
 
+      <!-- PRESTAS ---------------------------------------------------------------- -->
+      <div id="list-presta-container" class="xCustomScroll"></div>
+
+      <!-- Page d'édition presta - suffixe 'es_' -->
+      <div id="edit-presta-container">
+
+        <div class="xCustomScroll" id="es_form_container">
+
+          <div class="ligne" id="es_ligne_famille"></div>
+          
+          <hr />
+          <div class="ligne" id="es_ligne_nom_presta"></div>
+
+          <hr />
+
+          <div id="es_description_group_container"></div>
+
+          <div id="es_add_description_group_container"></div>
+          
+          <hr />
+
+          <div class="ligne" id="es_ligne_article_presta"></div>
+          
+          <hr />
+
+          <div id="es_send_server_container"></div>
+    
+        </div>
+
+        <div id="es_render">
+
+          <div id="es_presta_header">
+            <div id="es_presta-header-titre">
+              <div id="es_presta-header-titre-text">-</div>
+              <svg viewBox="0 0 150 5" class="produit-header-titre-separator">
+                <line x1="0" y1="3" x2="150" y2="3" class="line-svg" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="fiche-produit-container">
+            <div class="fiche-produit">
+              <div class="modal-main xCustomScroll" id="es_render_parent"></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Page d'ajout de presta - suffixe 'ns_' -->
+      <div id="new-presta-container">
+
+        <div class="xCustomScroll" id="ns_form_container">
+
+          <div class="ligne" id="ns_ligne_famille"></div>
+          
+          <hr />
+          <div class="ligne" id="ns_ligne_nom_presta"></div>
+
+          <hr />
+
+          <div id="ns_description_group_container"></div>
+
+          <div id="ns_add_description_group_container"></div>
+          
+          <hr />
+
+          <div class="ligne" id="ns_ligne_article_presta"></div>
+          
+          <hr />
+
+          <div id="ns_send_server_container"></div>
+    
+        </div>
+
+        <div id="ns_render">
+
+          <div id="ns_presta_header">
+            <div id="ns_presta-header-titre">
+              <div id="ns_presta-header-titre-text">-</div>
+              <svg viewBox="0 0 150 5" class="produit-header-titre-separator">
+                <line x1="0" y1="3" x2="150" y2="3" class="line-svg" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="fiche-produit-container">
+            <div class="fiche-produit">
+              <div class="modal-main xCustomScroll" id="ns_render_parent"></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
 
   </div>
 
+
+
+  <!-- Popup container -->
   <div id="popup-container">
     <div id="popup-add-famille">
       <button id="popup-add-famille-close">X</button>

@@ -4,6 +4,11 @@ let famillesReceived = false
 let categoriesReceived = false
 let liste_produits = null
 let liste_familles = null
+
+let liste_prestas = null
+let liste_presta_familles = null
+
+
 let firstLoad = true
 
 var np_liste_descriptions_infos = Array()
@@ -21,28 +26,33 @@ const url_get_produit = url_rest_prefix + "getProduit.php"
 const url_get_familles_et_cats = url_rest_prefix + "getFamillesAndCategories.php"
 const url_create_categorie = url_rest_prefix + "createCategorie.php"
 
+const url_get_prestas = url_rest_prefix + "getPrestas.php"
+const url_get_presta = url_rest_prefix + "getPresta.php"
+const url_get_presta_familles = url_rest_prefix + "getPrestaFamilles.php"
+const url_send_new_presta = url_rest_prefix + "createPresta.php"
+const url_send_update_produit = url_rest_prefix + "updatePresta.php"
 
-
 /* -- Menu backoffice ---------------------------------------------------------------------------------------------------- */
 /* -- Menu backoffice ---------------------------------------------------------------------------------------------------- */
 /* -- Menu backoffice ---------------------------------------------------------------------------------------------------- */
 /* -- Menu backoffice ---------------------------------------------------------------------------------------------------- */
 /* -- Menu backoffice ---------------------------------------------------------------------------------------------------- */
-displayLoader()
 initMenu()
 function initMenu() {
-  let list_produit_container = document.getElementById('list-produit-container')
-  list_produit_container.style.display = 'flex'
-  let edit_produit_container = document.getElementById('edit-produit-container')
-  edit_produit_container.style.display = 'none'
-  let new_produit_container = document.getElementById('new-produit-container')
-  new_produit_container.style.display = 'none'
+  
+  displayLoader()
+  // getAllProduits()
+  menuSetPage('lister-produits')
+
   // current_mode = "new_produit"
   current_mode = "edit_produit"
 
   let btns_menu = document.querySelectorAll('.menu-item')
   btns_menu.forEach((btn_menu) => {
     btn_menu.addEventListener('click', (e) => {
+
+      displayLoader()
+
       let btn_menu_clicked = e.currentTarget
       btns_menu.forEach((btn) => {
         if (btn == btn_menu_clicked) {
@@ -53,14 +63,20 @@ function initMenu() {
       })
       switch (btn_menu_clicked.id) {
         case "btn-menu-lister-produits":
-          list_produit_container.style.display = 'flex'
-          new_produit_container.style.display = 'none'
+          getAllProduits()
+          menuSetPage('lister-produits')
           break;
         case "btn-menu-nouveau-produit":
-          menuSetPage('new')
+          menuSetPage('new-produit')
           break;
-        case "btn-menu-reset-produit":
-          resetNouveauProduitPage()
+
+        case "btn-menu-lister-prestas":
+          getAllPrestas()
+          menuSetPage('lister-prestas')
+          break;
+        case "btn-menu-nouveau-presta": 
+          ns_preInitNewPresta()
+          menuSetPage('new-presta')
           break;
       } 
     })    
@@ -70,22 +86,1260 @@ function menuSetPage(page_ref) {
   let list_produit_container = document.getElementById('list-produit-container')
   let edit_produit_container = document.getElementById('edit-produit-container')
   let new_produit_container = document.getElementById('new-produit-container')
+  
+  let list_presta_container = document.getElementById('list-presta-container')
+  let edit_presta_container = document.getElementById('edit-presta-container')
+  let new_presta_container = document.getElementById('new-presta-container')
+
   switch (page_ref) {
-    case "edit":
+    case "lister-produits":
+      list_produit_container.style.display = 'flex'
+      edit_produit_container.style.display = 'none'
+      new_produit_container.style.display = 'none'
+      list_presta_container.style.display = 'none'
+      edit_presta_container.style.display = 'none'
+      new_presta_container.style.display = 'none'
+      current_mode = "edit_produit"
+      break
+    case "edit-produit":
       list_produit_container.style.display = 'none'
       edit_produit_container.style.display = 'flex'
       new_produit_container.style.display = 'none'
+      list_presta_container.style.display = 'none'
+      edit_presta_container.style.display = 'none'
+      new_presta_container.style.display = 'none'
       current_mode = "edit_produit"
       break
-    case "new":
+    case "new-produit":
       list_produit_container.style.display = 'none'
       edit_produit_container.style.display = 'none'
       new_produit_container.style.display = 'flex'
+      list_presta_container.style.display = 'none'
+      edit_presta_container.style.display = 'none'
+      new_presta_container.style.display = 'none'
       current_mode = "new_produit"
       getListeFamilles('new')
       break
+
+    case "lister-prestas":
+      list_produit_container.style.display = 'none'
+      edit_produit_container.style.display = 'none'
+      new_produit_container.style.display = 'none'
+      list_presta_container.style.display = 'flex'
+      edit_presta_container.style.display = 'none'
+      new_presta_container.style.display = 'none'
+      current_mode = "edit_presta"
+      break
+    case "edit-presta":
+      list_produit_container.style.display = 'none'
+      edit_produit_container.style.display = 'none'
+      new_produit_container.style.display = 'none'
+      list_presta_container.style.display = 'none'
+      edit_presta_container.style.display = 'flex'
+      new_presta_container.style.display = 'none'
+      current_mode = "edit_presta"
+      break
+    case "new-presta" : 
+      list_produit_container.style.display = 'none'
+      edit_produit_container.style.display = 'none'
+      new_produit_container.style.display = 'none'
+      list_presta_container.style.display = 'none'
+      edit_presta_container.style.display = 'none'
+      new_presta_container.style.display = 'flex'
+      current_mode = "new_presta"
+      break
+
   }
 }
+
+
+/* -- Gathering Data Prestas -------------------------------------------------------------------------------------------- */
+/* -- Gathering Data Prestas -------------------------------------------------------------------------------------------- */
+/* -- Gathering Data Prestas -------------------------------------------------------------------------------------------- */
+/* -- Gathering Data Prestas -------------------------------------------------------------------------------------------- */
+/* -- Gathering Data Prestas -------------------------------------------------------------------------------------------- */
+/* -- Gathering Data Prestas -------------------------------------------------------------------------------------------- */
+
+// TODO 
+// redirection des callbacks pour edit / new
+// gestion reset / reloading
+async function getAllPrestas() {
+  let json = null
+  // const url_get_prestas = "http://localhost/green_catalogue_rest/getPrestas.php";
+  try {
+    const response = await fetch(url_get_prestas, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+    if (!response.ok) throw new Error(`Response status: ${response.status}`)
+    json = await response.json()
+    if (json['status'] == 200) {
+      liste_prestas = json['prestas']
+      // console.log(liste_prestas)
+      let eventPrestasReceived = new Event("event-prestas-received")
+      window.dispatchEvent(eventPrestasReceived)
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+window.addEventListener('event-prestas-received', (e)=> {
+  // console.log(liste_prestas)
+  initListePrestas()
+  hideLoader()
+})
+
+async function getPrestaListeFamilles(mode) {
+  displayLoader()
+  let json = null
+  // const url_get_presta_familles = "http://localhost/green_catalogue_rest/getPrestaFamilles.php";
+  try {
+    const response = await fetch(url_get_presta_familles, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+    if (!response.ok) throw new Error(`Response status: ${response.status}`)
+    json = await response.json()
+    if (json['status'] == 200) {
+      liste_presta_familles = json['familles']
+      // console.log(liste_familles)
+      let event_presta_familles = new Event("event-liste-presta-famille-received")
+      event_presta_familles.mode = mode
+      window.dispatchEvent(event_presta_familles)
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+// BORDEL ICI - repenser le loading général + gestion select famille
+window.addEventListener('event-liste-presta-famille-received', (e) => {
+
+  // console.log(`event-liste-presta-famille-received - mode : ${e.mode} - ${current_mode}`)
+
+  // TODO se débarrasser du current_mode
+  if (e.mode == "new") {
+    if (current_mode == "new_presta") {
+      ns_initNewPresta()
+    } else if (current_mode == "edit_presta") {
+      es_initEditPresta()
+    }  
+    
+  } else if (e.mode == "maj") {
+    if (current_mode == "new_presta") {
+      
+      // np_setSelectFamille()
+      // if (liste_familles[liste_familles.length - 1].liste_categories.length != 0) {
+      //   data.id_famille = liste_familles[liste_familles.length - 1].id_famille
+        
+      //   np_setSelectCategorie()
+      // } else {
+      //   openEditCategoriePopup()
+      // }
+    } else if (current_mode == "edit_presta") {
+        // ep_setSelectFamille()
+        // if (liste_familles[getFamilleIndex(data_edit.id_famille)].liste_categories.length != 0) {
+        //   ep_setSelectCategorie()
+        // } else {
+        //   openEditCategoriePopup()
+        // }
+    }  
+  }
+  window.setTimeout(() => { hideLoader() }, 400)
+
+}, false)
+function getFamilleIndex(id_famille) {
+  let famille_index = null
+  liste_familles.forEach((famille, index_famille) => {
+    if (parseInt(famille['id_famille']) === id_famille) famille_index = index_famille
+  });
+  return famille_index
+}
+
+
+/* -- Édition des prestas ----------------------------------------------------------------------------- */
+/* -- Édition des prestas ----------------------------------------------------------------------------- */
+/* -- Édition des prestas ----------------------------------------------------------------------------- */
+/* -- Édition des prestas ----------------------------------------------------------------------------- */
+/* -- Édition des prestas ----------------------------------------------------------------------------- */
+/* -- Édition des prestas ----------------------------------------------------------------------------- */
+function initListePrestas() {
+
+  current_mode = "edit_presta"
+
+  // reset des handlers de click des boutons d'edition des produits
+  let list_edit_btns = document.querySelectorAll('.list-presta-element-edit')
+  list_edit_btns.forEach((btn) => {
+    btn.removeEventListener('click', listPrestaEditBtnHandler)
+  })
+
+  // creation de la liste des produits
+  let list_presta_container = document.getElementById('list-presta-container')
+  let last_id_famille = -1
+  list_presta_container.innerHTML = ""
+
+  liste_prestas.forEach((presta) => {
+    if (last_id_famille != presta.id_famille) {
+      let list_presta_famille_title = xCreateElement('h3', 'list-presta-famille-title', '')
+      list_presta_famille_title.innerHTML = presta.nom_famille
+      list_presta_container.appendChild(list_presta_famille_title)
+      last_id_famille = presta.id_famille
+    }
+
+    let list_presta_element = xCreateElement('div', 'list-presta-element', `list-presta-element-${presta.id_presta}`)
+    list_presta_element.innerHTML = `${presta.nom_presta}`
+    let list_presta_element_edit = xCreateElement('input', 'list-presta-element-edit', `list_presta_element_edit_${presta.id_presta}`)
+    list_presta_element_edit.setAttribute('type', 'button')
+    list_presta_element_edit.setAttribute('value', 'Edition')
+    list_presta_element.appendChild(list_presta_element_edit)
+    list_presta_container.appendChild(list_presta_element)
+
+    list_presta_element_edit.addEventListener('click', listPrestaEditBtnHandler)
+  })
+
+
+}
+function listPrestaEditBtnHandler(e) {
+  let presta_id = parseInt(e.target.id.split('_').splice(-1))
+  // console.log(`listPrestaEditBtnHandler() - ${presta_id}`)
+  current_mode = "edit_presta"
+  es_getPresta(presta_id)
+  menuSetPage('edit-presta')
+}
+
+
+let data_presta_edit = null
+let data_presta_edit_received = null
+
+
+/* Récupération REST de la presta a éditer */
+async function es_getPresta(id_presta) {
+  // console.log(`-- getPresta ${id_presta}`)
+  let json = null
+  // const url_get_presta = "http://localhost/green_catalogue_rest/getPresta.php";
+  let formData = new FormData()
+  formData.append('id_presta', id_presta)
+  try {
+    const response = await fetch(url_get_presta, {
+      method: "POST",
+      body: formData,
+    });
+    if (!response.ok) throw new Error(`Response status: ${response.status}`)
+    json = await response.json()
+    if (json['status'] == 200) {
+      let presta_received = json['presta']
+      let eventPrestaReceived = new CustomEvent("event-presta-received", { 'detail': presta_received })
+      window.dispatchEvent(eventPrestaReceived)
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+window.addEventListener('event-presta-received', (e)=> {
+  // console.log('------------------------------------')
+  // console.log('++ event-produit-received')
+
+  let data_received = e.detail
+
+  data_presta_edit = null
+  data_presta_edit = {
+    'id_presta': 0,
+    'nom_presta': "",
+    'id_famille': 0,
+    'nom_famille': "",
+    'index_presta': 0,
+    'descriptifs': [],
+    'article': "",
+    'mise_en_page': "",
+  }
+
+
+  data_presta_edit.id_presta = data_received.id_presta
+  data_presta_edit.nom_presta = data_received.nom_presta
+  data_presta_edit.id_famille = data_received.id_famille
+  data_presta_edit.nom_famille = data_received.nom_famille
+  data_presta_edit.index_presta = data_received.index_presta
+  data_presta_edit.article = data_received.article
+  data_presta_edit.mise_en_page = data_received.mise_en_page
+
+  data_received.descriptifs.forEach((desc, desc_index) => {
+    data_presta_edit.descriptifs.push({
+      'id_presta_descriptif': desc.id_presta_descriptif,
+      'html': desc.html,
+      'image_url': desc.image_url,
+      'image_display': desc.image_display,
+      'global_index': desc_index
+    })
+  })
+
+  data_presta_edit_received = structuredClone(data_presta_edit)
+  
+  getPrestaListeFamilles('new')
+
+}, false)
+
+
+/* Initilaisation de la page d'édition d'une presta */
+function es_initEditPresta() {
+
+  // console.log('-- es_initEditPresta()')
+  es_setSelectFamille()
+  es_initNomPresta()
+  es_createExistingDescritionGroups()
+  es_initAddDescriptionGroup()
+  es_initArticlePresta()
+  es_initSendServer()
+  es_render()
+}
+
+/* Famille et catégories */
+function es_setSelectFamille() {
+
+  // console.log('-- es_setSelectFamille()')
+
+  // reset des eventListeners si déjà existants
+  let old_select_famille = document.getElementById('es_select_famille')
+  // let old_add_famille_btn = document.getElementById('es_create_add_famille_button')
+  if ((old_select_famille !== null)&&(old_select_famille !== null)) {
+    // console.log('++ setSelectFamille not first load - EDIT')
+    old_select_famille.removeEventListener('change', es_selectFamilleOnChange)
+    // old_add_famille_btn.removeEventListener('click', openEditFamillePopup)
+  }
+
+  // création du select des familles
+  let ligne_famille = document.getElementById('es_ligne_famille')
+
+  let famille_label = xCreateElement('div', 'form_label', '')
+  famille_label.innerText = "Famille"
+
+  let select_famille_container = xCreateElement('div', 'select_container')
+
+  let select_famille = xCreateElement('select', '', 'es_select_famille')
+  select_famille.setAttribute('name', 'es_select_famille')
+  liste_presta_familles.forEach((famille, index_famille) => {
+    let option_famille = document.createElement('option')
+    option_famille.setAttribute('value', parseInt(famille['id_famille']))
+    if (famille.id_famille == data_presta_edit.id_famille) {
+      option_famille.setAttribute('selected', 'selected')
+      data_presta_edit.id_famille = parseInt(famille['id_famille'])
+    }
+    option_famille.innerText = famille['nom_famille']
+    select_famille.appendChild(option_famille)
+  });
+  select_famille_container.appendChild(select_famille)
+
+  // let add_famille_btn = xCreateElement('div', 'form_button', 'ep_create_add_famille_button' )
+  // add_famille_btn.innerText = "+"
+  // select_famille_container.appendChild(add_famille_btn)
+
+  ligne_famille.innerHTML = ""
+  ligne_famille.appendChild(famille_label)
+  ligne_famille.appendChild(select_famille_container)
+
+  select_famille.addEventListener('change', es_selectFamilleOnChange)
+  // add_famille_btn.addEventListener('click', openEditFamillePopup)
+}
+function es_selectFamilleOnChange() {
+  let select_famille = document.getElementById('es_select_famille')
+  data_presta_edit.id_famille = parseInt(select_famille.value)
+  data_presta_edit.nom_famille = getPrestaFamilleName(data_presta_edit.id_famille)
+  es_render()
+}
+
+/* Nom presta */
+function es_initNomPresta() {
+
+  // reset des eventListeners si déjà existants
+  let old_input_nom_presta = document.getElementById('es_input_nom_presta')
+  if (old_input_nom_presta !== null) {
+    old_input_nom_presta.removeEventListener('keyup', es_nomPrestaKeyupHandler)
+  }
+  
+  let ligne_nom_presta = document.getElementById('es_ligne_nom_presta')
+  let nom_form_label = xCreateElement('div', 'form_label', '')
+  nom_form_label.innerHTML = "Nom"
+  let input_nom_presta = xCreateElement('input', '', 'es_input_nom_presta')
+  input_nom_presta.setAttribute('type', 'text')
+  input_nom_presta.setAttribute('placeholder', 'Nom de la prestation')
+  input_nom_presta.setAttribute('autocomplete', 'new-password')
+  input_nom_presta.setAttribute('value', data_presta_edit.nom_presta)
+  ligne_nom_presta.innerHTML = ""
+  ligne_nom_presta.appendChild(nom_form_label)
+  ligne_nom_presta.appendChild(input_nom_presta)
+
+  input_nom_presta.addEventListener('keyup', es_nomPrestaKeyupHandler)
+
+}
+function es_nomPrestaKeyupHandler(e) {
+  if (e.target.id == 'es_input_nom_presta') data_presta_edit.nom_presta = e.target.value
+  es_render()
+}
+
+/* Description group */
+function es_initAddDescriptionGroup() {
+
+  let old_add_description_group_btn = document.getElementById('es_add_description_group')
+  if (old_add_description_group_btn !== null) old_add_description_group_btn.removeEventListener('click', es_createNewDescriptionGroup)
+
+  let add_description_group_container = document.getElementById('es_add_description_group_container')
+  let add_description_group_btn = xCreateElement('input', '', 'es_add_description_group')
+  add_description_group_btn.setAttribute('type', 'button')
+  add_description_group_btn.setAttribute('value', '+ Ajouter un bloc de description')
+  add_description_group_container.innerHTML = ''
+  add_description_group_container.appendChild(add_description_group_btn)
+  add_description_group_btn.addEventListener('click', es_createNewDescriptionGroup)
+
+}
+function es_createExistingDescritionGroups() {
+  let description_group_container = document.getElementById('es_description_group_container')
+  description_group_container.innerHTML = ""
+  data_presta_edit.descriptifs.forEach((desc, desc_index) => {
+    es_createDescriptionGroup(desc, desc_index)
+  })
+}
+function es_createNewDescriptionGroup() {
+  let global_index = data_presta_edit.descriptifs.slice(-1)[0].global_index + 1
+  let desc = {
+    id_presta_descriptif: -1,
+    html: '',
+    image_url: '',
+    image_display: 'medium',
+    global_index: global_index
+  }
+  data_presta_edit.descriptifs.push(desc)
+  es_createDescriptionGroup(desc, data_presta_edit.descriptifs.length - 1)
+}
+function es_createDescriptionGroup(desc, desc_index) {
+
+  // console.log('-- es_createDescriptionGroup()')
+  // console.table(desc)
+
+  // création des éléments du groupe de description
+  let description_group_container = document.getElementById('es_description_group_container')
+  let description_group = xCreateElement('div', 'description-group', `es_description_group_${desc.global_index}`)
+
+  let top_separator = document.createElement('hr')
+
+  let titre_group = xCreateElement('div', 'ligne', '')
+  let titre_group_label = xCreateElement('div', 'ligne form_label', '')
+  titre_group_label.innerHTML = "Bloc texte / image"
+  titre_group.appendChild(titre_group_label)
+
+  let delete_description_group_btn = null
+  if (desc_index > 0) {
+    delete_description_group_btn = xCreateElement('div', 'delete-description-group', `es_delete-description-group_${desc.global_index}`)
+    delete_description_group_btn.innerHTML = "X"
+  }
+
+  let description_big_container = xCreateElement('div', '', 'es_description_big_container')
+  let description_form_label = xCreateElement('div', 'form_label', '')
+  description_form_label.innerHTML = 'Description'
+  let quill_container = xCreateElement('div', 'quill-container', '')
+  let editor_container = xCreateElement('div', 'editor-container', '')
+  let description_editor = xCreateElement('div', 'description-editor', `es_description_${desc.global_index}`)
+  editor_container.appendChild(description_editor)
+  quill_container.appendChild(editor_container)
+  description_big_container.appendChild(quill_container)
+
+  // Section import du fichier image de la description
+  let image_ligne = xCreateElement('div', 'ligne-large', '')
+  let image_form_label = xCreateElement('div', 'form_label', '')
+  let image_input = xCreateElement('input', 'es_description-add-image', `es_add_desc_image_${desc.global_index}`)
+  image_input.setAttribute('type', 'image')
+  image_input.setAttribute('src', './img/image-add.svg')
+  image_form_label.appendChild(image_input)
+  image_ligne.appendChild(image_form_label)
+
+  // Boutons radio pour le format des images
+  let image_size_large_container = xCreateElement('div', 'checkbox_container', '')
+  let image_size_large_label = xCreateElement('label', '', '')
+  image_size_large_label.setAttribute('for', `es_add_desc_image_large_${desc.global_index}`)
+  image_size_large_label.innerHTML = 'large&nbsp;'
+  let image_size_large = xCreateElement('input', 'es_add-desc-image-radio', `es_add_desc_image_large_${desc.global_index}`)
+  image_size_large.setAttribute('type', 'radio')
+  image_size_large.setAttribute('name', `image-size-${desc.global_index}`)
+  image_size_large_container.appendChild(image_size_large_label)
+  image_size_large_container.appendChild(image_size_large)
+  image_ligne.appendChild(image_size_large_container)
+
+  let image_size_medium_container = xCreateElement('div', 'checkbox_container', '')
+  let image_size_medium_label = xCreateElement('label', '', '')
+  image_size_medium_label.setAttribute('for', `es_add_desc_image_medium_${desc.global_index}`)
+  image_size_medium_label.innerHTML = 'medium&nbsp;'
+  let image_size_medium = xCreateElement('input', 'es_add-desc-image-radio', `es_add_desc_image_medium_${desc.global_index}`)
+  image_size_medium.setAttribute('type', 'radio')
+  image_size_medium.setAttribute('name', `image-size-${desc.global_index}`)
+  image_size_medium.checked = true
+  image_size_medium_container.appendChild(image_size_medium_label)
+  image_size_medium_container.appendChild(image_size_medium)
+  image_ligne.appendChild(image_size_medium_container)
+
+  let image_size_small_container = xCreateElement('div', 'checkbox_container', '')
+  let image_size_small_label = xCreateElement('label', '', '')
+  image_size_small_label.setAttribute('for', `es_add_desc_image_small_${desc.global_index}`)
+  image_size_small_label.innerHTML = 'small&nbsp;'
+  let image_size_small = xCreateElement('input', 'es_add-desc-image-radio', `es_add_desc_image_small_${desc.global_index}`)
+  image_size_small.setAttribute('type', 'radio')
+  image_size_small.setAttribute('name', `image-size-${desc.global_index}`)
+  image_size_small_container.appendChild(image_size_small_label)
+  image_size_small_container.appendChild(image_size_small)
+  image_ligne.appendChild(image_size_small_container)
+
+  // assemblage des éléments du groupe de description
+  if (delete_description_group_btn !== null)
+    description_group.appendChild(delete_description_group_btn)
+  description_group.appendChild(titre_group)
+  description_group.appendChild(description_big_container)
+  description_group.appendChild(image_ligne)
+  description_group.appendChild(top_separator)
+
+  description_group_container.appendChild(description_group)
+
+  // event de suppression du groupe de description
+  if (delete_description_group_btn !== null) {
+    delete_description_group_btn.addEventListener('click', es_removeDescriptionGroup)
+  }
+
+  // création du quill
+  let new_quill = new Quill(`#es_description_${desc.global_index}`, {
+    modules: { toolbar: true, },
+    theme: 'snow',
+    placeholder: "Votre description ..."
+  })
+  
+  
+  data_presta_edit.descriptifs[desc_index].quill_handler = new_quill
+
+  new_quill.on('text-change', (delta, oldDelta, source) => {
+    data_presta_edit.descriptifs[es_foundDescriptionGroupIndex(desc.global_index)].html = new_quill.getSemanticHTML()
+    es_render()     
+  })
+
+  
+  let delta = new_quill.clipboard.convert({html: data_presta_edit.descriptifs[desc_index].html})
+  new_quill.setContents(delta, 'api')
+  
+
+  es_initImageDescription(desc.global_index)
+
+}
+/* Handler du bouton de suppression d'un edit presta description group */
+function es_removeDescriptionGroup(e) {
+  let global_index = parseInt(e.target.id.split('_').splice(-1))
+  // console.log(`-- removeDescriptionGroup - ${global_index}`)
+  let desc_index = es_foundDescriptionGroupIndex(global_index)
+  let desc = data_presta_edit.descriptifs[desc_index]
+
+  let delete_description_group_btn = document.getElementById(`es_delete-description-group_${desc.global_index}`)
+  delete_description_group_btn.removeEventListener('click', es_removeDescriptionGroup)
+
+  data_presta_edit.descriptifs.splice(desc_index, 1)
+  let description_group = document.getElementById(`es_description_group_${global_index}`)
+  description_group.parentNode.removeChild(description_group)
+
+  es_render()
+}
+/* Trouver l'index du data_presta_edit.descriptifs element qui a la prop global_index */
+function es_foundDescriptionGroupIndex(global_index) {
+  let index = -1
+  data_presta_edit.descriptifs.forEach((desc, desc_index)=>{
+    if (desc.global_index == global_index) index = desc_index
+  })
+  return index
+}
+/* Description group Image */
+function es_initImageDescription(global_index) {
+
+  // todo reset handlers au recall d'initImageDescription()
+  let bouton_add_desc_image = document.getElementById(`es_add_desc_image_${global_index}`)
+  bouton_add_desc_image.addEventListener('click', (e) => {
+
+    let index = parseInt(e.currentTarget.getAttribute('id').split('_').slice(-1))
+    initCropper(false, index, 'es')
+    let popup_canvas_container = document.getElementById('popup-canvas-container')
+    popup_canvas_container.style.display = "block"
+  })
+  
+  let all_radios = document.querySelectorAll(`#es_description_group_${global_index} .es_add-desc-image-radio`)
+  all_radios.forEach((radio) => {
+    radio.addEventListener('change', (e) => {
+      let current_desc_global_index = parseInt(e.currentTarget.id.split('_').splice(-1))
+      let value = ""
+      if (e.target.id.includes('large')) value = 'large'
+      if (e.target.id.includes('medium')) value = 'medium'
+      if (e.target.id.includes('small')) value = 'small'
+      data_presta_edit.descriptifs[es_foundDescriptionGroupIndex(current_desc_global_index)].image_display = value
+      es_render()
+    })
+  })
+  
+
+  document.getElementById('close-popup-canvas-container').addEventListener('click', (e) => {
+    let popup_canvas_container = document.getElementById('popup-canvas-container')
+    popup_canvas_container.style.display = "none"
+  })
+}
+
+/* Article */
+function es_initArticlePresta() {
+  
+  let ligne_nom_presta = document.getElementById('es_ligne_article_presta')
+  ligne_nom_presta.innerHTML = ""
+  let nom_form_label = xCreateElement('div', 'form_label', '')
+  nom_form_label.innerHTML = "Bas de page"
+
+  let quill_container = xCreateElement('div', 'quill-container', '')
+  let editor_container = xCreateElement('div', 'editor-container', '')
+  let description_editor = xCreateElement('div', 'article-editor', `es_article`)
+  editor_container.appendChild(description_editor)
+  quill_container.appendChild(editor_container)
+  ligne_nom_presta.appendChild(quill_container)
+
+  // création du quill
+  let new_quill = new Quill(`#es_article`, {
+    modules: { toolbar: true, },
+    theme: 'snow',
+    placeholder: "Votre texte ..."
+  })
+  
+  data_presta_edit.article_quill_handler = new_quill
+
+  new_quill.on('text-change', (delta, oldDelta, source) => {
+    data_presta_edit.article = new_quill.getSemanticHTML()
+    es_render()     
+  })
+
+  
+  let delta = new_quill.clipboard.convert({html: data_presta_edit.article})
+  new_quill.setContents(delta, 'api')
+
+  
+}
+
+/* RENDER Génération / maj de l'apercu de la page produit en cours d'édition */
+function es_render() {
+
+  // console.log('-- es_render')
+  // console.log(data_presta_edit)
+  // console.log(data_presta_edit_received)
+
+  let header_titre = document.getElementById('es_presta-header-titre-text')
+  header_titre.innerText = data_presta_edit.nom_famille.toUpperCase()
+
+  let render_parent = document.getElementById('es_render_parent')
+  render_parent.innerHTML = ""
+  let separator = xCreateElement('div', 'modal-main-separator', '')
+  separator.innerHTML = "&nbsp;"
+  render_parent.appendChild(separator)
+
+  let es_presta_subtitle = xCreateElement('div', '', 'es_presta_subtitle')
+  es_presta_subtitle.innerHTML = data_presta_edit.nom_presta
+  render_parent.appendChild(es_presta_subtitle)
+
+  data_presta_edit.descriptifs.forEach((desc, index_desc) => {
+    
+    let produit_group = xCreateElement('div', `produit-group ${desc.image_display}`, `es_produit-group-${desc.global_index}`)
+
+    let produit_descriptif = xCreateElement('div', 'produit-descriptif', `es_produit-descriptif-${desc.global_index}`)
+    produit_descriptif.innerHTML = convertQuillOutput(desc.html)
+
+    let produit_image = xCreateElement('img', `produit-picture`, `es_produit-picture-${desc.global_index}`)
+    if ((desc.image_data != undefined)&&(desc.image_data != "")) {
+      produit_image.setAttribute('src', desc.image_data)
+      produit_image.style.display = "block"
+    } else if (desc.image_url != "") {
+      produit_image.setAttribute('src', image_path + desc.image_url)
+      produit_image.style.display = "block"
+    }
+    
+    if (index_desc%2 == 0) {
+      produit_group.appendChild(produit_descriptif)
+      produit_group.appendChild(produit_image)
+    } else {
+      produit_group.appendChild(produit_image)
+      produit_group.appendChild(produit_descriptif)
+    }
+    
+    render_parent.appendChild(produit_group)
+  })
+
+  let es_presta_article = xCreateElement('div', '', 'es_presta-article')
+  es_presta_article.innerHTML = data_presta_edit.article
+  render_parent.appendChild(es_presta_article)
+
+
+}
+
+/* Send server */
+function es_initSendServer() {
+
+  let old_send_server_btn = document.getElementById('es_send_server_btn')
+  if (old_send_server_btn !== null) {
+    old_send_server_btn.removeEventListener('click', es_sendPresta)
+    old_send_server_btn.addEventListener('click', es_sendPresta)
+  } else {
+    let send_server_container = document.getElementById('es_send_server_container')
+    let send_server_btn = xCreateElement('button', '', 'es_send_server_btn')
+    send_server_btn.innerHTML = "Envoyer au serveur"
+    send_server_container.appendChild(send_server_btn)
+
+    send_server_btn.addEventListener('click', es_sendPresta)
+
+  }
+}
+async function es_sendPresta() {
+
+  console.log('------------- es_sendPresta()')
+  console.log(data_presta_edit)
+
+  // on n'envoie que les éléments modifiés
+  let json = null
+  // const url_send_update_produit = "http://localhost/green_catalogue_rest/updatePresta.php"
+  let formData = new FormData()
+  formData.append('id_presta', data_presta_edit.id_presta)
+  formData.append('nom_presta', data_presta_edit.nom_presta)
+  formData.append('index_presta', data_presta_edit.index_presta)
+  formData.append('id_famille', data_presta_edit.id_famille)
+  formData.append('article', data_presta_edit.article)
+
+  data_presta_edit.descriptifs.forEach((desc, index_desc) => {
+    formData.append(`desc_id_presta_descriptif_${index_desc}`, desc.id_presta_descriptif)
+    formData.append(`desc_html_${index_desc}`, desc.html)
+    formData.append(`desc_order_${index_desc}`, index_desc)
+    formData.append(`desc_image_display_${index_desc}`, desc.image_display)
+    if ((desc.image_data !== undefined)&&(desc.image_data !== "")) {
+      let myfile = DataURIToBlob(desc.image_data)
+      formData.append(`file_image_${index_desc}`, myfile, `file_image_${index_desc}.jpg`)
+      formData.append(`desc_image_modified_${index_desc}`, 'true')
+    } else {
+      formData.append(`desc_image_modified_${index_desc}`, 'false')
+      formData.append(`desc_image_url_${index_desc}`, desc.image_url)
+    }
+  })
+  
+  try {
+    const response = await fetch(url_send_update_produit, {
+      method: "post",
+      body: formData,
+    });
+    if (!response.ok) { throw new Error(`Response status: ${response.status}`); }
+    json = await response.json()
+    console.log(json)
+    
+  } catch (error) { console.error(error.message); }
+  
+}
+
+
+
+/* -- ns_ -- Ajouter une nouvelle presta -------------------------------------------------------------------------------- */
+/* -- ns_ -- Ajouter une nouvelle presta -------------------------------------------------------------------------------- */
+/* -- ns_ -- Ajouter une nouvelle presta -------------------------------------------------------------------------------- */
+/* -- ns_ -- Ajouter une nouvelle presta -------------------------------------------------------------------------------- */
+/* -- ns_ -- Ajouter une nouvelle presta -------------------------------------------------------------------------------- */
+/* -- ns_ -- Ajouter une nouvelle presta -------------------------------------------------------------------------------- */
+
+let data_presta_new = null
+
+/* Initialisation de la page d'édition d'une presta */
+function ns_preInitNewPresta() {
+
+  current_mode = "new_presta"
+
+  data_presta_new = null
+  data_presta_new = {
+    'id_presta': -1,
+    'nom_presta': "",
+    'id_famille': -1,
+    'nom_famille': "",
+    'index_presta': 0,
+    'descriptifs': [],
+    'article': "",
+    'mise_en_page': "",
+  }
+
+  getPrestaListeFamilles('new')
+
+}
+
+function ns_initNewPresta() {
+
+  console.log('-- es_initEditPresta()')
+  ns_setSelectFamille()
+  ns_initNomPresta()
+  ns_createNewDescriptionGroup()
+  ns_initAddDescriptionGroup()
+  ns_initArticlePresta()
+  ns_initSendServer()
+  ns_render()
+}
+
+/* Famille et catégories */
+function ns_setSelectFamille() {
+
+  console.log('-- ns_setSelectFamille()')
+
+  // reset des eventListeners si déjà existants
+  let old_select_famille = document.getElementById('ns_select_famille')
+  // let old_add_famille_btn = document.getElementById('es_create_add_famille_button')
+  if ( (old_select_famille !== null) && (old_select_famille !== null) ) {
+    // console.log('++ setSelectFamille not first load - EDIT')
+    old_select_famille.removeEventListener('change', ns_selectFamilleOnChange)
+    // old_add_famille_btn.removeEventListener('click', openEditFamillePopup)
+  }
+
+  // init des valeurs par défaut (premiere famille par defaut)
+  data_presta_new.id_famille = liste_presta_familles[0].id_famille
+  data_presta_new.nom_famille = liste_presta_familles[0].nom_famille
+
+  // création du select des familles
+  let ligne_famille = document.getElementById('ns_ligne_famille')
+
+  let famille_label = xCreateElement('div', 'form_label', '')
+  famille_label.innerText = "Famille"
+
+  let select_famille_container = xCreateElement('div', 'select_container')
+
+  let select_famille = xCreateElement('select', '', 'ns_select_famille')
+  select_famille.setAttribute('name', 'ns_select_famille')
+  liste_presta_familles.forEach((famille, index_famille) => {
+    let option_famille = document.createElement('option')
+    option_famille.setAttribute('value', parseInt(famille['id_famille']))
+    if (famille.id_famille == data_presta_new.id_famille) {
+      option_famille.setAttribute('selected', 'selected')
+    }
+    option_famille.innerText = famille['nom_famille']
+    select_famille.appendChild(option_famille)
+  });
+  select_famille_container.appendChild(select_famille)
+
+  // let add_famille_btn = xCreateElement('div', 'form_button', 'ep_create_add_famille_button' )
+  // add_famille_btn.innerText = "+"
+  // select_famille_container.appendChild(add_famille_btn)
+
+  ligne_famille.innerHTML = ""
+  ligne_famille.appendChild(famille_label)
+  ligne_famille.appendChild(select_famille_container)
+
+  select_famille.addEventListener('change', ns_selectFamilleOnChange)
+  // add_famille_btn.addEventListener('click', openEditFamillePopup)
+}
+function ns_selectFamilleOnChange() {
+  let select_famille = document.getElementById('ns_select_famille')
+  data_presta_new.id_famille = parseInt(select_famille.value)
+  data_presta_new.nom_famille = getPrestaFamilleName(data_presta_new.id_famille)
+  ns_render()
+}
+
+/* Nom presta */
+function ns_initNomPresta() {
+
+  // reset des eventListeners si déjà existants
+  let old_input_nom_presta = document.getElementById('ns_input_nom_presta')
+  if (old_input_nom_presta !== null) {
+    old_input_nom_presta.removeEventListener('keyup', ns_nomPrestaKeyupHandler)
+  }
+  
+  let ligne_nom_presta = document.getElementById('ns_ligne_nom_presta')
+  let nom_form_label = xCreateElement('div', 'form_label', '')
+  nom_form_label.innerHTML = "Nom"
+  let input_nom_presta = xCreateElement('input', '', 'ns_input_nom_presta')
+  input_nom_presta.setAttribute('type', 'text')
+  input_nom_presta.setAttribute('placeholder', 'Nom de la prestation')
+  input_nom_presta.setAttribute('autocomplete', 'new-password')
+  input_nom_presta.setAttribute('value', data_presta_new.nom_presta)
+  ligne_nom_presta.innerHTML = ""
+  ligne_nom_presta.appendChild(nom_form_label)
+  ligne_nom_presta.appendChild(input_nom_presta)
+
+  input_nom_presta.addEventListener('keyup', ns_nomPrestaKeyupHandler)
+
+}
+function ns_nomPrestaKeyupHandler(e) {
+  if (e.target.id == 'ns_input_nom_presta') data_presta_new.nom_presta = e.target.value
+  ns_render()
+}
+
+/* Description group */
+function ns_initAddDescriptionGroup() {
+
+  let old_add_description_group_btn = document.getElementById('ns_add_description_group')
+  if (old_add_description_group_btn !== null) old_add_description_group_btn.removeEventListener('click', ns_createNewDescriptionGroup)
+
+  let add_description_group_container = document.getElementById('ns_add_description_group_container')
+  let add_description_group_btn = xCreateElement('input', '', 'ns_add_description_group')
+  add_description_group_btn.setAttribute('type', 'button')
+  add_description_group_btn.setAttribute('value', '+ Ajouter un bloc de description')
+  add_description_group_container.innerHTML = ''
+  add_description_group_container.appendChild(add_description_group_btn)
+  add_description_group_btn.addEventListener('click', ns_createNewDescriptionGroup)
+
+}
+function ns_createNewDescriptionGroup() {
+  let global_index = -1
+  if (data_presta_new.descriptifs.length > 0) {
+    // TODO niéé ?
+    global_index = data_presta_new.descriptifs.slice(-1)[0].global_index + 1
+  } else {
+    global_index = 0
+  }
+  let desc = {
+    id_presta_descriptif: -1,
+    html: '',
+    image_url: '',
+    image_display: 'medium',
+    global_index: global_index
+  }
+  data_presta_new.descriptifs.push(desc)
+  // TODO niéé ?
+  ns_createDescriptionGroup(desc, data_presta_new.descriptifs.length - 1)
+}
+function ns_createDescriptionGroup(desc, desc_index) {
+
+  console.log('-- ns_createDescriptionGroup() - '+desc_index)
+  console.table(desc)
+
+  // création des éléments du groupe de description
+  let description_group_container = document.getElementById('ns_description_group_container')
+  let description_group = xCreateElement('div', 'description-group', `ns_description_group_${desc.global_index}`)
+
+  let top_separator = document.createElement('hr')
+
+  let titre_group = xCreateElement('div', 'ligne', '')
+  let titre_group_label = xCreateElement('div', 'ligne form_label', '')
+  titre_group_label.innerHTML = "Bloc texte / image"
+  titre_group.appendChild(titre_group_label)
+
+  let delete_description_group_btn = null
+  if (desc_index > 0) {
+    delete_description_group_btn = xCreateElement('div', 'delete-description-group', `ns_delete-description-group_${desc.global_index}`)
+    delete_description_group_btn.innerHTML = "X"
+  }
+
+  let description_big_container = xCreateElement('div', '', 'ns_description_big_container')
+  let description_form_label = xCreateElement('div', 'form_label', '')
+  description_form_label.innerHTML = 'Description'
+  let quill_container = xCreateElement('div', 'quill-container', '')
+  let editor_container = xCreateElement('div', 'editor-container', '')
+  let description_editor = xCreateElement('div', 'description-editor', `ns_description_${desc.global_index}`)
+  editor_container.appendChild(description_editor)
+  quill_container.appendChild(editor_container)
+  description_big_container.appendChild(quill_container)
+
+  // Section import du fichier image de la description
+  let image_ligne = xCreateElement('div', 'ligne-large', '')
+  let image_form_label = xCreateElement('div', 'form_label', '')
+  let image_input = xCreateElement('input', 'ns_description-add-image', `ns_add_desc_image_${desc.global_index}`)
+  image_input.setAttribute('type', 'image')
+  image_input.setAttribute('src', './img/image-add.svg')
+  image_form_label.appendChild(image_input)
+  image_ligne.appendChild(image_form_label)
+
+  // Boutons radio pour le format des images
+  let image_size_large_container = xCreateElement('div', 'checkbox_container', '')
+  let image_size_large_label = xCreateElement('label', '', '')
+  image_size_large_label.setAttribute('for', `ns_add_desc_image_large_${desc.global_index}`)
+  image_size_large_label.innerHTML = 'large&nbsp;'
+  let image_size_large = xCreateElement('input', 'ns_add-desc-image-radio', `ns_add_desc_image_large_${desc.global_index}`)
+  image_size_large.setAttribute('type', 'radio')
+  image_size_large.setAttribute('name', `image-size-${desc.global_index}`)
+  image_size_large_container.appendChild(image_size_large_label)
+  image_size_large_container.appendChild(image_size_large)
+  image_ligne.appendChild(image_size_large_container)
+
+  let image_size_medium_container = xCreateElement('div', 'checkbox_container', '')
+  let image_size_medium_label = xCreateElement('label', '', '')
+  image_size_medium_label.setAttribute('for', `ns_add_desc_image_medium_${desc.global_index}`)
+  image_size_medium_label.innerHTML = 'medium&nbsp;'
+  let image_size_medium = xCreateElement('input', 'ns_add-desc-image-radio', `ns_add_desc_image_medium_${desc.global_index}`)
+  image_size_medium.setAttribute('type', 'radio')
+  image_size_medium.setAttribute('name', `image-size-${desc.global_index}`)
+  image_size_medium.checked = true
+  image_size_medium_container.appendChild(image_size_medium_label)
+  image_size_medium_container.appendChild(image_size_medium)
+  image_ligne.appendChild(image_size_medium_container)
+
+  let image_size_small_container = xCreateElement('div', 'checkbox_container', '')
+  let image_size_small_label = xCreateElement('label', '', '')
+  image_size_small_label.setAttribute('for', `ns_add_desc_image_small_${desc.global_index}`)
+  image_size_small_label.innerHTML = 'small&nbsp;'
+  let image_size_small = xCreateElement('input', 'ns_add-desc-image-radio', `ns_add_desc_image_small_${desc.global_index}`)
+  image_size_small.setAttribute('type', 'radio')
+  image_size_small.setAttribute('name', `image-size-${desc.global_index}`)
+  image_size_small_container.appendChild(image_size_small_label)
+  image_size_small_container.appendChild(image_size_small)
+  image_ligne.appendChild(image_size_small_container)
+
+  // assemblage des éléments du groupe de description
+  if (delete_description_group_btn !== null)
+    description_group.appendChild(delete_description_group_btn)
+  description_group.appendChild(titre_group)
+  description_group.appendChild(description_big_container)
+  description_group.appendChild(image_ligne)
+  description_group.appendChild(top_separator)
+
+  description_group_container.appendChild(description_group)
+
+  // event de suppression du groupe de description
+  if (delete_description_group_btn !== null) {
+    delete_description_group_btn.addEventListener('click', ns_removeDescriptionGroup)
+  }
+
+  // création du quill
+  let new_quill = new Quill(`#ns_description_${desc.global_index}`, {
+    modules: { toolbar: true, },
+    theme: 'snow',
+    placeholder: "Votre description ..."
+  })
+  
+  
+  data_presta_new.descriptifs[desc_index].quill_handler = new_quill
+
+  new_quill.on('text-change', (delta, oldDelta, source) => {
+    data_presta_new.descriptifs[ns_foundDescriptionGroupIndex(desc.global_index)].html = new_quill.getSemanticHTML()
+    ns_render()     
+  })
+
+  
+  let delta = new_quill.clipboard.convert({html: data_presta_new.descriptifs[desc_index].html})
+  new_quill.setContents(delta, 'api')
+  
+
+  ns_initImageDescription(desc.global_index)
+
+}
+/* Handler du bouton de suppression d'un edit presta description group */
+function ns_removeDescriptionGroup(e) {
+  let global_index = parseInt(e.target.id.split('_').splice(-1))
+  // console.log(`-- removeDescriptionGroup - ${global_index}`)
+  let desc_index = ns_foundDescriptionGroupIndex(global_index)
+  let desc = data_presta_new.descriptifs[desc_index]
+
+  let delete_description_group_btn = document.getElementById(`ns_delete-description-group_${desc.global_index}`)
+  delete_description_group_btn.removeEventListener('click', ns_removeDescriptionGroup)
+
+  data_presta_new.descriptifs.splice(desc_index, 1)
+  let description_group = document.getElementById(`ns_description_group_${global_index}`)
+  description_group.parentNode.removeChild(description_group)
+
+  ns_render()
+}
+/* Trouver l'index du data_presta_new.descriptifs element qui a la prop global_index */
+function ns_foundDescriptionGroupIndex(global_index) {
+  let index = -1
+  data_presta_new.descriptifs.forEach((desc, desc_index) => {
+    if (desc.global_index == global_index) index = desc_index
+  })
+  return index
+}
+/* Description group Image */
+function ns_initImageDescription(global_index) {
+
+  // todo reset handlers au recall d'initImageDescription()
+  let bouton_add_desc_image = document.getElementById(`ns_add_desc_image_${global_index}`)
+  bouton_add_desc_image.addEventListener('click', (e) => {
+
+    let index = parseInt(e.currentTarget.getAttribute('id').split('_').slice(-1))
+    initCropper(false, index, 'ns')
+    let popup_canvas_container = document.getElementById('popup-canvas-container')
+    popup_canvas_container.style.display = "block"
+  })
+  
+  let all_radios = document.querySelectorAll(`#ns_description_group_${global_index} .ns_add-desc-image-radio`)
+  all_radios.forEach((radio) => {
+    radio.addEventListener('change', (e) => {
+      let current_desc_global_index = parseInt(e.currentTarget.id.split('_').splice(-1))
+      let value = ""
+      if (e.target.id.includes('large')) value = 'large'
+      if (e.target.id.includes('medium')) value = 'medium'
+      if (e.target.id.includes('small')) value = 'small'
+      data_presta_new.descriptifs[ns_foundDescriptionGroupIndex(current_desc_global_index)].image_display = value
+      ns_render()
+    })
+  })
+  
+  document.getElementById('close-popup-canvas-container').addEventListener('click', (e) => {
+    let popup_canvas_container = document.getElementById('popup-canvas-container')
+    popup_canvas_container.style.display = "none"
+  })
+}
+
+/* Article */
+function ns_initArticlePresta() {
+  
+  let ligne_nom_presta = document.getElementById('ns_ligne_article_presta')
+  ligne_nom_presta.innerHTML = ""
+  let nom_form_label = xCreateElement('div', 'form_label', '')
+  nom_form_label.innerHTML = "Bas de page"
+
+  let quill_container = xCreateElement('div', 'quill-container', '')
+  let editor_container = xCreateElement('div', 'editor-container', '')
+  let description_editor = xCreateElement('div', 'article-editor', `ns_article`)
+  editor_container.appendChild(description_editor)
+  quill_container.appendChild(editor_container)
+  ligne_nom_presta.appendChild(quill_container)
+
+  // création du quill
+  let new_quill = new Quill(`#ns_article`, {
+    modules: { toolbar: true, },
+    theme: 'snow',
+    placeholder: "Votre texte ..."
+  })
+  
+  data_presta_new.article_quill_handler = new_quill
+
+  new_quill.on('text-change', (delta, oldDelta, source) => {
+    data_presta_new.article = new_quill.getSemanticHTML()
+    ns_render()     
+  })
+
+  
+  let delta = new_quill.clipboard.convert({html: data_presta_new.article})
+  new_quill.setContents(delta, 'api')
+
+}
+
+
+/* RENDER Génération / maj de l'apercu de la page produit en cours d'édition */
+function ns_render() {
+
+  // console.log('-- ns_render')
+  // console.log(data_presta_new)
+
+  let header_titre = document.getElementById('ns_presta-header-titre-text')
+  header_titre.innerText = data_presta_new.nom_famille.toUpperCase()
+
+  let render_parent = document.getElementById('ns_render_parent')
+  render_parent.innerHTML = ""
+  let separator = xCreateElement('div', 'modal-main-separator', '')
+  separator.innerHTML = "&nbsp;"
+  render_parent.appendChild(separator)
+
+  let ns_presta_subtitle = xCreateElement('div', '', 'ns_presta_subtitle')
+  ns_presta_subtitle.innerHTML = data_presta_new.nom_presta
+  render_parent.appendChild(ns_presta_subtitle)
+
+  data_presta_new.descriptifs.forEach((desc, index_desc) => {
+    
+    let produit_group = xCreateElement('div', `produit-group ${desc.image_display}`, `ns_produit-group-${desc.global_index}`)
+
+    let produit_descriptif = xCreateElement('div', 'produit-descriptif', `ns_produit-descriptif-${desc.global_index}`)
+    produit_descriptif.innerHTML = convertQuillOutput(desc.html)
+
+    let produit_image = xCreateElement('img', `produit-picture`, `ns_produit-picture-${desc.global_index}`)
+    if ((desc.image_data != undefined)&&(desc.image_data != "")) {
+      produit_image.setAttribute('src', desc.image_data)
+      produit_image.style.display = "block"
+    } else if (desc.image_url != "") {
+      produit_image.setAttribute('src', image_path + desc.image_url)
+      produit_image.style.display = "block"
+    }
+    
+    if (index_desc % 2 == 0) {
+      produit_group.appendChild(produit_descriptif)
+      produit_group.appendChild(produit_image)
+    } else {
+      produit_group.appendChild(produit_image)
+      produit_group.appendChild(produit_descriptif)
+    }
+    
+    render_parent.appendChild(produit_group)
+  })
+
+  let ns_presta_article = xCreateElement('div', '', 'ns_presta-article')
+  ns_presta_article.innerHTML = data_presta_new.article
+  render_parent.appendChild(ns_presta_article)
+
+
+}
+
+
+/* Send server */
+function ns_initSendServer() {
+
+  let old_send_server_btn = document.getElementById('ns_send_server_btn')
+  if (old_send_server_btn !== null) {
+    old_send_server_btn.removeEventListener('click', ns_sendPresta)
+    old_send_server_btn.addEventListener('click', ns_sendPresta)
+  } else {
+    let send_server_container = document.getElementById('ns_send_server_container')
+    let send_server_btn = xCreateElement('button', '', 'ns_send_server_btn')
+    send_server_btn.innerHTML = "Envoyer au serveur"
+    send_server_container.appendChild(send_server_btn)
+
+    send_server_btn.addEventListener('click', ns_sendPresta)
+
+  }
+}
+async function ns_sendPresta() {
+
+  console.log('------------- ns_sendPresta()')
+  console.log(data_presta_new)
+
+  // on n'envoie que les éléments modifiés
+  let json = null
+  // const url_send_new_presta = "http://localhost/green_catalogue_rest/createPresta.php"
+  let formData = new FormData()
+  formData.append('id_presta', data_presta_new.id_presta)
+  formData.append('nom_presta', data_presta_new.nom_presta)
+  formData.append('index_presta', data_presta_new.index_presta)
+  formData.append('id_famille', data_presta_new.id_famille)
+  formData.append('article', data_presta_new.article)
+
+  data_presta_new.descriptifs.forEach((desc, index_desc) => {
+    formData.append(`desc_id_presta_descriptif_${index_desc}`, desc.id_presta_descriptif)
+    formData.append(`desc_html_${index_desc}`, desc.html)
+    formData.append(`desc_order_${index_desc}`, index_desc)
+    formData.append(`desc_image_display_${index_desc}`, desc.image_display)
+    if ((desc.image_data !== undefined)&&(desc.image_data !== "")) {
+      let myfile = DataURIToBlob(desc.image_data)
+      formData.append(`file_image_${index_desc}`, myfile, `file_image_${index_desc}.jpg`)
+      formData.append(`desc_image_modified_${index_desc}`, 'true')
+    } else {
+      formData.append(`desc_image_modified_${index_desc}`, 'false')
+      formData.append(`desc_image_url_${index_desc}`, desc.image_url)
+    }
+  })
+  
+  try {
+    const response = await fetch(url_send_new_presta, {
+      method: "post",
+      body: formData,
+    });
+    if (!response.ok) { throw new Error(`Response status: ${response.status}`); }
+    json = await response.json()
+    console.log(json)
+    
+  } catch (error) { console.error(error.message); }
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -96,7 +1350,6 @@ function menuSetPage(page_ref) {
 /* -- Gathering Data Produits -------------------------------------------------------------------------------------------- */
 /* -- Gathering Data Produits -------------------------------------------------------------------------------------------- */
 const eventProduitsReceived = new Event("event-produits-received")
-
 // TODO 
 // redirection des callbacks pour edit / new
 // gestion reset / reloading
@@ -113,7 +1366,7 @@ async function getAllProduits() {
     json = await response.json()
     if (json['status'] == 200) {
       liste_produits = json['produits']
-      console.log(liste_produits)
+      // console.log(liste_produits)
       window.dispatchEvent(eventProduitsReceived)
     }
   } catch (error) {
@@ -122,8 +1375,8 @@ async function getAllProduits() {
 }
 window.addEventListener('event-produits-received', (e)=> {
   // console.log(liste_produits)
-  hideLoader()
   initListeProduits()
+  hideLoader()
 })
 
 async function getListeFamilles(mode) {
@@ -151,7 +1404,7 @@ async function getListeFamilles(mode) {
 // BORDEL ICI - repenser le loading général + gestion select famille
 window.addEventListener('event-liste-famille-received', (e) => {
 
-  console.log(`event-liste-famille-received - mode : ${e.mode}`)
+  // console.log(`event-liste-famille-received - mode : ${e.mode}`)
 
   // TODO se débarrasser du current_mode
   if (e.mode == "new") {
@@ -205,11 +1458,10 @@ function getFamilleIndex(id_famille) {
   return famille_index
 }
 
-
 /* -- Popup d'édition Familles - Catégories ---------------------------------------------------------------------------------- */
 function openEditFamillePopup() {
 
-  console.log('-- openEditFamillePopup')
+  // console.log('-- openEditFamillePopup')
 
   let popup_container = document.getElementById('popup-container')
   popup_container.style.display = 'block'
@@ -240,7 +1492,7 @@ function openEditFamillePopup() {
 
 }
 function closeEditFamillePopup() {
-  console.log('-- closeEditFamillePopup()')
+  // console.log('-- closeEditFamillePopup()')
   let popup_container = document.getElementById('popup-container')
   popup_container.style.display = 'none'
   popup_container.style.zIndex = -1
@@ -276,13 +1528,13 @@ function openEditCategoriePopup() {
 
 }
 function closeEditCategoriePopup() {
-  console.log('-- closeEditCategoriePopup')
+  // console.log('-- closeEditCategoriePopup')
   let popup_container = document.getElementById('popup-container')
   popup_container.style.display = 'none'
   popup_container.style.zIndex = -1
 }
 function createNewFamille() {
-  console.log('-- createNewFamille()')
+  // console.log('-- createNewFamille()')
   let add_famille_input = document.getElementById('add-famille-input')
   let input_value = add_famille_input.value
   if (input_value.length > 2) {
@@ -291,13 +1543,13 @@ function createNewFamille() {
   }
 }
 function createNewCategorie() {
-  console.log('-- createNewCategorie')
+  // console.log('-- createNewCategorie')
   let add_categorie_input = document.getElementById('add-categorie-input')
   let input_value = add_categorie_input.value
   if (input_value.length > 2) {
     input_value = input_value.charAt(0).toUpperCase() + input_value.slice(1)
     // sendNewCategorie(input_value, id_famille_selected)
-    console.log(current_mode)
+    // console.log(current_mode)
     switch (current_mode) {
       case 'new_produit' :
         sendNewCategorie(input_value, data.id_famille)
@@ -313,7 +1565,7 @@ function createNewCategorie() {
 /* Send new famille création */
 async function sendNewFamille(nom_famille) {
 
-  console.log('-- sendNewFamille()')
+  // console.log('-- sendNewFamille()')
 
   let json = null
   // const url_create_famille = "http://localhost/green_catalogue_rest/createFamille.php"
@@ -338,7 +1590,7 @@ async function sendNewFamille(nom_famille) {
 }
 window.addEventListener('event-new-famille-inserted', newFamilleInserted, false)
 function newFamilleInserted(e) {
-  console.log(`++ event-new-famille-inserted - id : ${e.id_famille}`)
+  // console.log(`++ event-new-famille-inserted - id : ${e.id_famille}`)
   if (current_mode == "new_produit") {
     data.id_famille = e.id_famille
   } else if (current_mode == "edit_produit") {
@@ -350,7 +1602,7 @@ function newFamilleInserted(e) {
 /* Send new categorie création */
 async function sendNewCategorie(nom_categorie, id_famille) {
 
-  console.log(`sendNewCategorie(${nom_categorie}, ${id_famille})`)
+  // console.log(`sendNewCategorie(${nom_categorie}, ${id_famille})`)
 
   let json = null
   // const url = "http://localhost/green_catalogue_rest/createCategorie.php"
@@ -375,7 +1627,7 @@ async function sendNewCategorie(nom_categorie, id_famille) {
 }
 window.addEventListener('event-new-categorie-inserted', newCategorieInserted, false)
 function newCategorieInserted(e) {
-  console.log(`++ event-new-categorie-inserted - id : ${e.id_categorie}`)
+  // console.log(`++ event-new-categorie-inserted - id : ${e.id_categorie}`)
   if (current_mode == "new_produit") {
     data.id_categorie = e.id_categorie
   } else if (current_mode == "edit_produit") {
@@ -440,7 +1692,7 @@ function listProduitEditBtnHandler(e) {
   let produit_id = parseInt(e.target.id.split('_').splice(-1))
   // console.log(`listProduitEditBtnHandler() - ${produit_id}`)
   ep_getProduit(produit_id)
-  menuSetPage('edit')
+  menuSetPage('edit-produit')
 }
 
 
@@ -473,7 +1725,7 @@ let data_edit_received = null
 // ep_getProduit(1)
 function ep_initEditProduit() {
 
-  console.log('-- ep_initEditProduit()')
+  // console.log('-- ep_initEditProduit()')
   ep_setSelectFamille()
   ep_setSelectCategorie()
   ep_initImageThumb()
@@ -489,7 +1741,7 @@ function ep_initEditProduit() {
 /* Famille et catégories */
 function ep_setSelectFamille() {
 
-  console.log('-- ep_setSelectFamille()')
+  // console.log('-- ep_setSelectFamille()')
 
   // reset des eventListeners si déjà existants
   let old_select_famille = document.getElementById('ep_select_famille')
@@ -542,7 +1794,7 @@ function ep_selectFamilleOnChange() {
 }
 function ep_setSelectCategorie() {
 
-  console.log('-- ep_setSelectCategorie')
+  // console.log('-- ep_setSelectCategorie')
   // console.log(data_edit)
 
   // reset des eventListeners si déjà existants
@@ -600,7 +1852,7 @@ function ep_initImageThumb() {
   // reset des eventListeners si déjà existants
   let old_thumb_input = document.getElementById('ep_add_thumb')
   if (old_thumb_input !== null) {
-    console.log('+initImageThumb() remove handler - EDIT')
+    // console.log('+initImageThumb() remove handler - EDIT')
     old_thumb_input.removeEventListener('click', ep_addThumbClickHandler)
   }
 
@@ -732,7 +1984,7 @@ function ep_createExistingDescritionGroups() {
   let description_group_container = document.getElementById('ep_description_group_container')
   // TODO proper reset
   description_group_container.innerHTML = ""
-  console.log(ep_liste_descriptions_infos)
+  // console.log(ep_liste_descriptions_infos)
   data_edit.description.forEach((desc, desc_index) => {
     ep_createExistingDescriptionGroup(desc)
   })
@@ -870,7 +2122,7 @@ function ep_createExistingDescriptionGroup(desc) {
 
   new_quill.on('text-change', (delta, oldDelta, source) => {
     // if (source == 'user') {
-      console.log(source)
+      // console.log(source)
       desc_info.text_content = new_quill.getSemanticHTML()
       let index = ep_getDescriptionGroupInfoIndex(desc_info.global_index)
       data_edit.description[index].content = desc_info.text_content
@@ -1016,7 +2268,7 @@ function ep_createNewDescriptionGroup() {
 }
 function ep_removeDescriptionGroup(e) {
   let global_index = parseInt(e.target.id.split('_').splice(-1))
-  console.log(`-- removeDescriptionGroup - ${global_index}`)
+  // console.log(`-- removeDescriptionGroup - ${global_index}`)
   let desc_info_index = ep_getDescriptionGroupInfoIndex(global_index)
   let desc_info = ep_liste_descriptions_infos[desc_info_index]
   let titre_group_input = document.getElementById(`ep_input_titre_groupe_${desc_info.global_index}`)
@@ -1094,9 +2346,9 @@ function ep_initImageDescription(global_index) {
 
 /* Génération / maj de l'apercu de la page produit en cours d'édition */
 function ep_render() {
-  console.log('-- ep_render')
-  console.log(data_edit)
-  console.log(data_edit_received)
+  // console.log('-- ep_render')
+  // console.log(data_edit)
+  // console.log(data_edit_received)
 
   let header_titre = document.getElementById('ep_produit-header-titre-text')
   header_titre.innerText = getCategorieName(data_edit.id_categorie).toUpperCase()
@@ -1174,9 +2426,10 @@ function ep_render() {
 
 /* Reset */
 function ep_reset() {
-  console.log('-- ep_reset()')
+  // console.log('-- ep_reset()')
 }
 
+/* ep_getProduit */
 async function ep_getProduit(id_produit) {
   // console.log(`-- getProduit ${id_produit}`)
   let json = null
@@ -1249,13 +2502,14 @@ window.addEventListener('event-produit-received', (e)=> {
     data_edit.images.push({ 'image_url': image.image_url, 'data': '', 'global_index': image.index_descriptif, 'display_size': image.display_size })
   })
     
-  console.log('---------- data_edit :')
-  console.log(data_edit)
+  // console.log('---------- data_edit :')
+  // console.log(data_edit)
 
   data_edit_received = structuredClone(data_edit)
 
   
   // console.log('------------------------------------')
+  // TODO XAV what ???? new -> edit ???
   getListeFamilles('new')
 }, false)
 
@@ -1325,7 +2579,7 @@ async function ep_sendProduit() {
     });
     if (!response.ok) { throw new Error(`Response status: ${response.status}`); }
     json = await response.json()
-    console.log(json)
+    // console.log(json)
     
   } catch (error) { console.error(error.message); }
   
@@ -1365,7 +2619,7 @@ function initCreateProduct() {
 
   firstLoad = false
   
-  resetNouveauProduitPage()
+  np_reset()
 
   np_setSelectFamille()
   np_setSelectCategorie()
@@ -1386,7 +2640,7 @@ function np_setSelectFamille() {
   let old_select_famille = document.getElementById('np_select_famille')
   let old_add_famille_btn = document.getElementById('np_create_add_famille_button')
   if ((old_select_famille !== null)&&(old_select_famille !== null)) {
-    console.log('++ setSelectFamille not first load')
+    // console.log('++ setSelectFamille not first load')
     old_select_famille.removeEventListener('change', np_selectFamilleOnChange)
     old_add_famille_btn.removeEventListener('click', openEditFamillePopup)
   }
@@ -1431,8 +2685,8 @@ function np_selectFamilleOnChange() {
 }
 function np_setSelectCategorie() {
 
-  console.log('-- np_setSelectCategorie')
-  console.log(data)
+  // console.log('-- np_setSelectCategorie')
+  // console.log(data)
 
   // reset des eventListeners si déjà existants
   let old_select_cat = document.getElementById('np_select_categorie')
@@ -1490,7 +2744,7 @@ function np_initImageThumb() {
   // reset des eventListeners si déjà existants
   let old_thumb_input = document.getElementById('np_add_thumb')
   if (old_thumb_input !== null) {
-    console.log('+initImageThumb() remove handler')
+    // console.log('+initImageThumb() remove handler')
     old_thumb_input.removeEventListener('click', np_addThumbClickHandler)
   }
 
@@ -1748,7 +3002,7 @@ function np_createDescriptionGroup() {
 }
 function np_removeDescriptionGroup(e) {
   let global_index = parseInt(e.target.id.split('_').splice(-1))
-  console.log(`-- removeDescriptionGroup - ${global_index}`)
+  // console.log(`-- removeDescriptionGroup - ${global_index}`)
   let desc_info_index = np_getDescriptionGroupInfoIndex(global_index)
   let desc_info = np_liste_descriptions_infos[desc_info_index]
   let titre_group_input = document.getElementById(`np_input_titre_groupe_${desc_info.global_index}`)
@@ -1888,8 +3142,8 @@ function np_render() {
 }
 
 /* Reset nouveau produit page */
-function resetNouveauProduitPage() {
-  console.log('-- resetNouveauProduitPage()')
+function np_reset() {
+  // console.log('-- np_reset()')
   // data = {
   //   'id_produit': 0,
   //   'id_famille': 0,
@@ -1970,7 +3224,7 @@ async function np_sendProduit() {
     });
     if (!response.ok) { throw new Error(`Response status: ${response.status}`); }
     json = await response.json()
-    console.log(json)
+    // console.log(json)
     
   } catch (error) { console.error(error.message); }
   
@@ -1978,7 +3232,13 @@ async function np_sendProduit() {
 
 
 
+
+
+/* ------------------------------------------------------------------------------ */
+/* ------------------------------------------------------------------------------ */
 /* -- Cropper handlers loaded images -------------------------------------------- */
+/* ------------------------------------------------------------------------------ */
+/* ------------------------------------------------------------------------------ */
 cropperLoadEventListeners()
 function cropperLoadEventListeners() {
   window.addEventListener('event-thumb-canvas2', (e) => {
@@ -1996,26 +3256,31 @@ function cropperLoadEventListeners() {
     
   }, false)
   window.addEventListener('event-image-canvas2', (e) => {
-    console.log(`image created index : ${e.image_index}`)
+    // console.log(`image created index : ${e.image_index}`)
+    switch (e.export_mode) {
+      case 'np' : 
+        data.images[np_getDescriptionIndexFromGlobalIndex(e.image_index)].data = canvas2.toDataURL("image/jpeg", 0.7)
+        // data.images[getDescriptionIndexFromGlobalIndex(description_active)].data = canvas2.toDataURL("image/jpeg", 0.7)
+        np_render()
+        break
+      case 'ep' : 
+        data.images[np_getDescriptionIndexFromGlobalIndex(e.image_index)].data = canvas2.toDataURL("image/jpeg", 0.7)
+        np_render()
+        break
+      case 'es' : 
+        data_presta_edit.descriptifs[es_foundDescriptionGroupIndex(e.image_index)].image_data = canvas2.toDataURL("image/jpeg", 0.7)
+        es_render()
+        break
+      case 'ns' : 
+        data_presta_new.descriptifs[ns_foundDescriptionGroupIndex(e.image_index)].image_data = canvas2.toDataURL("image/jpeg", 0.7)
+        ns_render()
+        break
+    }
     let popup_canvas_container = document.getElementById('popup-canvas-container')
     popup_canvas_container.style.display = "none"
-    data.images[np_getDescriptionIndexFromGlobalIndex(e.image_index)].data = canvas2.toDataURL("image/jpeg", 0.7)
-    // data.images[getDescriptionIndexFromGlobalIndex(description_active)].data = canvas2.toDataURL("image/jpeg", 0.7)
-    np_render()
+    
   }, false)
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2044,6 +3309,24 @@ function getFamilleObject(id_fam) {
 function getFamilleName(id_fam) {
   let nom_fam = null
   let obj_fam = getFamilleObject(id_fam)
+  if (obj_fam == null) {
+    nom_fam = null
+  } else {
+    nom_fam = obj_fam.nom_famille
+  }
+  return nom_fam
+}
+
+function getPrestaFamilleObject(id_fam) {
+  let obj_fam = null
+  liste_presta_familles.forEach(famille => {
+    if (famille.id_famille == id_fam) obj_fam = famille
+  })
+  return obj_fam
+}
+function getPrestaFamilleName(id_fam) {
+  let nom_fam = null
+  let obj_fam = getPrestaFamilleObject(id_fam)
   if (obj_fam == null) {
     nom_fam = null
   } else {
