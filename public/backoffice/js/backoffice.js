@@ -31,6 +31,7 @@ const url_get_presta = url_rest_prefix + "getPresta.php"
 const url_get_presta_familles = url_rest_prefix + "getPrestaFamilles.php"
 const url_send_new_presta = url_rest_prefix + "createPresta.php"
 const url_send_update_produit = url_rest_prefix + "updatePresta.php"
+const url_create_famille_presta = url_rest_prefix + "createFamillePresta.php"
 
 /* -- Menu backoffice ---------------------------------------------------------------------------------------------------- */
 /* -- Menu backoffice ---------------------------------------------------------------------------------------------------- */
@@ -227,14 +228,9 @@ window.addEventListener('event-liste-presta-famille-received', (e) => {
   } else if (e.mode == "maj") {
     if (current_mode == "new_presta") {
       
-      // np_setSelectFamille()
-      // if (liste_familles[liste_familles.length - 1].liste_categories.length != 0) {
-      //   data.id_famille = liste_familles[liste_familles.length - 1].id_famille
-        
-      //   np_setSelectCategorie()
-      // } else {
-      //   openEditCategoriePopup()
-      // }
+      data_presta_new.nom_famille = liste_presta_familles[getPrestaFamilleIndex(data_presta_new.id_famille)].nom_famille
+      ns_setSelectFamille(true)
+      
     } else if (current_mode == "edit_presta") {
         // ep_setSelectFamille()
         // if (liste_familles[getFamilleIndex(data_edit.id_famille)].liste_categories.length != 0) {
@@ -247,9 +243,9 @@ window.addEventListener('event-liste-presta-famille-received', (e) => {
   window.setTimeout(() => { hideLoader() }, 400)
 
 }, false)
-function getFamilleIndex(id_famille) {
+function getPrestaFamilleIndex(id_famille) {
   let famille_index = null
-  liste_familles.forEach((famille, index_famille) => {
+  liste_presta_familles.forEach((famille, index_famille) => {
     if (parseInt(famille['id_famille']) === id_famille) famille_index = index_famille
   });
   return famille_index
@@ -864,7 +860,7 @@ function ns_preInitNewPresta() {
 function ns_initNewPresta() {
 
   console.log('-- es_initEditPresta()')
-  ns_setSelectFamille()
+  ns_setSelectFamille(false)
   ns_initNomPresta()
   ns_createNewDescriptionGroup()
   ns_initAddDescriptionGroup()
@@ -874,22 +870,25 @@ function ns_initNewPresta() {
 }
 
 /* Famille et catégories */
-function ns_setSelectFamille() {
+function ns_setSelectFamille(isMaj) {
 
   console.log('-- ns_setSelectFamille()')
 
   // reset des eventListeners si déjà existants
   let old_select_famille = document.getElementById('ns_select_famille')
-  // let old_add_famille_btn = document.getElementById('es_create_add_famille_button')
-  if ( (old_select_famille !== null) && (old_select_famille !== null) ) {
+  let old_add_famille_btn = document.getElementById('ns_add_famille_button')
+  if ( (old_select_famille !== null) && (old_add_famille_btn !== null) ) {
     // console.log('++ setSelectFamille not first load - EDIT')
     old_select_famille.removeEventListener('change', ns_selectFamilleOnChange)
-    // old_add_famille_btn.removeEventListener('click', openEditFamillePopup)
+    old_add_famille_btn.removeEventListener('click', ns_openEditFamillePopup)
   }
 
-  // init des valeurs par défaut (premiere famille par defaut)
-  data_presta_new.id_famille = liste_presta_familles[0].id_famille
-  data_presta_new.nom_famille = liste_presta_familles[0].nom_famille
+  if (!isMaj) {
+    // init des valeurs par défaut (premiere famille par defaut)
+    data_presta_new.id_famille = liste_presta_familles[0].id_famille
+    data_presta_new.nom_famille = liste_presta_familles[0].nom_famille
+  }
+  
 
   // création du select des familles
   let ligne_famille = document.getElementById('ns_ligne_famille')
@@ -912,16 +911,18 @@ function ns_setSelectFamille() {
   });
   select_famille_container.appendChild(select_famille)
 
-  // let add_famille_btn = xCreateElement('div', 'form_button', 'ep_create_add_famille_button' )
-  // add_famille_btn.innerText = "+"
-  // select_famille_container.appendChild(add_famille_btn)
+  let add_famille_btn = xCreateElement('div', 'form_button', 'ns_add_famille_button' )
+  add_famille_btn.innerText = "+"
+  select_famille_container.appendChild(add_famille_btn)
 
   ligne_famille.innerHTML = ""
   ligne_famille.appendChild(famille_label)
   ligne_famille.appendChild(select_famille_container)
 
   select_famille.addEventListener('change', ns_selectFamilleOnChange)
-  // add_famille_btn.addEventListener('click', openEditFamillePopup)
+  add_famille_btn.addEventListener('click', ns_openEditFamillePopup)
+
+  if (isMaj) ns_render()
 }
 function ns_selectFamilleOnChange() {
   let select_famille = document.getElementById('ns_select_famille')
@@ -929,6 +930,94 @@ function ns_selectFamilleOnChange() {
   data_presta_new.nom_famille = getPrestaFamilleName(data_presta_new.id_famille)
   ns_render()
 }
+/* -- Popup d'édition Familles - Catégories ---------------------------------------------------------------------------------- */
+function ns_openEditFamillePopup() {
+
+  // console.log('-- ns_openEditFamillePopup')
+
+  let popup_container = document.getElementById('popup-container')
+  popup_container.style.display = 'block'
+  popup_container.style.zIndex = 20
+
+  document.getElementById('popup-add-famille').style.display = "none"
+  document.getElementById('popup-add-categorie').style.display = "none"
+  document.getElementById('popup-add-famille-presta').style.display = "flex"
+
+  let popup_add_famille_close = document.getElementById('popup-add-famille-presta-close')
+  popup_add_famille_close.addEventListener('click', closeEditFamillePrestaPopup)
+
+  let add_famille_input = document.getElementById('add-famille-presta-input')
+  add_famille_input.addEventListener('keyup', (e) => {
+    if (e.key === "Enter") { createNewFamillePresta() }
+    if (add_famille_input.value.length > 2) {
+      add_famille_input.style.border = "1px solid rgb(118,118,118)"
+      add_famille_input.style.outlineColor = "rgb(118,118,118)"
+    } else {
+      add_famille_input.style.border = "1px solid rgb(255,0,0)"
+      add_famille_input.style.outlineColor = "rgb(255,0,0)"
+    }
+  })
+  let popup_add_famille_button = document.getElementById('add-famille-presta-submit')
+  popup_add_famille_button.addEventListener('click', createNewFamillePresta)
+
+}
+function closeEditFamillePrestaPopup() {
+  // console.log('-- closeEditFamillePopup()')
+  let popup_container = document.getElementById('popup-container')
+  popup_container.style.display = 'none'
+  popup_container.style.zIndex = -1
+}
+
+function createNewFamillePresta() {
+  console.log('-- createNewFamillePresta()')
+  let add_famille_input = document.getElementById('add-famille-presta-input')
+  let input_value = add_famille_input.value
+  if (input_value.length > 2) {
+    input_value = input_value.charAt(0).toUpperCase() + input_value.slice(1)
+    sendNewFamillePresta(input_value)
+  } else {
+    add_famille_input.style.border = "1px solid rgb(255,0,0)"
+    add_famille_input.style.outlineColor = "rgb(255,0,0)"
+  }
+}
+/* Send new famille création to REST*/
+async function sendNewFamillePresta(nom_famille) {
+
+  console.log('-- sendNewFamillePresta()')
+
+  let json = null
+  // const url_create_famille_presta = "http://localhost/green_catalogue_rest/createFamillePresta.php"
+  let formData = new FormData()
+  formData.append('nom_famille', nom_famille)
+  try {
+    const response = await fetch(url_create_famille_presta, {
+      method: "post",
+      body: formData,
+    });
+    if (!response.ok) throw new Error(`Response status: ${response.status}`)
+    json = await response.json()
+    if (json['status'] == 200) {
+      let event_new_famille = new Event("event-new-famille-presta-inserted")
+      event_new_famille.id_famille = parseInt(json['id_famille'])
+      window.dispatchEvent(event_new_famille)
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+window.addEventListener('event-new-famille-presta-inserted', newFamillePrestaInserted, false)
+function newFamillePrestaInserted(e) {
+  console.log(`++ event-new-famille-presta-inserted - id : ${e.id_famille}`)
+  if (current_mode == "new_presta") {
+    data_presta_new.id_famille = e.id_famille
+  } else if (current_mode == "edit_presta") {
+    data_presta_edit.id_famille = e.id_famille
+  }
+  getPrestaListeFamilles('maj')
+  closeEditFamillePopup()
+}
+
+
 
 /* Nom presta */
 function ns_initNomPresta() {
@@ -1202,8 +1291,8 @@ function ns_initArticlePresta() {
 /* RENDER Génération / maj de l'apercu de la page produit en cours d'édition */
 function ns_render() {
 
-  // console.log('-- ns_render')
-  // console.log(data_presta_new)
+  console.log('-- ns_render')
+  console.log(data_presta_new)
 
   let header_titre = document.getElementById('ns_presta-header-titre-text')
   header_titre.innerText = data_presta_new.nom_famille.toUpperCase()
@@ -1279,14 +1368,14 @@ async function ns_sendPresta() {
   let json = null
   // const url_send_new_presta = "http://localhost/green_catalogue_rest/createPresta.php"
   let formData = new FormData()
-  formData.append('id_presta', data_presta_new.id_presta)
+  // formData.append('id_presta', data_presta_new.id_presta)
   formData.append('nom_presta', data_presta_new.nom_presta)
   formData.append('index_presta', data_presta_new.index_presta)
   formData.append('id_famille', data_presta_new.id_famille)
   formData.append('article', data_presta_new.article)
 
   data_presta_new.descriptifs.forEach((desc, index_desc) => {
-    formData.append(`desc_id_presta_descriptif_${index_desc}`, desc.id_presta_descriptif)
+    // formData.append(`desc_id_presta_descriptif_${index_desc}`, desc.id_presta_descriptif)
     formData.append(`desc_html_${index_desc}`, desc.html)
     formData.append(`desc_order_${index_desc}`, index_desc)
     formData.append(`desc_image_display_${index_desc}`, desc.image_display)

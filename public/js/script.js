@@ -1,21 +1,16 @@
 console.log('-- DOM loaded')
 
-var json_data = null
-var liste_familles = null
+var json_data_produits = null
+var liste_familles_produits = null
 
+var json_data_prestas = null
+var liste_familles_prestas = null
 
-
-// const image_path = "http://localhost/green_catalogue_rest/uploads/"
 const image_path = `${path_prefix}green_catalogue_rest/uploads/`
 
-getData()
-async function getData() {
+getDataProduits()
+async function getDataProduits() {
   const url = `${path_prefix}green_catalogue_rest/getProduits.php`
-  // const url = "http://localhost/green_catalogue_rest/getProduits.php";
-  // const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getProduits.php";
-  // const url = "../green_catalogue_rest/getProduits.php";
-  // const url = "http://localhost:80/green_catalogue_rest/test.json";
-  // const url = "https://www.visiolab.fr/test.json";
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -27,20 +22,18 @@ async function getData() {
       throw new Error(`Response status: ${response.status}`);
     }
 
-    json_data = await response.json();
-    console.log(json_data);
+    json_data_produits = await response.json();
+    console.log(json_data_produits);
   } catch (error) {
     console.error(error.message);
   }
 }
+const eventListeFamilleProduitsReceived = new Event("event-liste-famille-produits-received")
 
-const eventListeFamilleReceived = new Event("event-liste-famille-received")
-getListeFamilles()
-async function getListeFamilles() {
+getListeFamillesProduits()
+async function getListeFamillesProduits() {
   let json = null
   const url = `${path_prefix}green_catalogue_rest/getFamillesAndCategories.php`
-  // const url = "http://192.168.2.236/visiolab/greencity_miniconfig/green_catalogue_rest/getFamillesAndCategories.php";
-  // const url = "http://localhost/green_catalogue_rest/getFamillesAndCategories.php";
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -51,25 +44,70 @@ async function getListeFamilles() {
     }
     json = await response.json()
     if (json['status'] == 200) {
-      liste_familles = json['familles']
-      // console.log(liste_familles)
-      window.dispatchEvent(eventListeFamilleReceived)
+      liste_familles_produits = json['familles']
+      // console.log(liste_familles_produits)
+      window.dispatchEvent(eventListeFamilleProduitsReceived)
     }
   } catch (error) {
     console.error(error.message);
   }
 }
-window.addEventListener('event-liste-famille-received', (e) => {
-    // firstLoad = false
-    // initCreateProduct()
-    // window.setTimeout(() => {
-    //   hideLoader()
-    // }, 400)
+window.addEventListener('event-liste-famille-produits-received', (e) => {
     initOptionsSummery()
 }, false)
 
 
 
+/* Data gathering : PRESTAS */
+const eventListePrestasReceived = new Event("event-prestas-received")
+getDataPrestas()
+async function getDataPrestas() {
+  const url = `${path_prefix}green_catalogue_rest/getPrestas.php`
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", },
+    });
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    json_data_prestas = await response.json()
+    console.log(json_data_prestas)
+      window.dispatchEvent(eventListePrestasReceived)
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+getListeFamillesPrestas()
+async function getListeFamillesPrestas() {
+  let json = null
+  const url = `${path_prefix}green_catalogue_rest/getPrestaFamilles.php`
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    json = await response.json()
+    if (json['status'] == 200) {
+      liste_familles_prestas = json['familles']
+      // console.log(liste_familles_prestas)
+      window.dispatchEvent(eventListePrestasReceived)
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+window.addEventListener('event-prestas-received', (e) => {
+    if ((json_data_prestas !== null) && (liste_familles_prestas !== null)) {
+      console.log("----- all prestas received")
+      // console.log(json_data_prestas)
+      console.log(liste_familles_prestas)
+    }
+}, false)
 
 
 /* -------------------------------------------------------------------- */
@@ -303,7 +341,7 @@ function initOptionsSummery() {
 
   options_body.innerHTML = ""
 
-  liste_familles.forEach(famille => {
+  liste_familles_produits.forEach(famille => {
     let options_element_container = xCreateElement('div', 'options-element-container', '')
     let options_element = xCreateElement('div', 'options-element', '')
     let options_element_titre = xCreateElement('div', 'options-element-titre', '')
@@ -566,13 +604,13 @@ function createFicheProduit(prod) {
 /* Divers */
 function isCatExistInProductList(id_cat) {
   let retour = false
-  json_data.produits.forEach(prod => {
+  json_data_produits.produits.forEach(prod => {
     if (prod.id_categorie == id_cat) retour = true
   })
   return retour
 }
 function getProduitsFromCategorie(id_cat) {
-  liste_produits = [...json_data.produits.reduce((map, value) => (value.id_categorie == id_cat) ? map.set(value.id_produit, value) : map, new Map()).values()]
+  liste_produits = [...json_data_produits.produits.reduce((map, value) => (value.id_categorie == id_cat) ? map.set(value.id_produit, value) : map, new Map()).values()]
   liste_produits = liste_produits.sort((a, b) => { return a.marque.localeCompare(b.marque) })
   return liste_produits
 }
