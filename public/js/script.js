@@ -1,12 +1,13 @@
 console.log('-- DOM loaded')
 
-var json_data_produits = null
+let produits = null
 var liste_familles_produits = null
 let swiperOption = null
+let current_produit_id_cat_active = -1
 
 var prestas = null
 var liste_familles_prestas = null
-var current_presta_famille_id_active = -1
+var current_presta_id_famille_active = -1
 const contractuel = `* Photos non contractuelles - Équipements de série ou équivalent`
 let swiperPresta = null
 
@@ -49,10 +50,7 @@ function initApplication() {
     },
   });
 
-  /* Init produits */
-  window.addEventListener('event-liste-famille-produits-received', (e) => {
-      initOptionsSummery()
-  }, false)
+  /* Init options/ produits */
   getDataProduits()
   getListeFamillesProduits()
   swiperOption = new Swiper('.swiperOption', {
@@ -69,6 +67,11 @@ function initApplication() {
       el: '.swiper-scrollbar',
     },
   });
+  window.addEventListener('event-produits-received', (e) => {
+    if ( (produits !== null) && (liste_familles_produits !== null) ) {
+      initOptionsSummery()
+    }      
+  }, false)
   
 }
 
@@ -205,14 +208,14 @@ function initPrestaRouting() {
         let id_presta =  parseInt(e.currentTarget.id.split('_').splice(-1))
         let presta = getPrestaById(id_presta)
 
-        if (presta.id_famille !== current_presta_famille_id_active) {
+        if (presta.id_famille !== current_presta_id_famille_active) {
           let famille = getFamillePrestaById(presta.id_famille)
           let liste_prestas = []
           famille.prestas.forEach((current) => {
             liste_prestas.push(getPrestaById(current.id_presta))
           })
           updateFichePresta(liste_prestas)
-          current_presta_famille_id_active = presta.id_famille
+          current_presta_id_famille_active = presta.id_famille
         }
         
 
@@ -362,42 +365,44 @@ async function getDataProduits() {
   try {
     const response = await fetch(url, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
+      headers: { "Content-Type": "application/json", },
+    })
+    if (!response.ok) { throw new Error(`Response status: ${response.status}`) }
+    let json = await response.json();
+    if (json['status'] == 200) {
+      produits = json['produits']
+      console.log('-- produits')
+      console.log(produits)
+      let eventListeProduitsReceived = new Event("event-produits-received")
+      window.dispatchEvent(eventListeProduitsReceived)
     }
-
-    json_data_produits = await response.json();
-    console.log(json_data_produits);
+    
   } catch (error) {
     console.error(error.message);
   }
 }
 async function getListeFamillesProduits() {
-  let json = null
   const url = `${path_prefix}green_catalogue_rest/getFamillesAndCategories.php`
   try {
     const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" }
-    });
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
-    json = await response.json()
+    })
+    if (!response.ok) { throw new Error(`Response status: ${response.status}`) }
+    let json = await response.json()
     if (json['status'] == 200) {
       liste_familles_produits = json['familles']
-      // console.log(liste_familles_produits)
-      window.dispatchEvent(new Event("event-liste-famille-produits-received"))
+      console.log('-- liste_familles_produits')
+      console.log(liste_familles_produits)
+      window.dispatchEvent(new Event("event-produits-received"))
     }
   } catch (error) {
     console.error(error.message);
   }
 }
 
+
+  
 /* Routes Options */
 let accueil_options = document.getElementById('accueil_produit')
 accueil_options.addEventListener('click', (e) => {
@@ -488,52 +493,84 @@ function initOptionsListPage(id_cat) {
   console.log('-- initOptionsListPage')
   // create options list page
   let liste_produits = getProduitsFromCategorie(id_cat)
+  if (liste_produits.length == 0) return false
+
+  // init produit famille only if not already setup
+  if (current_produit_id_cat_active != id_cat) {
+
+    // displayLoader()
+    console.log("here")
   
-  let nom_cat = liste_produits[0].nom_categorie
-  let title_cat = document.getElementById('optionslist-title')
-  title_cat.innerHTML = nom_cat.toUpperCase()
+    current_produit_id_cat_active = id_cat
+    
+    let nom_cat = liste_produits[0].nom_categorie
+    let title_cat = document.getElementById('optionslist-title')
+    title_cat.innerHTML = nom_cat.toUpperCase()
 
-  let optionslist_body = document.getElementById('optionslist-body')
-  optionslist_body.innerHTML = ""
+    let optionslist_body = document.getElementById('optionslist-body')
+    optionslist_body.innerHTML = ""
 
-  liste_produits.forEach(prod => {
+    liste_produits.forEach(prod => {
 
-    let list_element = document.createElement('div')
-    list_element.classList.add('optionslist-element')
-    list_element.setAttribute('id', 'list_element_'+prod.id_produit)
+      let list_element = document.createElement('div')
+      list_element.classList.add('optionslist-element')
+      list_element.setAttribute('id', 'list_element_'+prod.id_produit)
 
-    let list_element_image_div = document.createElement('div')
-    list_element_image_div.classList.add('optionslist-element-image')
-    let list_element_image = document.createElement('img')
-    if (prod.id_produit >= 21) {
+      let list_element_image_div = document.createElement('div')
+      list_element_image_div.classList.add('optionslist-element-image')
+      let list_element_image = document.createElement('img')
       list_element_image.setAttribute('src', image_path + prod.thumb)
-    } else {
-      list_element_image.setAttribute('src', prod.thumb)
-    }    
-    list_element_image_div.appendChild(list_element_image)
-    list_element.appendChild(list_element_image_div)
+      // if (prod.id_produit >= 21) {
+      //   list_element_image.setAttribute('src', image_path + prod.thumb)
+      // } else {
+      //   list_element_image.setAttribute('src', prod.thumb)
+      // }    
+      list_element_image_div.appendChild(list_element_image)
+      list_element.appendChild(list_element_image_div)
 
-    let list_element_titre = document.createElement('div')
-    list_element_titre.classList.add('optionslist-element-titre')
-    // let titre = splitColorNameProduit(prod.marque, "&nbsp;")
-    let titre_blanc = document.createElement('span')
-    titre_blanc.classList.add('white')
-    // titre_blanc.innerHTML = titre[0]
-    titre_blanc.innerHTML = prod.nom+"&nbsp;"
-    let titre_gold = document.createElement('span')
-    titre_gold.classList.add('gold')
-    // titre_gold.innerHTML = titre[1]
-    titre_gold.innerHTML = prod.marque
-    list_element_titre.appendChild(titre_blanc)
-    list_element_titre.appendChild(titre_gold)
-    list_element.appendChild(list_element_titre)
+      let list_element_titre = document.createElement('div')
+      list_element_titre.classList.add('optionslist-element-titre')
+      let titre_blanc = document.createElement('span')
+      titre_blanc.classList.add('white')
+      titre_blanc.innerHTML = prod.nom+"&nbsp;"
+      let titre_gold = document.createElement('span')
+      titre_gold.classList.add('gold')
+      titre_gold.innerHTML = prod.marque
+      list_element_titre.appendChild(titre_blanc)
+      list_element_titre.appendChild(titre_gold)
+      list_element.appendChild(list_element_titre)
 
-    optionslist_body.appendChild(list_element)
+      optionslist_body.appendChild(list_element)
 
-  })
+    })
 
-  // initFichesProduits
-  initProduitPage(id_cat)
+    // initFichesProduits
+    initProduitPage(id_cat)
+
+    // eventListener
+    let optionslist_elements = document.getElementsByClassName('optionslist-element')
+    for(element of optionslist_elements) {
+      element.addEventListener('click', (e) => {
+
+        // navigate to swiper index
+        console.log(e.currentTarget)
+        let element_id = parseInt(e.currentTarget.getAttribute('id').split('list_element_')[1])
+        let element_index = getProduitIndexFromListeProduits(element_id, liste_produits)
+        swiperOption.slideTo(element_index, 0, null)
+
+        // display fiche produit
+        let accueil_main_container = document.getElementById('accueil-main-container')
+        let options_main_container = document.getElementById('options-main-container')
+        let optionslist_main_container = document.getElementById('optionslist-main-container')
+        let produit_main_container = document.getElementById('produit-main-container')
+        accueil_main_container.style.display = "none"
+        options_main_container.style.display = "none"
+        optionslist_main_container.style.display = "none"
+        produit_main_container.style.display = "block"
+
+      })
+    }
+  } 
 
   // display options list
   let accueil_main_container = document.getElementById('accueil-main-container')
@@ -542,30 +579,6 @@ function initOptionsListPage(id_cat) {
   accueil_main_container.style.display = "none"
   options_main_container.style.display = "none"
   optionslist_main_container.style.display = "block"
-
-  // eventListener
-  let optionslist_elements = document.getElementsByClassName('optionslist-element')
-  for(element of optionslist_elements) {
-    element.addEventListener('click', (e) => {
-
-      // navigate to swiper index
-      console.log(e.currentTarget)
-      let element_id = parseInt(e.currentTarget.getAttribute('id').split('list_element_')[1])
-      let element_index = getProduitIndexFromListeProduits(element_id, liste_produits)
-      swiperOption.slideTo(element_index, 0, null)
-
-      // display fiche produit
-      let accueil_main_container = document.getElementById('accueil-main-container')
-      let options_main_container = document.getElementById('options-main-container')
-      let optionslist_main_container = document.getElementById('optionslist-main-container')
-      let produit_main_container = document.getElementById('produit-main-container')
-      accueil_main_container.style.display = "none"
-      options_main_container.style.display = "none"
-      optionslist_main_container.style.display = "none"
-      produit_main_container.style.display = "block"
-
-    })
-  }
 
 }
 
@@ -664,12 +677,13 @@ function createFicheProduit(prod) {
     if (prod.images.length > i) {
       produitPicture = document.createElement('img')
       produitPicture.classList.add('produit-picture')
-      // TODO change image path
-      if (prod.id_produit >= 21) {
-        produitPicture.setAttribute('src', image_path + prod.images[i].image_url)
-      } else {
-        produitPicture.setAttribute('src', prod.images[i].image_url)
-      }
+      
+      produitPicture.setAttribute('src', image_path + prod.images[i].image_url)
+      // if (prod.id_produit >= 21) {
+      //   produitPicture.setAttribute('src', image_path + prod.images[i].image_url)
+      // } else {
+      //   produitPicture.setAttribute('src', prod.images[i].image_url)
+      // }
       
     }
 
@@ -711,13 +725,13 @@ function createFicheProduit(prod) {
 /* Divers */
 function isCatExistInProductList(id_cat) {
   let retour = false
-  json_data_produits.produits.forEach(prod => {
+  produits.forEach(prod => {
     if (prod.id_categorie == id_cat) retour = true
   })
   return retour
 }
 function getProduitsFromCategorie(id_cat) {
-  liste_produits = [...json_data_produits.produits.reduce((map, value) => (value.id_categorie == id_cat) ? map.set(value.id_produit, value) : map, new Map()).values()]
+  liste_produits = [...produits.reduce((map, value) => (value.id_categorie == id_cat) ? map.set(value.id_produit, value) : map, new Map()).values()]
   liste_produits = liste_produits.sort((a, b) => { return a.marque.localeCompare(b.marque) })
   return liste_produits
 }
