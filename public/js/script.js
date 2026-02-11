@@ -2,13 +2,361 @@ console.log('-- DOM loaded')
 
 var json_data_produits = null
 var liste_familles_produits = null
+let swiperOption = null
 
-var json_data_prestas = null
+var prestas = null
 var liste_familles_prestas = null
+var current_presta_famille_id_active = -1
+const contractuel = `* Photos non contractuelles - Équipements de série ou équivalent`
+let swiperPresta = null
+
+let image_load_total = -1
+let image_load_count = -1
 
 const image_path = `${path_prefix}green_catalogue_rest/uploads/`
 
-getDataProduits()
+
+/* -------------------------------------------------------------------- */
+/* Init application */
+initApplication()
+function initApplication() {
+
+  /* Init prestas */
+  window.addEventListener('event-prestas-received', (e) => {
+    if ((prestas !== null) && (liste_familles_prestas !== null)) {
+      // console.log("----- all prestas received")
+      // console.log(prestas)
+      // console.log(liste_familles_prestas)
+      
+      initPrestaMenu()
+      initPrestaRouting()
+    }
+  }, false)
+  getDataPrestas()
+  getListeFamillesPrestas()
+  swiperPresta = new Swiper('.swiperPresta', {
+    direction: 'horizontal',
+    loop: false,
+    pagination: {
+      el: '.swiper-pagination',
+    },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    scrollbar: {
+      el: '.swiper-scrollbar',
+    },
+  });
+
+  /* Init produits */
+  window.addEventListener('event-liste-famille-produits-received', (e) => {
+      initOptionsSummery()
+  }, false)
+  getDataProduits()
+  getListeFamillesProduits()
+  swiperOption = new Swiper('.swiperOption', {
+    direction: 'horizontal',
+    loop: false,
+    pagination: {
+      el: '.swiper-pagination',
+    },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    scrollbar: {
+      el: '.swiper-scrollbar',
+    },
+  });
+  
+}
+
+
+
+/* -------------------------------------------------------------------- */
+/* PRESTAS */
+/* -------------------------------------------------------------------- */
+/* Data gathering : PRESTAS */
+async function getDataPrestas() {
+  let json = null
+  const url = `${path_prefix}green_catalogue_rest/getPrestas.php`
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", },
+    });
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    json = await response.json()
+    if (json['status'] == 200) {
+      prestas = json['prestas']
+      // console.log(prestas)
+      let eventListePrestasReceived = new Event("event-prestas-received")
+      window.dispatchEvent(eventListePrestasReceived)
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+async function getListeFamillesPrestas() {
+  let json = null
+  const url = `${path_prefix}green_catalogue_rest/getPrestaFamilles2.php`
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    json = await response.json()
+    if (json['status'] == 200) {
+      liste_familles_prestas = json['familles']
+      // console.log(liste_familles_prestas)
+      let eventListePrestasReceived = new Event("event-prestas-received")
+      window.dispatchEvent(eventListePrestasReceived)
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+/* Fonction utilitaires pour traiter les données des prestas */
+function getPrestaById(id_presta) {
+  let presta = null
+  prestas.forEach(current => {
+    if (parseInt(current.id_presta) == id_presta) presta = current 
+  })
+  return presta
+}
+function getFamillePrestaById(id_famille) {
+  let famille = null
+  liste_familles_prestas.forEach(current => {
+    if (parseInt(current.id_famille) == id_famille) famille = current 
+  })
+  return famille
+}
+function getPrestaIndexInFamille(id_famille, id_presta) {
+  let index = 0
+  let famille = getFamillePrestaById(id_famille)
+  famille.prestas.forEach((presta, index_presta) => {
+    if (parseInt(presta.id_presta) == id_presta) index = index_presta
+  } )
+  return index
+}
+
+/* Initialisation prestas */
+function initPrestaMenu() {
+
+  let presta_body = document.getElementById('presta-body')
+  presta_body.innerHTML = ''
+
+  liste_familles_prestas.forEach((famille, index_famille) => {
+    let presta_element_container = xCreateElement('div', 'presta-element-container')
+    let presta_element = xCreateElement('div', 'presta-element', `presta_rubrique_id_${famille.id_famille}`)
+    let presta_element_titre = xCreateElement('div', 'presta-element-titre')
+    presta_element_titre.innerHTML = famille.nom_famille
+    let presta_element_liste = xCreateElement('div', 'presta-element-liste')
+    let ul_element = document.createElement('ul')
+    famille.prestas.forEach((presta) => {
+      let li_element = xCreateElement('li', '', `presta_${presta.id_presta}`)
+      li_element.innerHTML = presta.nom_presta
+      ul_element.appendChild(li_element)
+    })
+    presta_element_liste.appendChild(ul_element)
+    presta_element.appendChild(presta_element_titre)
+    presta_element.appendChild(presta_element_liste)
+    presta_element_container.appendChild(presta_element)
+    presta_body.appendChild(presta_element_container)
+  })
+
+}
+function initPrestaRouting() {
+
+  // Accueil - accès liste prestas
+  let accueil_presta = document.getElementById('accueil_presta')
+  accueil_presta.addEventListener('click', (e) => {
+    console.log('-- accueil presta')
+    let options_main_container = document.getElementById('options-main-container')
+    let presta_main_container = document.getElementById('presta-main-container')
+    options_main_container.style.display = "none"
+    presta_main_container.style.display = "block"
+  })
+
+  // Presta liste - bouton retour
+  let presta_retour_btn = document.getElementById('presta-retour-btn')
+  presta_retour_btn.addEventListener('click', (e) => {
+    let presta_main_container = document.getElementById('presta-main-container')
+    presta_main_container.style.display = "none"
+  })
+
+  
+  // Presta liste - liens vers les fiches
+  liste_familles_prestas.forEach((famille, index_famille) => {
+
+    famille.prestas.forEach((presta, index_presta) => {
+
+      let li_element = document.getElementById(`presta_${presta.id_presta}`)
+
+      li_element.addEventListener('click', (e) => {
+
+        let id_presta =  parseInt(e.currentTarget.id.split('_').splice(-1))
+        let presta = getPrestaById(id_presta)
+
+        if (presta.id_famille !== current_presta_famille_id_active) {
+          let famille = getFamillePrestaById(presta.id_famille)
+          let liste_prestas = []
+          famille.prestas.forEach((current) => {
+            liste_prestas.push(getPrestaById(current.id_presta))
+          })
+          updateFichePresta(liste_prestas)
+          current_presta_famille_id_active = presta.id_famille
+        }
+        
+
+        let header_title = document.getElementById('presta-fiche-header-titre-text')
+        header_title.innerText = presta.nom_famille.toUpperCase()
+
+        swiperPresta.slideTo(getPrestaIndexInFamille(presta.id_famille, presta.id_presta))
+
+        let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
+        presta_fiche_main_container.style.display = 'block' 
+      })
+
+    })
+
+
+  })
+
+  // Presta fiche - bouton retour
+  let presta_fiche_header_close_btn = document.getElementById('presta-fiche-header-close-btn')
+  presta_fiche_header_close_btn.addEventListener('click', (e) => {
+    let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
+    presta_fiche_main_container.style.display = "none"
+  })
+
+}
+
+/* Fiches swiper des prestas */
+function updateFichePresta(prestas) {
+  
+  displayLoader()
+  let swiperPresta_wrapper = document.getElementById('swiperPresta-wrapper')
+  swiperPresta_wrapper.innerHTML = ''
+
+  image_load_total = 0
+  image_load_count = 0
+  prestas.forEach(presta => {
+    presta.descriptifs.forEach(desc => {
+      if (desc.image_url !== "") image_load_total++
+    })
+  })
+
+  prestas.forEach(presta => {
+    swiperPresta_wrapper.appendChild(createFichePrestaSwiperSlide(presta))
+  })
+  swiperPresta.update()
+  
+}
+function createFichePrestaSwiperSlide(presta) {
+
+  let swiperSlide = document.createElement('div')
+  swiperSlide.classList.add('swiper-slide')
+  let swiperSlideSubcontainer = document.createElement('div')
+  swiperSlideSubcontainer.classList.add('swiperPresta-slide-subcontainer')
+  let fichePresta = document.createElement('div')
+  fichePresta.classList.add('fiche-presta')
+  let modalMain = document.createElement('div')
+  modalMain.classList.add('modal-main')
+
+  let modalMainSeparator1 = document.createElement('div')
+  modalMainSeparator1.setAttribute('id', 'modal-main-separator')
+  modalMainSeparator1.innerHTML = "&nbsp;"
+  modalMain.appendChild(modalMainSeparator1)
+
+  let modalMainSubtitle = document.createElement('div')
+  modalMainSubtitle.classList.add('presta-subtitle')
+  modalMainSubtitle.innerHTML = presta.nom_presta
+  modalMain.appendChild(modalMainSubtitle)
+  
+  presta.descriptifs.forEach((desc, index_desc) => {
+
+    let presta_image_group = document.createElement('div')
+    presta_image_group.classList.add('presta-image-group')
+    let presta_image = document.createElement('img')
+    presta_image.classList.add('presta-image')
+    if (desc.image_url !== '') {
+      presta_image.setAttribute('src', image_path+desc.image_url)
+      presta_image.addEventListener('load', image_loaded_callback)
+    } else {
+      presta_image.setAttribute('src', '')
+    }
+    let presta_image_legende = document.createElement('div')
+    presta_image_legende.classList.add('presta-image-legende')
+    presta_image_legende.innerHTML = desc.html
+    
+    if (index_desc % 2 == 0) {
+      presta_image_group.appendChild(presta_image)
+      presta_image_group.appendChild(presta_image_legende)
+    } else {
+      presta_image_group.appendChild(presta_image_legende)
+      presta_image_group.appendChild(presta_image)
+    }
+
+    modalMain.appendChild(presta_image_group)
+  })
+  
+  let modalMainSeparator2 = document.createElement('div')
+  modalMainSeparator2.setAttribute('id', 'modal-main-separator')
+  modalMainSeparator2.innerHTML = "&nbsp;"
+  modalMain.appendChild(modalMainSeparator2)
+
+  let prestaDescriptif = document.createElement('div')
+  prestaDescriptif.classList.add('presta-descriptif')
+  prestaDescriptif.innerHTML = presta.article
+  modalMain.appendChild(prestaDescriptif)
+
+  let modalMainSeparator3 = document.createElement('div')
+  modalMainSeparator3.setAttribute('id', 'modal-main-separator')
+  modalMainSeparator3.innerHTML = "&nbsp;"
+  modalMain.appendChild(modalMainSeparator3)
+
+  let prestaContractuel = document.createElement('div')
+  prestaContractuel.classList.add('presta-contractuel')
+  prestaContractuel.innerText = contractuel  
+  modalMain.appendChild(prestaContractuel)
+
+  fichePresta.appendChild(modalMain)
+  swiperSlideSubcontainer.appendChild(fichePresta)
+  swiperSlide.appendChild(swiperSlideSubcontainer)
+
+  return swiperSlide
+}
+
+/* et si une autre fournée est lancée avant que celle ci soit terminée ? */
+function image_loaded_callback(e) {
+  image_load_count++
+  if (image_load_count == image_load_total) {
+    window.setTimeout(() => {
+      hideLoader()
+    }, 200)
+    
+  }
+}
+
+
+
+
+
+
+
+/* -------------------------------------------------------------------- */
+/* OPTIONS */
+/* -------------------------------------------------------------------- */
+/* -------------------------------------------------------------------- */
+/* Data gathering : PRODUITS */
 async function getDataProduits() {
   const url = `${path_prefix}green_catalogue_rest/getProduits.php`
   try {
@@ -28,9 +376,6 @@ async function getDataProduits() {
     console.error(error.message);
   }
 }
-const eventListeFamilleProduitsReceived = new Event("event-liste-famille-produits-received")
-
-getListeFamillesProduits()
 async function getListeFamillesProduits() {
   let json = null
   const url = `${path_prefix}green_catalogue_rest/getFamillesAndCategories.php`
@@ -46,73 +391,14 @@ async function getListeFamillesProduits() {
     if (json['status'] == 200) {
       liste_familles_produits = json['familles']
       // console.log(liste_familles_produits)
-      window.dispatchEvent(eventListeFamilleProduitsReceived)
-    }
-  } catch (error) {
-    console.error(error.message);
-  }
-}
-window.addEventListener('event-liste-famille-produits-received', (e) => {
-    initOptionsSummery()
-}, false)
-
-
-
-/* Data gathering : PRESTAS */
-const eventListePrestasReceived = new Event("event-prestas-received")
-getDataPrestas()
-async function getDataPrestas() {
-  const url = `${path_prefix}green_catalogue_rest/getPrestas.php`
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", },
-    });
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
-    json_data_prestas = await response.json()
-    console.log(json_data_prestas)
-      window.dispatchEvent(eventListePrestasReceived)
-  } catch (error) {
-    console.error(error.message);
-  }
-}
-getListeFamillesPrestas()
-async function getListeFamillesPrestas() {
-  let json = null
-  const url = `${path_prefix}green_catalogue_rest/getPrestaFamilles.php`
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" }
-    });
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
-    json = await response.json()
-    if (json['status'] == 200) {
-      liste_familles_prestas = json['familles']
-      // console.log(liste_familles_prestas)
-      window.dispatchEvent(eventListePrestasReceived)
+      window.dispatchEvent(new Event("event-liste-famille-produits-received"))
     }
   } catch (error) {
     console.error(error.message);
   }
 }
 
-window.addEventListener('event-prestas-received', (e) => {
-    if ((json_data_prestas !== null) && (liste_familles_prestas !== null)) {
-      console.log("----- all prestas received")
-      // console.log(json_data_prestas)
-      console.log(liste_familles_prestas)
-    }
-}, false)
-
-
-/* -------------------------------------------------------------------- */
-/* Routing Site */
-/* -------------------------------------------------------------------- */
+/* Routes Options */
 let accueil_options = document.getElementById('accueil_produit')
 accueil_options.addEventListener('click', (e) => {
   let accueil_main_container = document.getElementById('accueil-main-container')
@@ -122,58 +408,7 @@ accueil_options.addEventListener('click', (e) => {
   options_main_container.style.display = "block"
   optionslist_main_container.style.display = "none"
 })
-let accueil_presta = document.getElementById('accueil_presta')
-accueil_presta.addEventListener('click', (e) => {
-  console.log('-- accueil presta')
-  let options_main_container = document.getElementById('options-main-container')
-  let presta_main_container = document.getElementById('presta-main-container')
-  options_main_container.style.display = "none"
-  presta_main_container.style.display = "block"
-})
 
-/* Routes Prestas */
-let presta_retour_btn = document.getElementById('presta-retour-btn')
-presta_retour_btn.addEventListener('click', (e) => {
-  let presta_main_container = document.getElementById('presta-main-container')
-  // let optionslist_main_container = document.getElementById('optionslist-main-container')
-  presta_main_container.style.display = "none"
-  // optionslist_main_container.style.display = "none"
-})
-let liste_presta = document.querySelectorAll('.presta-element-liste li')
-for(var presta_li of liste_presta) {
-  presta_li.addEventListener('click', (e) => {
-    console.log('click presta li element')
-
-    if (e.currentTarget.id !== '') {
-
-      let presta_id = parseInt(e.currentTarget.id.split('_').splice(-1)[0])
-      console.log(`presta clicked : ${presta_id}`)
-      
-      let current_presta = getPrestaFromId(presta_id)
-      let prestas = getPrestasFromIdFamille(current_presta.id_famille)
-
-      updateFichePresta(prestas)
-
-      let header_title = document.getElementById('presta-fiche-header-titre-text')
-      header_title.innerText = current_presta.nom_famille.toUpperCase()
-
-      swiperPresta.slideTo(current_presta.index)
-
-      let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
-      presta_fiche_main_container.style.display = 'block' 
-
-    }
-
-    
-  })
-}
-let presta_fiche_header_close_btn = document.getElementById('presta-fiche-header-close-btn')
-presta_fiche_header_close_btn.addEventListener('click', (e) => {
-  let presta_fiche_main_container = document.getElementById('presta-fiche-main-container')
-  presta_fiche_main_container.style.display = "none"
-})
-
-/* Routes Options */
 let options_retour_btn = document.getElementById('options-retour-btn')
 options_retour_btn.addEventListener('click', (e) => {
   let accueil_main_container = document.getElementById('accueil-main-container')
@@ -207,134 +442,6 @@ produit_header_close_btn.addEventListener('click', (e) => {
 
 
 
-/* Prestations */
-const swiperPresta = new Swiper('.swiperPresta', {
-  direction: 'horizontal',
-  loop: false,
-  pagination: {
-    el: '.swiper-pagination',
-  },
-  navigation: {
-    nextEl: '.swiper-button-next',
-    prevEl: '.swiper-button-prev',
-  },
-  scrollbar: {
-    el: '.swiper-scrollbar',
-  },
-});
-
-function updateFichePresta(prestas) {
-  let swiperPresta_wrapper = document.getElementById('swiperPresta-wrapper')
-  swiperPresta_wrapper.innerHTML = ''
-  prestas.forEach(presta => {
-    swiperPresta_wrapper.appendChild(createFichePrestaSwiperSlide(presta))
-  })
-  swiperPresta.update()
-}
-
-function createFichePrestaSwiperSlide(presta) {
-
-  let swiperSlide = document.createElement('div')
-  swiperSlide.classList.add('swiper-slide')
-  let swiperSlideSubcontainer = document.createElement('div')
-  swiperSlideSubcontainer.classList.add('swiperPresta-slide-subcontainer')
-  let fichePresta = document.createElement('div')
-  fichePresta.classList.add('fiche-presta')
-  let modalMain = document.createElement('div')
-  modalMain.classList.add('modal-main')
-
-  let modalMainSeparator1 = document.createElement('div')
-  modalMainSeparator1.setAttribute('id', 'modal-main-separator')
-  modalMainSeparator1.innerHTML = "&nbsp;"
-  modalMain.appendChild(modalMainSeparator1)
-
-  let modalMainSubtitle = document.createElement('div')
-  modalMainSubtitle.classList.add('presta-subtitle')
-  modalMainSubtitle.innerHTML = presta.nom_cat
-  modalMain.appendChild(modalMainSubtitle)
-  
-  
-
-  let group_image_count = Math.max(presta.images.length, presta.images_legende.length)
-  for (let i=0; i<group_image_count; i++) {
-    let presta_image_group = document.createElement('div')
-    presta_image_group.classList.add('presta-image-group')
-    let presta_image = document.createElement('img')
-    presta_image.classList.add('presta-image')
-    presta_image.setAttribute('src', presta.images[i])
-    let presta_image_legende = document.createElement('div')
-    presta_image_legende.classList.add('presta-image-legende')
-    if (presta.images_legende.length >= i+1) {
-      presta_image_legende.innerHTML = presta.images_legende[i]
-    } else {
-      presta_image_legende.innerHTML = ""
-    }
-    
-    if (i%2 == 0) {
-      presta_image_group.appendChild(presta_image)
-      presta_image_group.appendChild(presta_image_legende)
-    } else {
-      presta_image_group.appendChild(presta_image_legende)
-      presta_image_group.appendChild(presta_image)
-    }
-
-    modalMain.appendChild(presta_image_group)
-  }
-  // <div class="presta-image-group">
-  //   <img class="presta-image" src="./img/presta/cuisine/cuisine_01.jpg" />
-  //   <div class="presta-image-legende">Cuisine type T3</div>
-  // </div>
-
-  let modalMainSeparator2 = document.createElement('div')
-  modalMainSeparator2.setAttribute('id', 'modal-main-separator')
-  modalMainSeparator2.innerHTML = "&nbsp;"
-  modalMain.appendChild(modalMainSeparator2)
-
-  let prestaDescriptif = document.createElement('div')
-  prestaDescriptif.classList.add('presta-descriptif')
-  prestaDescriptif.innerHTML = presta.descriptif
-  modalMain.appendChild(prestaDescriptif)
-
-  let modalMainSeparator3 = document.createElement('div')
-  modalMainSeparator3.setAttribute('id', 'modal-main-separator')
-  modalMainSeparator3.innerHTML = "&nbsp;"
-  modalMain.appendChild(modalMainSeparator3)
-
-  let prestaContractuel = document.createElement('div')
-  prestaContractuel.classList.add('presta-contractuel')
-  prestaContractuel.innerText = presta.contractuel  
-  modalMain.appendChild(prestaContractuel)
-
-  fichePresta.appendChild(modalMain)
-  swiperSlideSubcontainer.appendChild(fichePresta)
-  swiperSlide.appendChild(swiperSlideSubcontainer)
-
-  return swiperSlide
-}
-
-
-
-
-
-
-
-
-
-/* Produits */
-const swiperOption = new Swiper('.swiperOption', {
-  direction: 'horizontal',
-  loop: false,
-  pagination: {
-    el: '.swiper-pagination',
-  },
-  navigation: {
-    nextEl: '.swiper-button-next',
-    prevEl: '.swiper-button-prev',
-  },
-  scrollbar: {
-    el: '.swiper-scrollbar',
-  },
-});
 
 function initOptionsSummery() {
   let options_body = document.getElementById('options-body')
@@ -635,22 +742,6 @@ function splitColorNameProduit(nom_prod, separator) {
   return [blanc, gold]
 }
 
-function getPrestaFromId(id_presta) {
-  return_value = null
-  liste_prestas.forEach((presta) => {
-    if (presta.id_presta == id_presta) return_value = presta
-  })
-  return return_value
-}
-
-function getPrestasFromIdFamille(id_presta_famille) {
-  return_value = []
-  liste_prestas.forEach((presta) => {
-    if (presta.id_famille == id_presta_famille) return_value.push(presta)
-  })
-  return return_value
-}
-
 function xCreateElement(type, elem_classes) {
   return xCreateElement(type, elem_classes, '')
 }
@@ -664,5 +755,21 @@ function xCreateElement(type, elem_classes, elem_id) {
   if (elem_id !== "") element.id = elem_id
   return element
 }
+
+
+/* ------------------- Loader ------------------- */
+function displayLoader() {
+  let loaderContainer = document.getElementById('loader-container')
+  loaderContainer.style.display = "block"
+}
+function hideLoader() {
+  let loaderContainer = document.getElementById('loader-container')
+  loaderContainer.style.display = "none"
+}
+
+
+
+
+
 
 
